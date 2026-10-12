@@ -1,0 +1,14 @@
+valid:
+  - { file: app/actions/tag_post.ts, code: "await post.related('tags').attach(ids)\nconst rows = await Post.query({ client: trx }).where('a', 1)" }
+  - file: app/queries/count_members.ts
+    code: "// Count across members and invites in one statement; no model covers both.\nconst [row] = await db.from('members').count('* as total')"
+  - file: app/shop/actions/sync_roles.ts
+    code: "export default class A { async handle() { await db.transaction(async (trx) => {\n  // Pivot of @adonis-agora/authz, without a model.\n  await trx.table('authz_role_users').insert(rows)\n}) } }"
+  - { file: app/services/x.ts, code: "await db.transaction(async (trx) => {})" }
+  - file: app/models/point.ts
+    code: "Point.query().orWhereIn(\n  'expositor_id',\n  // Exhibitors have no model yet.\n  db.from('exhibitor_members').select('expositor_id')\n)"
+invalid:
+  - { file: app/models/point.ts, code: "Point.query().orWhereIn('expositor_id', db.from('exhibitor_members').select('expositor_id'))" }
+  - { file: app/queries/projects_of_person.ts, code: "const rows = await db.from('projects').where('person_id', id)" }
+  - { file: app/shop/actions/name_organizer.ts, code: "export default class A { async handle() { await db.transaction(async (trx) => { await trx.table('event_organizers').insert({ a: 1 }) }) } }" }
+  - { file: app/actions/a.ts, code: "// fetch the projects\nconst x = 1\nconst rows = await trx.from('projects')" }

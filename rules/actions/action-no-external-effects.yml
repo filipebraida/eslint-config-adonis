@@ -1,0 +1,21 @@
+id: action-no-external-effects
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "Actions do not call `fetch`, `facteur`, `transmit.broadcast`, `mail.send` or `mail.sendLater`; they emit an event"
+message: 'Action calls an external service (mail, notification, broadcast or HTTP): the effect cannot be undone if the transaction rolls back, and slows the request.'
+note: 'The action writes and, after the commit, emits its event (`await events.X.dispatch(id)` from `#generated/events`); a listener in listeners/ dispatches the job that performs the effect.'
+rule:
+  any:
+    - kind: call_expression
+      has: { field: function, kind: identifier, regex: '^fetch$' }
+    # facteur.notify(), facteur.send(...)
+    - kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        has: { field: object, kind: identifier, regex: '^facteur$' }
+    - pattern: transmit.broadcast($$$)
+    - pattern: mail.send($$$)
+    - pattern: mail.sendLater($$$)

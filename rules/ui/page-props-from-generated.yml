@@ -1,0 +1,22 @@
+id: page-props-from-generated
+language: tsx
+files: ['inertia/pages/**/*.tsx', 'app/*/ui/pages/**/*.tsx']
+severity: error
+metadata:
+  description: "Page props are `InertiaProps<{ ...Data.* }>`, never written by hand; a modal page (it imports the modal components) types its own props from `Data.*`"
+message: 'Page props `$NAME` written by hand.'
+note: 'Type the page from what the server sends: `InertiaProps<{ post: Data.Post.Variants[''forShow''] }>`, with `Data` from `@generated/data` and the variant the controller uses. A modal page (one that imports the modal components) has no shared props and types its own from `Data.*`. A copy of the server shape drifts on the next migration.'
+rule:
+  any:
+    # The page's own props; a local component's props (`RowProps`) are not the page's.
+    - kind: type_alias_declaration
+      has: { field: name, pattern: $NAME, regex: '^(Props|\w*PageProps)$' }
+    - kind: interface_declaration
+      has: { field: name, pattern: $NAME, regex: '^(Props|\w*PageProps)$' }
+  not:
+    any:
+      - regex: '\bInertiaProps\s*<'
+      # A modal page receives only the modal props: it types them itself, from Data.*.
+      - all:
+          - regex: '\bData\.'
+          - inside: { kind: program, has: { kind: import_statement, has: { field: source, regex: 'modal' } } }

@@ -1,0 +1,15 @@
+valid:
+  - file: tests/unit/mails/welcome.spec.ts
+    code: "test('x', async () => { using fake = mail.fake()\nawait mail.send(new WelcomeMail(user))\nfake.mails.assertSent(WelcomeMail) })"
+  - file: app/shop/tests/unit/mails/welcome.spec.ts
+    code: "test('x', async () => { using fake = mail.fake()\nawait mail.sendLater(new WelcomeMail(user)) })"
+  - file: tests/helpers/mail.ts
+    code: "export const send = () => mail.send(new WelcomeMail(user))"
+  - file: tests/unit/services/a.spec.ts
+    code: "test('x', async () => { await client.send(payload) })"
+invalid:
+  - file: tests/unit/mails/welcome.spec.ts
+    code: "test('x', async () => { await mail.send(new WelcomeMail(user)) })"
+  - file: app/shop/tests/unit/mails/welcome.spec.ts
+    code: "test('x', async () => { await mail.sendLater(new WelcomeMail(user))\nawait mail.send(new WelcomeMail(user)) })"
+    errors: 2

@@ -1,0 +1,13 @@
+valid:
+  - { file: app/shop/tests/functional/invite/store.spec.ts, code: "test('x', async ({ client }) => { await client.get('/') })" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', async ({ client }) => { await client.get('/') })" }
+  - { file: tests/functional/invite/index.spec.ts, code: "test('x').with([1]).run(async ({ client }, n) => { await client.get('/') })" }
+  - { file: tests/functional/users/crud.spec.ts, code: "test.group('g', () => { test('x', async ({ client }) => {}) })" }
+  - { file: tests/functional/invite/ctx.spec.ts, code: "test('x', async (ctx) => { await ctx.client.get('/') })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', () => {})" }
+invalid:
+  - { file: app/shop/tests/functional/invite/store.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/functional/chat_session_service.spec.ts, code: "test('x', async ({ assert }) => { assert.isTrue(true) })" }
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', async (ctx) => { await other.client.get('/') })" }

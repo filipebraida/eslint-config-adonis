@@ -1,0 +1,7 @@
+valid:
+  - { file: app/controllers/articles_controller.ts, code: "await bouncer.with(ArticlePolicy).authorize('edit', article)" }
+  - { file: app/shop/controllers/articles_controller.ts, code: "await ctx.bouncer.authorize('edit', article)" }
+  - { file: app/actions/update_article.ts, code: "export default class A { async handle(article) { article.merge({ a: 1 })\nawait article.save() } }" }
+invalid:
+  - { file: app/actions/update_article.ts, code: "export default class A { async handle(ctx) { await ctx.bouncer.with(ArticlePolicy).authorize('edit', p) } }", errors: 1 }
+  - { file: app/shop/actions/update_article.ts, code: "export default class A { async handle({ bouncer }) { if (await bouncer.allows('edit')) return } }", errors: 1 }

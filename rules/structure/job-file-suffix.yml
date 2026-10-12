@@ -1,0 +1,11 @@
+id: job-file-suffix
+language: typescript
+files: ['app/jobs/**/*.ts', 'app/*/jobs/**/*.ts']
+ignores: ['app/jobs/**/*_job.ts', 'app/*/jobs/**/*_job.ts']
+severity: error
+metadata:
+  description: "Files in `jobs/` end in `_job.ts`, as `make:job` writes them"
+message: 'File in jobs/ without the `_job.ts` suffix.'
+note: 'Name it `<name>_job.ts`, the name `node ace make:job` writes. Code that is not a job moves to the layer it belongs to.'
+rule:
+  kind: program

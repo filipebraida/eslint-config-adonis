@@ -1,0 +1,27 @@
+valid:
+  - { file: app/shop/controllers/orders_controller.ts, code: 'export default class X { async store({ request }) { await request.validateUsing(v) } }' }
+  - { file: app/shop/services/x.ts, code: 'export default class X { async store({ request }) { request.all() } }' }
+  - file: app/controllers/reviews_controller.ts
+    code: 'async function f({ request }) { await request.validateUsing(v) }'
+  - file: app/controllers/users_controller.ts
+    code: 'export default class X { async store({ request }) { const data = await request.validateUsing(v) } }'
+  - file: app/controllers/users_controller.ts
+    code: 'export default class X { async index({ request }) { const page = request.qs().page } }'
+  - file: app/controllers/users_controller.ts
+    code: 'export default class X { async index({ response }) { response.body() } }'
+  - file: app/services/x.ts
+    code: 'export default class X { async store({ request }) { const everything = request.all() } }'
+invalid:
+  - { file: app/shop/controllers/orders_controller.ts, code: 'export default class X { async store({ request }) { request.all() } }' }
+  - file: app/controllers/reviews_controller.ts
+    code: 'async function f({ request }) { request.all() }'
+  - file: app/controllers/reviews_controller.ts
+    code: 'function f(ctx) { ctx.request.input("x") }'
+  - file: app/controllers/users_controller.ts
+    code: 'export default class X { async store({ request }) { const x = request.only(["a"]) } }'
+  - file: app/controllers/web/x_controller.ts
+    code: 'export default class X { async store({ request }) { const x = request.input("a") } }'
+  - file: app/controllers/x_controller.ts
+    code: 'export default class X { async store({ request }) { const x = request.body() } }'
+  - file: app/controllers/x_controller.ts
+    code: 'export default class X { async store({ request }) { const x = request.except(["a"]) } }'

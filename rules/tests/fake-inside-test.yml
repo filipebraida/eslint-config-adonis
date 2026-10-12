@@ -1,0 +1,32 @@
+id: fake-inside-test
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "`mail/emitter/drive/facteur.fake()` only inside a `test()`, never in a hook, the bootstrap or a helper"
+message: '`$X.fake()` outside a test (a hook, the bootstrap, a helper): every test inherits it, and the one that needs the real service cannot opt out.'
+note: 'Create the fake inside the test that asserts on it: `using fake = $X.fake()`. Then the test says what it fakes, and the fake is restored when it ends.'
+utils:
+  # test(title, cb), and test(title).with(data).run(cb)
+  test-call:
+    kind: call_expression
+    has:
+      field: function
+      any:
+        - { kind: identifier, regex: '^test$' }
+        - kind: member_expression
+          all:
+            - has: { field: property, regex: '^run$' }
+            - has: { field: object, stopBy: end, kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+  test-callback:
+    any: [{ kind: arrow_function }, { kind: function_expression }]
+    inside: { kind: arguments, inside: { matches: test-call } }
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    all:
+      - has: { field: object, kind: identifier, pattern: $X, regex: '^(mail|emitter|drive|facteur)$' }
+      - has: { field: property, regex: '^fake$' }
+  not: { inside: { stopBy: end, matches: test-callback } }

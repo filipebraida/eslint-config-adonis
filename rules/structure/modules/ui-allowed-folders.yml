@@ -1,0 +1,11 @@
+id: ui-allowed-folders
+language: tsx
+files: ['app/*/ui/*/**/*.{ts,tsx}']
+ignores: ['app/*/ui/{components,context,css,hooks,images,layouts,pages}/**']
+severity: error
+metadata:
+  description: "Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/`"
+message: 'This folder under app/<module>/ui/ is not allowed.'
+note: 'Folders: components, context, css, hooks, images, layouts, pages. A new folder is an architecture decision: add it to this rule.'
+rule:
+  kind: program

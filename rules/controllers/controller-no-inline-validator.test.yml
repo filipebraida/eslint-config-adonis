@@ -1,0 +1,18 @@
+valid:
+  - file: app/controllers/articles_controller.ts
+    code: "import { createArticleValidator } from '#validators/article'\nexport default class C { async store({ request }) { await request.validateUsing(createArticleValidator) } }"
+  - file: app/shop/validators/order.ts
+    code: 'export const v = vine.create(vine.object({ a: vine.string() }))'
+  - file: app/validators/article.ts
+    code: 'export const v = vine.compile(vine.object({ a: vine.string() }))'
+invalid:
+  - file: app/controllers/articles_controller.ts
+    code: 'const v = vine.create(vine.object({ a: vine.string() }))'
+    errors: 1
+  - file: app/shop/controllers/web/orders_controller.ts
+    code: 'export default class C { async store({ request }) { const v = vine.compile(vine.object({ a: vine.string() })) } }'
+    errors: 1
+  - file: app/shop/controllers/orders_controller.ts
+    code: 'const v = vine.create({ a: vine.string() })'
+  - file: app/controllers/articles_controller.ts
+    code: 'const schema = vine.object({ a: vine.string() })'

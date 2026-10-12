@@ -1,0 +1,12 @@
+valid:
+  # A project without a job queue schedules a single e-mail through the mailer.
+  - { file: app/listeners/send_welcome.ts, code: "export default class A { async handle(e) { await mail.sendLater(new WelcomeMail(e.email)) } }" }
+  - { file: app/shop/listeners/send_welcome.ts, code: "export default class A { async handle(e) { await SendWelcomeJob.dispatch({ userId: e.user.id }) } }" }
+  - { file: app/listeners/send_welcome.ts, code: "export default class SendWelcome { async handle(event) { await SendWelcomeJob.dispatch({ userId: event.userId }) } }" }
+  - { file: app/listeners/fan_out.ts, code: "export default class A { async handle(e) { const o = Object.create(null)\nconst at = DateTime.fromISO(e.at)\nawait FanOutJob.dispatch({ ids: e.ids }) } }" }
+  - { file: app/jobs/send_welcome_job.ts, code: "await mail.send(new WelcomeMail(user))\nawait User.findOrFail(1)" }
+invalid:
+  - { file: app/listeners/send_welcome.ts, code: "export default class A { async handle(e) { await mail.send(new WelcomeMail(e.user)) } }" }
+  - { file: app/shop/listeners/send_welcome.ts, code: "export default class A { async handle(e) { await mail.send(m)\ntransmit.broadcast('x', {})\nawait facteur.notify(n)\nawait fetch('https://x') } }", errors: 4 }
+  - { file: app/listeners/award_points.ts, code: "export default class A { async handle(e) { await Point.create({ a: 1 })\ne.review.scored = true\nawait e.review.save() } }", errors: 2 }
+  - { file: app/shop/listeners/notify_staff.ts, code: "export default class A { async handle(e) { const staff = await User.query().where('role', 'staff')\nconst post = await Post.findOrFail(e.postId)\nconst rows = await db.from('users')\nawait NotifyJob.dispatch({ ids: staff.map((u) => u.id) }) } }", errors: 3 }

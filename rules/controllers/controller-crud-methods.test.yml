@@ -1,0 +1,30 @@
+valid:
+  - { file: app/shop/controllers/orders_controller.ts, code: 'export default class C { index() {} store() {} }' }
+  - { file: app/shop/services/orders_controller.ts, code: 'export default class C { archive() {} }' }
+  - file: app/controllers/reviews_controller.ts
+    code: 'export default class ReviewsController { index() {} store() {} private x() {} }'
+  - file: app/controllers/carts_controller.ts
+    code: 'export default class C { async index() {} async show() {} async store() {} }'
+  - file: app/controllers/carts_controller.ts
+    code: 'export default class C { async index() {} private async helper() {} #secret() {} }'
+  - file: app/controllers/carts_controller.ts
+    code: 'export default class C { constructor(private s: S) {} async index() {} }'
+  - file: app/services/x.ts
+    code: 'export default class C { async archive() {} }'
+invalid:
+  - file: app/controllers/close_projects_controller.ts
+    code: 'export default class C { handle() {} }'
+  - { file: app/shop/controllers/close_orders_controller.ts, code: 'export default class C { async handle() {} private x() {} }' }
+  - { file: app/shop/controllers/orders_controller.ts, code: 'export default class C { index() {} archive() {} }' }
+  - { file: app/shop/controllers/web/orders_controller.ts, code: 'export default class C { archive() {} }' }
+  - file: app/controllers/projects_controller.ts
+    code: 'export default class C { index() {} close() {} }'
+  - file: app/controllers/carts_controller.ts
+    code: 'export default class C { async index() {} async archive() {} }'
+  - file: app/controllers/carts_controller.ts
+    code: 'export default class C { async scan() {} async revert() {} }'
+    errors: 2
+  - file: app/controllers/notifications_controller.ts
+    code: 'export default class C { async markAsRead() {} }'
+  - file: app/controllers/web/orders_controller.ts
+    code: 'export default class C { public archive() {} }'

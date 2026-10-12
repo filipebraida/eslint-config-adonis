@@ -1,0 +1,40 @@
+id: spec-no-declarations
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "Classes and types are declared inside a `test()` or in a helper; a spec declares only local functions that compose factories"
+message: '`$NAME` declared at the top of a spec.'
+note: 'A spec declares only local functions that compose factories. A type or a class goes to helpers/<name>.ts in the same tests/ folder, or inside the `test()` that uses it.'
+utils:
+  # test(title, cb), and test(title).with(data).run(cb)
+  test-call:
+    kind: call_expression
+    has:
+      field: function
+      any:
+        - { kind: identifier, regex: '^test$' }
+        - kind: member_expression
+          all:
+            - has: { field: property, regex: '^run$' }
+            - has:
+                field: object
+                any:
+                  - { kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+                  - has: { stopBy: end, kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+  test-callback:
+    any: [{ kind: arrow_function }, { kind: function_expression }]
+    inside: { kind: arguments, inside: { matches: test-call } }
+rule:
+  any:
+    - kind: class_declaration
+    - kind: abstract_class_declaration
+    - kind: type_alias_declaration
+    - kind: interface_declaration
+    - kind: enum_declaration
+  has: { field: name, pattern: $NAME }
+  not:
+    any:
+      # Exports are already reported by spec-no-exports.
+      - inside: { kind: export_statement }
+      - inside: { stopBy: end, matches: test-callback }

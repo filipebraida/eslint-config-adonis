@@ -1,0 +1,10 @@
+id: vine-create
+language: typescript
+files: ['app/**/*.ts', 'start/**/*.ts']
+severity: error
+metadata:
+  description: "`vine.create()`, never `vine.compile()`"
+message: '`vine.compile()`, the old name.'
+note: 'Write `vine.create(...)`: it takes an object of fields, or a `vine.object(...)` when you chain `.merge()` or `.use()`.'
+rule:
+  pattern: vine.compile($$$)

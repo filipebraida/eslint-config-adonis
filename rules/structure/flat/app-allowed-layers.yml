@@ -1,0 +1,12 @@
+id: app-allowed-layers
+language: typescript
+files: ['app/*/**/*.{ts,tsx}']
+ignores:
+  - 'app/{actions,queries,controllers,models,policies,validators,transformers,middleware,events,listeners,jobs,mails,notifications,services,exceptions,enums,types,abilities,audit_resolvers}/**'
+severity: error
+metadata:
+  description: "Only the allowed layers under `app/` (actions, queries, controllers, models, policies, validators, transformers, middleware, events, listeners, jobs, mails, notifications, services, exceptions, enums, types, abilities, audit_resolvers)"
+message: 'This folder under app/ is not an allowed layer.'
+note: 'Layers: actions, queries, controllers, models, policies, validators, transformers, middleware, events, listeners, jobs, mails, notifications, services, exceptions, enums, types, abilities, audit_resolvers. A new layer is an architecture decision: record it in docs/adr/ and add it to this rule.'
+rule:
+  kind: program

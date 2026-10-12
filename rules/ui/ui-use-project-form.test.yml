@@ -1,0 +1,18 @@
+valid:
+  - file: inertia/pages/articles/new.tsx
+    code: "import { Form } from '~/components/ui/form'\nimport { Link, router } from '@inertiajs/react'"
+  - file: inertia/components/ui/form.tsx
+    code: "import { useForm } from '@inertiajs/react'"
+  - file: app/core/ui/components/ui/form.tsx
+    code: "import { useForm } from '@inertiajs/react'"
+  - file: app/shop/ui/pages/orders/review.tsx
+    code: "import { useForm } from '@inertiajs/react'\n// useForm and not <Form>: state per card and one submit at the end.\nconst form = useForm({ cards: [] })"
+invalid:
+  - file: inertia/pages/articles/create.tsx
+    code: "import { useForm } from '@inertiajs/react'\n// uses useForm\nconst form = useForm({})"
+  - file: inertia/pages/articles/new.tsx
+    code: "import { Link, useForm } from '@inertiajs/react'"
+  - file: app/shop/ui/pages/orders/new.tsx
+    code: "import { useForm as useInertiaForm } from '@inertiajs/react'"
+  - file: app/shop/ui/components/order_form.tsx
+    code: "import { useForm } from '@inertiajs/react'"

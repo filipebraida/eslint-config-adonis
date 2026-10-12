@@ -1,0 +1,7 @@
+valid:
+  - { file: app/queries/list_posts.ts, code: "const posts = await Post.query().preload('author')\nfor (const p of posts) { names.push(p.author.name) }" }
+  - { file: app/actions/a.ts, code: "const byId = new Map((await User.query().whereIn('id', ids)).map((u) => [u.id, u]))" }
+invalid:
+  - { file: app/queries/list_posts.ts, code: "for (const p of posts) { const a = await User.find(p.authorId) }" }
+  - { file: app/shop/actions/a.ts, code: "await Promise.all(rows.map(async (r) => Invite.findByOrFail('uuid', r.uuid)))" }
+  - { file: app/jobs/a_job.ts, code: "for (let i = 0; i < n; i++) { await Post.query().where('a', i) }" }

@@ -1,0 +1,10 @@
+valid:
+  - { file: app/jobs/send_welcome_job.ts, code: "export default class SendWelcomeJob extends Job { async process() { await mail.send(new WelcomeMail(u)) } }" }
+  - { file: app/jobs/send_welcome_job.ts, code: "export default class SendWelcomeJob extends Job { async process() { await new SendWelcome().handle(this.data) } }" }
+  - { file: app/shop/jobs/publish_job.ts, code: "export default class PublishJob extends Job { async process() { const n = await News.find(this.data.id)\nif (!n) return\nawait new Publish().handle(n) } }" }
+  - { file: app/actions/send_welcome.ts, code: "export default class A { async process() { await user.save() } }" }
+  - { file: app/jobs/a_job.ts, code: "export default class AJob extends Job { async process() { this.cache.delete(key) } }" }
+  - { file: app/jobs/prune_audits_job.ts, code: "export default class PruneAuditsJob extends Job { async process() {\n  // Maintenance, not a use case: drops audits past the retention.\n  await Audit.query().where('created_at', '<', cutoff).delete()\n} }" }
+invalid:
+  - { file: app/shop/jobs/publish_job.ts, code: "export default class PublishJob extends Job { async process() { const n = await News.findOrFail(1)\nn.status = 'published'\nawait n.save()\nawait Log.create({}) } }", errors: 2 }
+  - { file: app/jobs/prune_job.ts, code: "export default class PruneJob extends Job { async process() { await lock.run(async () => { await row.delete() }) } }" }

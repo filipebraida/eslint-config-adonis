@@ -1,0 +1,20 @@
+valid:
+  - file: inertia/pages/articles/show.tsx
+    code: "export default () => <Link route=\"articles.index\">x</Link>"
+  - file: app/shop/ui/pages/orders/index.tsx
+    code: "export default () => <><a href=\"https://gov.br\">x</a><a href=\"#main\">y</a><a href=\"mailto:a@b.c\">z</a></>"
+  - file: inertia/components/footer.tsx
+    code: "export default () => <a href={urlFor('files.download', { id })}>x</a>"
+  - file: app/analytics/ui/components/jobs_card.tsx
+    code: "export default () => <a href={urlFor('jobs.dashboard')} target=\"_blank\">x</a>"
+  - file: inertia/components/footer.tsx
+    code: "export default () => <a href=\"//cdn.example.com\">x</a>"
+invalid:
+  - file: inertia/pages/articles/show.tsx
+    code: "export default () => <a href=\"/articles\">x</a>"
+  - file: app/shop/ui/pages/orders/index.tsx
+    code: "export default () => <a href={`/orders/${id}`} className=\"x\">x</a>"
+  - file: app/shop/ui/components/nav.tsx
+    code: "export default () => <a href={'/'}>x</a>"
+  - file: inertia/components/jobs_card.tsx
+    code: "export default () => <a href={`/vitrine#${slug}`} target=\"_blank\" rel=\"noreferrer\">x</a>"

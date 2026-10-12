@@ -1,0 +1,16 @@
+valid:
+  - file: app/validators/article.ts
+    code: "export const v = vine.create({ cover: vine.file({ size: '2mb', extnames: ['png'] }) })"
+  - file: app/shop/validators/order.ts
+    code: "export const v = vine.create({ doc: vine.file({ size, extnames }) })"
+  - file: app/shop/validators/order.ts
+    code: "export const v = vine.create({ doc: vine.file({ ...uploadLimits }) })"
+  - file: app/validators/article.ts
+    code: 'export const v = vine.create({ doc: vine.file(options) })'
+invalid:
+  - file: app/validators/article.ts
+    code: 'export const v = vine.create({ cover: vine.file() })'
+  - file: app/shop/validators/order.ts
+    code: "export const v = vine.create({ docs: vine.array(vine.file({ extnames: ['pdf'] })) })"
+  - file: app/shop/controllers/orders_controller.ts
+    code: "const f = vine.file({ extnames: ['pdf'] })"

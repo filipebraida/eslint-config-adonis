@@ -1,0 +1,12 @@
+valid:
+  - file: app/controllers/posts_controller.ts
+    code: "export default class C { async store({ bouncer, request }) { await bouncer.with(PostPolicy).authorize('create')\nconst payload = await request.validateUsing(createPostValidator) } }"
+  - file: app/shop/controllers/posts_controller.ts
+    code: "export default class C { async update({ bouncer, request, params }) { const post = await new FindPost().handle({ id: params.id })\nawait bouncer.with(PostPolicy).authorize('update', post)\nconst payload = await request.validateUsing(updatePostValidator) } }"
+  - file: app/controllers/sign_in_controller.ts
+    code: "export default class C { static readonly public = true\nasync store({ request }) { const payload = await request.validateUsing(signInValidator) } }"
+invalid:
+  - file: app/controllers/posts_controller.ts
+    code: "export default class C { async store({ bouncer, request }) { const payload = await request.validateUsing(createPostValidator)\nawait bouncer.with(PostPolicy).authorize('create') } }"
+  - file: app/shop/controllers/posts_controller.ts
+    code: "export default class C { async update({ bouncer, request }) { const payload = await request.validateUsing(v)\nconst post = await new FindPost().handle(payload)\nawait bouncer.with(PostPolicy).authorize('update', post) } }"

@@ -1,0 +1,6 @@
+valid:
+  - { file: app/jobs/send_welcome_job.ts, code: 'export default class A {}' }
+  - { file: app/shop/jobs/sync_job.ts, code: 'export default class A {}' }
+invalid:
+  - { file: app/jobs/send_welcome.ts, code: 'export default class A {}' }
+  - { file: app/shop/jobs/sync.ts, code: 'export default class A {}' }

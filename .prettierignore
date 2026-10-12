@@ -1,0 +1,3 @@
+pnpm-lock.yaml
+# Rules and their cases keep one case per line.
+rules/**/*.yml

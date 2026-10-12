@@ -1,0 +1,8 @@
+valid:
+  - { file: app/actions/register_review.ts, code: "export default class RegisterReview { async handle() { await review.save()\nawait emitter.emit('review:registered', review) } }" }
+  - { file: app/shop/actions/register_review.ts, code: "export default class RegisterReview { async handle() { await this.client.fetch() } }" }
+  - { file: app/jobs/send_welcome_job.ts, code: "await mail.send(new WelcomeMail(user))" }
+invalid:
+  - { file: app/actions/register_review.ts, code: "export default class A { async handle() { await fetch('https://x') } }" }
+  - { file: app/shop/actions/register_review.ts, code: "export default class A { async handle() { await mail.send(new WelcomeMail(u)) } }" }
+  - { file: app/actions/a.ts, code: "export default class A { async handle() { await mail.sendLater(m)\ntransmit.broadcast('x', {})\nawait facteur.notify(n) } }", errors: 3 }

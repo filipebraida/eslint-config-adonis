@@ -1,0 +1,16 @@
+valid:
+  - file: start/routes.ts
+    code: "import { controllers } from '#generated/controllers'\nrouter.get('/', [controllers.Home, 'handle'])"
+  - file: app/shop/routes.ts
+    code: "import { controllers } from '#generated/controllers'\nimport { middleware } from '#start/kernel'"
+  - file: app/shop/controllers/web/a_controller.ts
+    code: "import B from '#shop/controllers/b_controller'"
+invalid:
+  - file: start/routes.ts
+    code: "import ArticlesController from '#controllers/articles_controller'"
+  - file: start/routes/admin/routes.ts
+    code: "const ArticlesController = () => import('#controllers/articles_controller')"
+  - file: app/shop/routes.ts
+    code: "const OrdersController = () => import('#shop/controllers/web/orders_controller')"
+  - file: app/shop/routes.ts
+    code: "import OrdersController from './controllers/orders_controller.js'"

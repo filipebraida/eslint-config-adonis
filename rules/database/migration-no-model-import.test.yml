@@ -1,0 +1,6 @@
+valid:
+  - { file: database/migrations/1_a.ts, code: "import { BaseSchema } from '@adonisjs/lucid/schema'" }
+  - { file: app/actions/a.ts, code: "import Post from '#models/post'" }
+invalid:
+  - { file: database/migrations/1_a.ts, code: "import Post from '#models/post'" }
+  - { file: app/shop/database/migrations/1_a.ts, code: "import Invite from '#shop/models/invite'" }

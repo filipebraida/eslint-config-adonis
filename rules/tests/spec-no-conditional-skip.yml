@@ -1,0 +1,27 @@
+id: spec-no-conditional-skip
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "No `test(...).skip(...)` with arguments in a spec"
+message: '`.skip(...)` in a spec: a skipped test reports green without covering anything.'
+note: 'Fix the test or delete it. A test that depends on the environment (a key, a service) stubs that dependency instead of skipping itself.'
+rule:
+  kind: call_expression
+  all:
+    # test('x', cb).skip(...), test('x').with(rows).run(cb).skip(...);
+    # flow.skip(order) on a domain object is not a test.
+    - has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: property, regex: '^skip$' }
+          - has:
+              field: object
+              any:
+                - { kind: identifier, regex: '^test$' }
+                - kind: call_expression
+                  any:
+                    - has: { field: function, kind: identifier, regex: '^test$' }
+                    - has: { field: function, has: { stopBy: end, kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } } }
+    - has: { field: arguments, has: { nthChild: 1 } }

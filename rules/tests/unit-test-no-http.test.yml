@@ -1,0 +1,11 @@
+valid:
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', async ({ assert }) => { assert.isTrue(true) })" }
+  - { file: tests/unit/actions/archive_cart.spec.ts, code: "test('x', async ({ assert }) => { assert.isTrue(true) })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async (ctx) => { ctx.assert.isTrue(true) })" }
+  - { file: tests/functional/invite/store.spec.ts, code: "test('x', async ({ client }) => { await client.get('/') })" }
+invalid:
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', async ({ client }) => {})" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async ({ client }) => {})" }
+  - { file: tests/unit/actions/x.spec.ts, code: "test('x', async ({ client }) => { await client.get('/') })" }
+  - { file: tests/unit/actions/ctx.spec.ts, code: "test('x', async (ctx) => { await ctx.client.get('/') })" }
+  - { file: tests/unit/actions/x.spec.ts, code: "test('x').with([1]).run(async ({ client: http }, n) => { await http.get('/') })" }

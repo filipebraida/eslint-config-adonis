@@ -1,0 +1,11 @@
+id: exception-file-suffix
+language: typescript
+files: ['app/exceptions/**/*.ts', 'app/*/exceptions/**/*.ts']
+ignores: ['app/exceptions/**/*_exception.ts', 'app/*/exceptions/**/*_exception.ts', 'app/exceptions/handler.ts']
+severity: error
+metadata:
+  description: "Files in `exceptions/` end in `_exception.ts`, except the global `handler.ts`"
+message: 'File in exceptions/ without the `_exception.ts` suffix.'
+note: 'Name it `<name>_exception.ts`, the name `node ace make:exception` writes. Only the global `handler.ts` has no suffix.'
+rule:
+  kind: program

@@ -1,0 +1,14 @@
+id: audit-include-not-empty
+language: typescript
+files: ['app/models/**/*.ts', 'app/*/models/**/*.ts']
+severity: error
+metadata:
+  description: "No `static auditInclude = []` in a model (an empty list audits the whole row)"
+message: '`auditInclude` is an empty list: the audit stores the whole row.'
+note: 'List the columns worth auditing (`static auditInclude = [''id'', ''title'']`), never secrets or large payloads; remove the field if the model is not audited.'
+rule:
+  kind: public_field_definition
+  all:
+    - regex: '^(public\s+)?static\b'
+    - has: { field: name, regex: '^auditInclude$' }
+    - has: { field: value, kind: array, regex: '^\[\s*\]$' }

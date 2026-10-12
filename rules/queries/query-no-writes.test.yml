@@ -1,0 +1,11 @@
+valid:
+  - { file: app/shop/actions/register_review.ts, code: 'review.save()' }
+  - { file: app/queries/post_statement.ts, code: 'Review.query().where("x", 1).first()' }
+  - { file: app/queries/post_statement.ts, code: 'const saved = reviews.filter((v) => v.saved)' }
+  - { file: app/actions/register_review.ts, code: 'review.save()' }
+invalid:
+  - { file: app/shop/queries/orders.ts, code: 'review.save()' }
+  - { file: app/queries/post_statement.ts, code: 'review.save()' }
+  - { file: app/queries/x.ts, code: 'Review.create({})' }
+  - { file: app/queries/x.ts, code: 'Review.query().where("id", 1).update({ a: 1 })' }
+  - { file: app/queries/x.ts, code: 'db.from("reviews").del()' }

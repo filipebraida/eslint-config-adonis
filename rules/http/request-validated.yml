@@ -1,0 +1,20 @@
+id: request-validated
+language: typescript
+files: ['app/controllers/**/*.ts', 'app/*/controllers/**/*.ts']
+severity: error
+metadata:
+  description: "Controllers read input only through `request.validateUsing()`, never `request.all/input/only/except/body`"
+message: '`request.$METHOD()` reads the body without validating it.'
+note: 'Use `await request.validateUsing(validator)` with a VineJS validator in app/validators/.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    all:
+      - has: { field: property, pattern: $METHOD, regex: '^(all|only|except|body|input)$' }
+      - has:
+          field: object
+          any:
+            - { kind: identifier, regex: '^request$' }
+            - { kind: member_expression, has: { field: property, regex: '^request$' } }

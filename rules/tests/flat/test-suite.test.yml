@@ -1,0 +1,9 @@
+valid:
+  - { file: tests/unit/actions/register_review.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/browser/home/review.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/helpers/carts.ts, code: 'export {}' }
+invalid:
+  - { file: tests/misc/x.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/helpers/x.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/x.spec.ts, code: "test('x', () => {})" }

@@ -1,0 +1,26 @@
+id: class-docblock
+language: typescript
+files:
+  - 'app/{actions,queries,policies,controllers,services,jobs,listeners,events,mails,notifications,validators}/**/*.ts'
+  - 'app/*/{actions,queries,policies,controllers,services,jobs,listeners,events,mails,notifications,validators}/**/*.ts'
+severity: error
+metadata:
+  description: "The default export of an action, query, policy, controller, service, job, listener, event, mail or notification, and every exported validator, opens with a `/** */`"
+message: 'Exported `$NAME` without a docblock.'
+note: 'Open it with a `/** */` that a reader understands without opening another file: one sentence of what it is (an action starts with its verb, a query with its noun), then the contract the signature does not say (each `status` of the result, the event emitted after the commit), then a domain rule that surprises. Usually one to five lines.'
+rule:
+  kind: export_statement
+  any:
+    # export default class X, export default function x: the file's main export
+    - regex: '^export\s+default\b'
+      has: { field: declaration, any: [{ kind: class_declaration }, { kind: abstract_class_declaration }, { kind: function_declaration }], has: { field: name, pattern: $NAME } }
+    # export const createPostValidator = vine.create(...)
+    - has:
+        field: declaration
+        kind: lexical_declaration
+        has:
+          kind: variable_declarator
+          all:
+            - has: { field: name, pattern: $NAME }
+            - has: { field: value, regex: '^vine\.' }
+  not: { follows: { kind: comment, regex: '^/\*\*' } }

@@ -1,0 +1,14 @@
+valid:
+  - { file: app/shop/controllers/orders_controller.ts, code: "import { HttpContext } from '@adonisjs/core/http'\nexport default class C {}" }
+  - file: app/actions/a.ts
+    code: "import type { HttpContext } from '@adonisjs/core/http'\nexport default class A { handle(s: HttpContext['session']) {} }"
+  - file: app/actions/a.ts
+    code: "import { type HttpContext } from '@adonisjs/core/http'\nexport default class A { handle(s: HttpContext['session']) {} }"
+  - file: app/controllers/reviews_controller.ts
+    code: "import { HttpContext } from '@adonisjs/core/http'\nexport default class C {}"
+invalid:
+  - { file: app/shop/actions/a.ts, code: "import { HttpContext } from '@adonisjs/core/http'\nexport default class A { handle() {} }" }
+  - file: app/actions/a.ts
+    code: "import { HttpContext } from '@adonisjs/core/http'\nexport default class A { handle() {} }"
+  - file: app/actions/archive_cart.ts
+    code: "import { Request, HttpContext as Ctx } from '@adonisjs/core/http'\nexport default class A { handle() {} }"

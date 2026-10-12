@@ -1,0 +1,38 @@
+id: ui-no-raw-url
+language: tsx
+files: ['inertia/**/*.{ts,tsx}', 'app/*/ui/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No internal URL literal (`'/x'`, `` `/x/${id}` ``) as first argument of `router.review/get/post/put/patch/delete` or a form's `post/put/...`, nor in `href`/`action`"
+message: 'Hard-coded internal URL `$URL`.'
+note: 'Build it from the route name: `urlFor(''articles.show'', { id })`, or `<Link route="articles.show" params={{ id }}>`. A renamed route then breaks the typecheck instead of the screen. External (`https://`), `mailto:` and `#anchor` links are fine.'
+utils:
+  # '/x', "/x", `/x/${id}`; not '//cdn.example' (protocol-relative, external).
+  internal-url:
+    any:
+      - { kind: string, regex: '^[''"]/([^/]|[''"])' }
+      - { kind: template_string, regex: '^`/([^/]|`)' }
+rule:
+  pattern: $URL
+  matches: internal-url
+  any:
+    # router.review('/x'), router.post('/x'), form.put(`/x/${id}`)
+    - nthChild: 1
+      inside:
+        kind: arguments
+        inside:
+          kind: call_expression
+          has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(review|get|post|put|patch|delete)$' }
+    # <Link href="/x">, <form action="/x">, <Button href={`/x/${id}`}>; <a href> is ui-no-internal-anchor.
+    - inside:
+        stopBy: end
+        kind: jsx_attribute
+        has: { kind: property_identifier, regex: '^(href|action)$' }
+        not:
+          inside:
+            any:
+              - { kind: jsx_opening_element, has: { field: name, regex: '^a$' } }
+              - { kind: jsx_self_closing_element, has: { field: name, regex: '^a$' } }

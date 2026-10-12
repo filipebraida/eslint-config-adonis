@@ -1,0 +1,31 @@
+valid:
+  - file: tests/functional/reviews/store.spec.ts
+    code: "test.group('g', (group) => { group.each.setup(() => testUtils.db().wrapInGlobalTransaction())\ntest('x', async ({ client }) => { const u = await UserFactory.create()\nawait client.post('/reviews') }) })"
+  - file: app/shop/tests/unit/actions/register_review.spec.ts
+    code: "test.group('g', (group) => { group.each.setup(() => testUtils.db().wrapInGlobalTransaction())\ntest('x', async () => { await UserFactory.merge({ a: 1 }).createMany(2)\nawait db.from('reviews') }) })"
+  - file: tests/unit/services/score.spec.ts
+    code: "test('x', ({ assert }) => { assert.equal(score(1), 2) })"
+  - file: tests/unit/services/score.spec.ts
+    code: "test('x', ({ assert }) => { const u = UserFactory.make()\nconst o = Object.create(null) })"
+  - file: tests/browser/home/review.spec.ts
+    code: "test('x', async ({ review }) => { await UserFactory.create()\nawait review('/') })"
+  - file: app/shop/tests/browser/home/review.spec.ts
+    code: "test('x', async ({ review }) => { await UserFactory.create() })"
+  - file: tests/helpers/users.ts
+    code: 'export const createUser = () => UserFactory.create()'
+  - file: tests/functional/home/show.spec.ts
+    code: "test('x', async ({ client }) => { const r = await client.get('/').withInertia()\nr.assertStatus(200) })"
+invalid:
+  - file: tests/functional/reviews/show.spec.ts
+    code: "test('x', async ({ client }) => { const p = await ArticleFactory.create()\nawait client.get(`/p/${p.id}`) })"
+  - file: tests/functional/reviews/store.spec.ts
+    code: "test('x', async ({ client }) => { await client.post('/reviews') })"
+  - file: app/shop/tests/functional/reviews/store.spec.ts
+    code: "test('x', async ({ client }) => { await client.post('/reviews') })"
+  - file: tests/unit/actions/register_review.spec.ts
+    code: "test('x', async () => { await UserFactory.create() })"
+    errors: 1
+  - file: app/shop/tests/unit/actions/register_review.spec.ts
+    code: "test('x', async () => { await UserFactory.with('reviews', 2).merge({ a: 1 }).createMany(3) })"
+  - file: tests/unit/queries/ranking.spec.ts
+    code: "test('x', async () => { await db.table('reviews').insert({ a: 1 }) })"

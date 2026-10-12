@@ -1,0 +1,6 @@
+valid:
+  - { file: app/middleware/send_welcome_middleware.ts, code: 'export default class A {}' }
+  - { file: app/shop/middleware/sync_middleware.ts, code: 'export default class A {}' }
+invalid:
+  - { file: app/middleware/send_welcome.ts, code: 'export default class A {}' }
+  - { file: app/shop/middleware/sync.ts, code: 'export default class A {}' }

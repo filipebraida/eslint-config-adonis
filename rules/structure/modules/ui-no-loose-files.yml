@@ -1,0 +1,10 @@
+id: ui-no-loose-files
+language: tsx
+files: ['app/*/ui/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No loose file at the root of `app/<module>/ui/`"
+message: 'Loose file at the root of app/<module>/ui/.'
+note: 'A page goes in pages/, a component in components/, a hook in hooks/, a context in context/.'
+rule:
+  kind: program

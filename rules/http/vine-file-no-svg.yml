@@ -1,0 +1,15 @@
+id: vine-file-no-svg
+language: typescript
+files: ['app/**/*.ts']
+severity: error
+metadata:
+  description: "`vine.file()` never accepts `svg`"
+message: '`svg` accepted in an upload.'
+note: 'An SVG carries script and runs in the browser that opens it. Accept raster images (`jpg`, `png`, `webp`) or PDF.'
+rule:
+  kind: string
+  regex: '^[''"]\.?svg[''"]$'
+  inside:
+    stopBy: end
+    kind: call_expression
+    has: { field: function, pattern: vine.file }

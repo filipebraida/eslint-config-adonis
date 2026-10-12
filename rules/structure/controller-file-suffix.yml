@@ -1,0 +1,11 @@
+id: controller-file-suffix
+language: typescript
+files: ['app/controllers/**/*.ts', 'app/*/controllers/**/*.ts']
+ignores: ['app/controllers/**/*_controller.ts', 'app/*/controllers/**/*_controller.ts']
+severity: error
+metadata:
+  description: "Files in `controllers/` end in `_controller.ts`"
+message: 'File in controllers/ without the `_controller.ts` suffix.'
+note: 'Name it `<resources>_controller.ts`: `#generated/controllers` and the route wiring find controllers by this suffix. Code that is not a controller moves to services/ or validators/.'
+rule:
+  kind: program

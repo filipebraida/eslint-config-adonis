@@ -1,0 +1,23 @@
+id: spec-no-global-count
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No `db.assertCount`/`assertEmpty` on a table, no `assert.lengthOf(await Model.all() / Model.query(), n)`"
+message: 'Absolute count over a whole table: the developer database already has rows this test did not create, so the number depends on its current state.'
+note: "Assert only on rows scoped by an id this test created, e.g. `await db.assertHas('reviews', { post_id: post.id }, 1)` or `Review.query().where('postId', post.id)`."
+rule:
+  any:
+    # db.assertCount('reviews', 3), db.assertEmpty('reviews')
+    - kind: call_expression
+      all:
+        - has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(assertCount|assertEmpty)$' }
+        - has:
+            field: arguments
+            has: { nthChild: 1, any: [{ kind: string }, { kind: template_string }] }
+    # assert.lengthOf(await Review.all(), 3), assert.lengthOf(await Review.query(), 3)
+    - pattern: $A.lengthOf(await $M.all(), $N)
+    - pattern: $A.lengthOf(await $M.query(), $N)

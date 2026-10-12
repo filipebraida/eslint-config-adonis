@@ -1,0 +1,16 @@
+valid:
+  - { file: tests/unit/services/text.spec.ts, code: "test('x', ({ assert }) => { assert.equal(string.truncate('abcdef', 3), 'abc...') })" }
+  - { file: tests/bootstrap.ts, code: "export const runnerHooks = { setup: [], teardown: [] }" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', async () => { await UserFactory.create() })" }
+  - { file: app/services/maintenance.ts, code: "await db.truncate('reviews')" }
+  - { file: tests/functional/admin/seeds.spec.ts, code: "test('x', ({ assert }) => { assert.equal(label, 'db:seeded') })" }
+  - { file: tests/unit/services/tenants.spec.ts, code: "test('x', ({ assert }) => { assert.deepEqual(parseFlag(['db:seed', '--tenant=x']), { rest: ['migration:run'] }) })" }
+invalid:
+  - { file: tests/bootstrap.ts, code: "export const runnerHooks = { setup: [() => testUtils.db().migrate()] }" }
+  - { file: tests/bootstrap.ts, code: "export const runnerHooks = { setup: [() => testUtils.db().seed()] }" }
+  - { file: app/shop/tests/functional/reviews/store.spec.ts, code: "test.group('g', (group) => { group.each.setup(() => testUtils.db().truncate()) })" }
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', async () => { await db.truncate('reviews') })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async () => { await Review.truncate(true) })" }
+  - { file: tests/helpers/database.ts, code: "export const reset = () => ace.exec('migration:fresh', [])" }
+  - { file: app/shop/tests/helpers/database.ts, code: "export const reset = () => execa('node', ['ace', 'db:seed'])" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async () => { await seed() })" }

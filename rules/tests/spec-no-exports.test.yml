@@ -1,0 +1,12 @@
+valid:
+  - { file: app/shop/tests/helpers/users.ts, code: 'export function createUser() {}' }
+  - file: tests/functional/order/create.spec.ts
+    code: "import { test } from '@japa/runner'\nconst payload = { a: 1 }\ntest('x', async () => {})"
+  - file: tests/helpers/users.ts
+    code: 'export function createUser() {}'
+invalid:
+  - { file: app/shop/tests/functional/invite/store.spec.ts, code: 'export const x = 1' }
+  - { file: tests/unit/actions/a.spec.ts, code: 'export const x = 1' }
+  - { file: tests/functional/order/create.spec.ts, code: 'export function createUser() {}' }
+  - { file: tests/functional/order/create.spec.ts, code: "const a = 1\nexport { a }" }
+  - { file: tests/browser/home/review.spec.ts, code: "export * from './x.js'" }

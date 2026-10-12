@@ -1,0 +1,17 @@
+id: migration-jsonb
+language: typescript
+files: ['database/migrations/**/*.ts', 'app/*/database/migrations/**/*.ts']
+severity: error
+metadata:
+  description: "`table.jsonb()`, never `table.json()`, in migrations, unless a comment above says a library manages the column"
+message: '`$T.json()` column in a migration.'
+note: 'Use `$T.jsonb()`: PostgreSQL stores it parsed, so it can be indexed and queried. For a migration that already ran, add a new one with `$T.jsonb(...).alter()`. A column a library manages keeps the library''s type, with the reason in a comment on the line above (`// @jrmc/adonis-attachment writes this column as json`).'
+rule:
+  kind: call_expression
+  not: { inside: { stopBy: end, kind: expression_statement, follows: { kind: comment } } }
+  has:
+    field: function
+    kind: member_expression
+    all:
+      - has: { field: object, kind: identifier, pattern: $T }
+      - has: { field: property, regex: '^json$' }

@@ -1,0 +1,12 @@
+id: module-allowed-dirs
+language: tsx
+files: ['app/*/*/**/*.{ts,tsx}']
+ignores:
+  - 'app/*/{actions,controllers,database,enums,exceptions,jobs,middleware,models,notifications,policies,queries,services,start,tests,transformers,types,ui,validators,events,listeners,mails,abilities,audit_resolvers}/**'
+severity: error
+metadata:
+  description: "Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers)"
+message: 'This folder under app/<module>/ is not an allowed module folder.'
+note: 'Module folders: actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers. A new folder is an architecture decision: record it in docs/adr/ and add it to this rule.'
+rule:
+  kind: program

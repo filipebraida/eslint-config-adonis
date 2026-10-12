@@ -1,0 +1,23 @@
+valid:
+  - file: tests/functional/articles/store.spec.ts
+    code: "test('x', async ({ client }) => { using fake = drive.fake()\nawait client.post('/articles').file('photo', Buffer.from('x'), { filename: 'a.png' }) })"
+  - file: app/shop/tests/browser/articles/create.spec.ts
+    code: "test('x', async ({ review }) => { using fake = drive.fake()\nconst page = await review('/')\nawait page.setInputFiles('input', { name: 'a.png', mimeType: 'image/png', buffer: Buffer.from('x') }) })"
+  - file: tests/functional/articles/store.spec.ts
+    code: "test('x', async ({ client }) => { await client.post('/articles').json({ a: 1 }) })"
+  - file: tests/helpers/uploads.ts
+    code: "export const upload = (client) => client.post('/x').file('photo', Buffer.from('x'))"
+  - file: app/shop/tests/unit/transformers/document.spec.ts
+    code: "test('x', async () => { doc.file = await attachmentManager.createFromBuffer(Buffer.from('x'), 'a.png')\nconst out = new DocumentTransformer(doc).toObject() })"
+invalid:
+  - file: tests/functional/articles/store.spec.ts
+    code: "test('x', async ({ client }) => { await client.post('/articles').file('photo', Buffer.from('x')) })"
+    errors: 1
+  - file: app/shop/tests/functional/articles/store.spec.ts
+    code: "test('x', async ({ client }) => { await client.post('/articles').file('photo', Buffer.from('x')) })"
+  - file: tests/browser/articles/create.spec.ts
+    code: "test('x', async ({ review }) => { const page = await review('/')\nawait page.setInputFiles('input', 'fixtures/a.png') })"
+  - file: app/shop/tests/unit/actions/attach.spec.ts
+    code: "test('x', async () => { doc.file = await attachmentManager.createFromBuffer(Buffer.from('x'), 'a.png')\nawait doc.save() })"
+  - file: tests/unit/actions/attach.spec.ts
+    code: "test('x', async () => { doc.file = await createFromFile(file)\nawait doc.save() })"

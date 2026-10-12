@@ -1,0 +1,6 @@
+valid:
+  - { file: app/controllers/posts_controller.ts, code: "export default class C { async show({ inertia }) { return inertia.render('posts/show', { post: PostTransformer.transform(post).useVariant('forShow') }) } }" }
+  - { file: app/transformers/post_transformer.ts, code: "const x = date.toJSON()" }
+invalid:
+  - { file: app/controllers/posts_controller.ts, code: "export default class C { async show({ inertia }) { return inertia.render('posts/show', { post: post.serialize() }) } }" }
+  - { file: app/shop/controllers/api/orders_controller.ts, code: "export default class C { async index({ response }) { return response.json(rows.map((r) => r.toJSON())) } }" }

@@ -1,0 +1,23 @@
+id: route-named
+language: typescript
+files: ['start/**/routes.ts', 'start/routes/**/*.ts', 'app/*/routes.ts']
+severity: error
+metadata:
+  description: "Every `router.get/post/...` has `.as()` (on the route or an enclosing group)"
+message: 'Route `$PATH` without a name.'
+note: 'Name every route with `.as(''posts.show'')`, and build every URL from the name (`urlFor`, `<Link route>`, `toRoute`). An unnamed route cannot be linked by name, and a path change breaks its callers silently. `router.resource` names its routes by itself.'
+rule:
+  kind: call_expression
+  all:
+    - has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, regex: '^router$' }
+          - has: { field: property, regex: '^(get|post|put|patch|delete|any|on)$' }
+    - has: { field: arguments, has: { nthChild: 1, pattern: $PATH } }
+  not:
+    inside:
+      stopBy: { kind: expression_statement }
+      kind: call_expression
+      has: { field: function, kind: member_expression, has: { field: property, regex: '^as$' } }

@@ -1,0 +1,12 @@
+id: ui-page-in-folder
+language: tsx
+# Flat only: in the modules layout the module is the area, so
+# app/<module>/ui/pages/index.tsx is already in its folder.
+files: ['inertia/pages/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "Pages live in `inertia/pages/<area>/`; no loose page (the home is `site/home.tsx`)"
+message: 'Loose page at the root of inertia/pages/.'
+note: 'A page lives in the folder of its area: `inertia/pages/<area>/<name>.tsx` (e.g. `inertia/pages/articles/index.tsx`). There is no loose page: the home is `site/home.tsx`, an analytics screen is named after what it reads (`activity/index.tsx`).'
+rule:
+  kind: program

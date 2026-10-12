@@ -1,0 +1,17 @@
+id: no-generic-names
+language: tsx
+files:
+  - '{app,inertia}/**/{utils,helpers,common,shared,misc}/**/*.{ts,tsx}'
+  - '{app,inertia}/**/{utils,helpers,common,shared,misc}.{ts,tsx}'
+ignores:
+  # shadcn `cn()`: components.json and the registry components import from here.
+  - inertia/lib/utils.ts
+  # Test helpers of a module (modules layout), the same convention as tests/helpers/.
+  - 'app/*/tests/helpers/**'
+severity: error
+metadata:
+  description: "No folder or file named utils, helpers, common, shared or misc at any depth in `app/` or `inertia/` (except shadcn's `inertia/lib/utils.ts` and the test helpers in `app/<module>/tests/helpers/`)"
+message: 'utils, helpers, common, shared and misc do not say what they hold.'
+note: 'Name the file after its concept and put it next to its users: a date formatter goes in `format_date.ts`.'
+rule:
+  kind: program

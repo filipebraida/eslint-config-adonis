@@ -1,0 +1,8 @@
+valid:
+  - { file: tests/unit/mails/welcome.spec.ts, code: "test('x', () => { using fake = mail.fake() })" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test.group('g', () => { test('x', async () => { using events = emitter.fake() }) })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x').with([1]).run(async () => { using events = emitter.fake() })" }
+invalid:
+  - { file: tests/functional/articles/store.spec.ts, code: "test.group('g', (group) => { group.each.setup(() => { using fake = drive.fake() }) })" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test.group('g', (group) => { group.setup(() => { emitter.fake() }) })" }
+  - { file: tests/bootstrap.ts, code: "export const runnerHooks = { setup: [() => mail.fake()] }" }

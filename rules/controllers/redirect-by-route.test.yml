@@ -1,0 +1,7 @@
+valid:
+  - { file: app/controllers/posts_controller.ts, code: "return response.redirect().toRoute('posts.show', { id })" }
+  - { file: app/middleware/auth_middleware.ts, code: "return ctx.response.redirect().back()" }
+invalid:
+  - { file: app/controllers/posts_controller.ts, code: "return response.redirect('/posts')" }
+  - { file: app/shop/controllers/web/orders_controller.ts, code: "return response.redirect(`/orders/${id}`)" }
+  - { file: app/middleware/auth_middleware.ts, code: "return ctx.response.redirect().toPath('/login')" }

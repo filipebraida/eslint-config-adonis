@@ -1,0 +1,31 @@
+id: spec-no-real-fetch
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "A spec that calls `fetch` replaces it (`using http = fakeFetch(...)` or `sinon.stub(globalThis, 'fetch')`)"
+message: '`fetch()` in a spec that does not stub it: the test calls the real network.'
+note: "Use a disposable helper that swaps `globalThis.fetch` and records the calls, `using http = fakeFetch(...)` inside the test, or `sinon.stub(globalThis, 'fetch')` restored in `group.each.teardown(() => sinon.restore())`."
+utils:
+  fetch-stub:
+    any:
+      - kind: call_expression
+        regex: '\b(stub|replace)\(\s*(globalThis|global)\s*,\s*[''"`]fetch[''"`]'
+      # using http = fakeFetch(...)
+      - kind: assignment_expression
+        regex: '^using\s'
+        has: { field: right, kind: call_expression, has: { field: function, regex: '(?i)fetch' } }
+rule:
+  kind: call_expression
+  has:
+    field: function
+    any:
+      - { kind: identifier, regex: '^fetch$' }
+      - kind: member_expression
+        all:
+          - has: { field: object, kind: identifier, regex: '^(globalThis|global|window)$' }
+          - has: { field: property, regex: '^fetch$' }
+  inside:
+    stopBy: end
+    kind: program
+    not: { has: { stopBy: end, matches: fetch-stub } }

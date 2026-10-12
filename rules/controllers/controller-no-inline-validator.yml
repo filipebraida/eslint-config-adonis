@@ -1,0 +1,27 @@
+id: controller-no-inline-validator
+language: typescript
+files: ['app/controllers/**/*.ts', 'app/*/controllers/**/*.ts']
+severity: error
+metadata:
+  description: "No `vine.create/compile/object` in a controller; validators live in `validators/`"
+message: 'Validator declared inside a controller (`vine.$METHOD()`).'
+note: 'Declare the validator in validators/ (`export const createArticleValidator = vine.create({...})`) and call `request.validateUsing(createArticleValidator)` in the controller.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    all:
+      - has: { field: object, kind: identifier, regex: '^vine$' }
+      - has: { field: property, pattern: $METHOD, regex: '^(create|compile|object)$' }
+  # `vine.create(vine.object({...}))` is one validator: report the outer call only.
+  not:
+    inside:
+      stopBy: end
+      kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, kind: identifier, regex: '^vine$' }
+          - has: { field: property, regex: '^(create|compile)$' }

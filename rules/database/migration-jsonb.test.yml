@@ -1,0 +1,14 @@
+valid:
+  - file: database/migrations/1_create_articles_table.ts
+    code: "this.schema.createTable('articles', (table) => { table.jsonb('meta').nullable() })"
+  - file: app/shop/database/migrations/1_create_orders_table.ts
+    code: "this.schema.createTable('orders', (t) => { t.jsonb('payload') })"
+  - file: app/shop/services/x.ts
+    code: 'const data = await res.json()'
+  - file: database/migrations/2_add_avatar_to_users.ts
+    code: "this.schema.alterTable('users', (table) => {\n  // @jrmc/adonis-attachment writes this column as json.\n  table.json('avatar').nullable()\n})"
+invalid:
+  - file: database/migrations/1_create_articles_table.ts
+    code: "this.schema.createTable('articles', (table) => { table.json('meta').nullable() })"
+  - file: app/shop/database/migrations/1_create_orders_table.ts
+    code: "this.schema.alterTable('orders', (t) => { t.json('payload') })"

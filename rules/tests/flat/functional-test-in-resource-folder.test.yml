@@ -1,0 +1,6 @@
+valid:
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', async ({ client }) => {})" }
+  - { file: tests/functional/web/conversation/start.spec.ts, code: "test('x', async ({ client }) => {})" }
+invalid:
+  - { file: tests/functional/store.spec.ts, code: "test('x', ({ client }) => {})" }
+  - { file: tests/functional/users_endpoint.spec.ts, code: "test('x', async ({ client }) => { await client.get('/') })" }

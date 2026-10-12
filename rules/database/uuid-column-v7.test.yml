@@ -1,0 +1,8 @@
+valid:
+  - file: database/migrations/1_create_invites_table.ts
+    code: "this.schema.createTable('invites', (table) => {\n  table.increments('id')\n  table.uuid('uuid').notNullable().unique().defaultTo(this.raw('uuidv7()'))\n})"
+  - { file: app/models/invite.ts, code: "const x = table.uuid('a')" }
+  - { file: app/shop/database/migrations/3_a.ts, code: "this.schema.alterTable('items', (t) => {\n  t.uuid('vendor_document_id').nullable()\n})" }
+invalid:
+  - { file: database/migrations/1_create_invites_table.ts, code: "this.schema.createTable('invites', (table) => {\n  table.uuid('uuid').notNullable().unique()\n})" }
+  - { file: app/shop/database/migrations/2_add_uuid.ts, code: "this.schema.alterTable('a', (t) => {\n  t.uuid('uuid').defaultTo(this.raw('gen_random_uuid()'))\n})" }

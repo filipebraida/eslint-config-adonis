@@ -1,0 +1,6 @@
+valid:
+  - { file: app/models/invite.ts, code: "export default class Invite extends InviteSchema {\n  @afterCreate()\n  static async refreshUuid(row) { await row.refresh() }\n}" }
+  - { file: app/models/post.ts, code: "export default class Post { static notifyAll() { return mail.send(m) } }" }
+invalid:
+  - { file: app/models/post.ts, code: "export default class Post extends PostSchema {\n  @afterCreate()\n  static async announce(post) { await events.PostCreated.dispatch(post.id) }\n}" }
+  - { file: app/shop/models/invite.ts, code: "export default class Invite {\n  @beforeSave()\n  static async x(row) { await mail.send(new M(row)) }\n}" }

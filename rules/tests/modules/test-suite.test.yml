@@ -1,0 +1,9 @@
+valid:
+  - { file: app/shop/tests/unit/actions/archive_cart.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/functional/invite/store.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/browser/invite/accept.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/helpers/orders.ts, code: 'export {}' }
+invalid:
+  - { file: app/shop/tests/x.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/helpers/x.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/integration/x.spec.ts, code: "test('x', () => {})" }

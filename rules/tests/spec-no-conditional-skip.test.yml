@@ -1,0 +1,10 @@
+valid:
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', () => {}).tags(['slow'])" }
+  - { file: tests/helpers/skip.ts, code: "export const maybe = (t) => t.skip(!process.env.KEY)" }
+  - { file: app/shop/tests/unit/services/flow.spec.ts, code: "test('x', async () => { await new CartFlow().skip(cart)\nawait flow.skip(1) })" }
+invalid:
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', () => {}).skip(!process.env.OPENAI_KEY, 'no key')" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', () => {}).skip(true)" }
+  - { file: tests/functional/a/b.spec.ts, code: "test('x').with([1]).run(async () => {}).skip(isCi)" }
+  - { file: tests/functional/a/b.spec.ts, code: "test.skip(true)" }

@@ -1,0 +1,22 @@
+valid:
+  - file: inertia/pages/articles/show.tsx
+    code: "export default function P() { const canEdit = useCan('articles.edit')\nreturn canEdit ? <Edit /> : null }"
+  - file: app/shop/ui/pages/orders/index.tsx
+    code: "const { isOpen, isAdministrative } = props"
+  - file: app/shop/controllers/orders_controller.ts
+    code: 'const isAdmin = user.role === "admin"'
+  - file: inertia/pages/posts/index.tsx
+    code: "const visible = post.status === 'published'"
+invalid:
+  - file: inertia/pages/posts/index.tsx
+    code: "export default function P({ user }) { return user.role === 'editor' ? <Edit /> : null }"
+  - file: app/shop/ui/components/menu.tsx
+    code: "const show = user.roles.includes('admin')"
+  - file: inertia/pages/articles/show.tsx
+    code: "export default function P({ user }) { return user.isAdmin ? <Edit /> : null }"
+  - file: app/shop/ui/pages/orders/index.tsx
+    code: "const { isGestor } = usePage().props"
+  - file: app/shop/ui/components/menu.tsx
+    code: "type Props = { isStaff: boolean }"
+  - file: inertia/components/menu.tsx
+    code: "const isSuperAdmin = auth.role === 'root'"

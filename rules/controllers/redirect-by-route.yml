@@ -1,0 +1,16 @@
+id: redirect-by-route
+language: typescript
+files: ['app/**/*.ts', 'start/**/*.ts']
+ignores: ['app/*/tests/**']
+severity: error
+metadata:
+  description: "No `redirect('/x')` nor `.toPath()`; redirect by route name"
+message: 'Redirect by URL string.'
+note: 'Redirect by route name, so a renamed route breaks the build: `response.redirect().toRoute(''posts.show'', { id })`, or `.back()` when the origin is not fixed.'
+rule:
+  any:
+    - kind: call_expression
+      all:
+        - has: { field: function, kind: member_expression, has: { field: property, regex: '^redirect$' } }
+        - has: { field: arguments, has: { nthChild: 1, any: [{ kind: string }, { kind: template_string }] } }
+    - pattern: $R.redirect().toPath($$$)

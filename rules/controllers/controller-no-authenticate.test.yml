@@ -1,0 +1,14 @@
+valid:
+  - file: app/controllers/articles_controller.ts
+    code: 'export default class C { async index({ auth }) { const user = auth.getUserOrFail() } }'
+  - file: app/shop/controllers/orders_controller.ts
+    code: 'export default class C { async index({ auth }) { const ok = await auth.check() } }'
+  - file: app/middleware/auth_middleware.ts
+    code: 'export default class M { async handle(ctx) { await ctx.auth.authenticateUsing(["web"]) } }'
+invalid:
+  - file: app/controllers/articles_controller.ts
+    code: 'export default class C { async index({ auth }) { const user = await auth.authenticate() } }'
+  - file: app/shop/controllers/web/orders_controller.ts
+    code: "export default class C { async index(ctx) { await ctx.auth.use('web').authenticate() } }"
+  - file: app/shop/controllers/orders_controller.ts
+    code: "export default class C { async index({ auth }) { await auth.authenticateUsing(['api']) } }"

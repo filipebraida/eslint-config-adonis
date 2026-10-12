@@ -1,0 +1,18 @@
+id: ui-use-project-form
+language: tsx
+files: ['inertia/**/*.{ts,tsx}', 'app/*/ui/**/*.{ts,tsx}']
+# The registry wraps useForm in the project <Form>.
+ignores: ['inertia/components/ui/**', 'app/*/ui/components/ui/**']
+severity: error
+metadata:
+  description: "Screens use the project `<Form>`; `useForm` from `@inertiajs/react` only with `// useForm and not <Form>: <reason>` in the file (the registry `components/ui/` is exempt)"
+message: '`useForm` imported from @inertiajs/react in a screen.'
+note: 'Use the project `<Form>` (`~/components/ui/form` or the module that holds it): it wires validation errors and the submitting state to its fields. `useForm` is for state that is not a flat set of named inputs (per-card state with one submit, a wizard that posts once, upload progress); then say why next to it: `// useForm and not <Form>: <reason>`.'
+rule:
+  kind: import_statement
+  all:
+    - has: { field: source, regex: '^[''"]@inertiajs/react[''"]$' }
+    - has: { stopBy: end, kind: import_specifier, has: { field: name, regex: '^useForm$' } }
+    - inside:
+        kind: program
+        not: { has: { stopBy: end, kind: comment, regex: 'useForm and not <Form>:' } }

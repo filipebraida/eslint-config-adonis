@@ -1,0 +1,4 @@
+valid:
+  - { file: app/validators/post.ts, code: "export const createPostValidator = vine.create({ title: vine.string() })" }
+invalid:
+  - { file: app/validators/post.ts, code: "export const createPostValidator = vine.compile(vine.object({ title: vine.string() }))" }

@@ -1,0 +1,8 @@
+valid:
+  - { file: app/actions/create_invite.ts, code: "const invite = await Invite.create({ email }, { client: trx })\nawait invite.refresh()" }
+  - { file: app/services/x.ts, code: "import { createHash } from 'node:crypto'" }
+  - { file: app/shop/ui/hooks/use_uploads.ts, code: "const key = crypto.randomUUID()" }
+invalid:
+  - { file: app/actions/create_invite.ts, code: "const id = randomUUID()" }
+  - { file: app/shop/actions/create_invite.ts, code: "const id = crypto.randomUUID()" }
+  - { file: app/actions/a.ts, code: "import { v4 } from 'uuid'", errors: 1 }

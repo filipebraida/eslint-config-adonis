@@ -1,0 +1,23 @@
+id: controller-authorizes-first
+language: typescript
+files: ['app/controllers/**/*.ts', 'app/*/controllers/**/*.ts']
+severity: error
+metadata:
+  description: "`request.validateUsing()` never comes before `authorize()`"
+message: '`validateUsing()` runs before `authorize()`: a user who may not act learns from the 422 what the form expects.'
+note: 'Authorize first, then validate: `await bouncer.with(XPolicy).authorize(''create'')` and only then `await request.validateUsing(...)`. For a record-level policy, load the record through the query, authorize it, then validate.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    has: { field: property, regex: '^validateUsing$' }
+  inside:
+    stopBy: end
+    any: [{ kind: expression_statement }, { kind: lexical_declaration }]
+    precedes:
+      stopBy: end
+      has:
+        stopBy: end
+        kind: call_expression
+        has: { field: function, kind: member_expression, has: { field: property, regex: '^authorize$' } }

@@ -1,0 +1,33 @@
+id: no-shared-state
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "No `let`/`var` outside a `test()`"
+message: '`let`/`var` outside a test shares state between tests.'
+note: 'Declare it with `const` inside the `test()` that uses it.'
+utils:
+  # test(title, cb), and test(title).with(data).run(cb)
+  test-call:
+    kind: call_expression
+    has:
+      field: function
+      any:
+        - { kind: identifier, regex: '^test$' }
+        - kind: member_expression
+          all:
+            - has: { field: property, regex: '^run$' }
+            - has:
+                field: object
+                any:
+                  - { kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+                  - has: { stopBy: end, kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+  test-callback:
+    any: [{ kind: arrow_function }, { kind: function_expression }]
+    inside: { kind: arguments, inside: { matches: test-call } }
+rule:
+  any:
+    - { kind: lexical_declaration, regex: '^let\b' }
+    - { kind: variable_declaration }
+  not:
+    inside: { stopBy: end, matches: test-callback }

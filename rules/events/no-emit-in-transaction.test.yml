@@ -1,0 +1,21 @@
+valid:
+  - file: app/services/apply.ts
+    code: "const a = await db.transaction(async (trx) => Review.create({}, { client: trx }))\nawait events.QuestionnaireApplied.dispatch(a.id)"
+  - file: app/actions/register_review.ts
+    code: "export default class A { async handle() { const v = await db.transaction(async (trx) => Review.create({}, { client: trx }))\nawait emitter.emit('review:registered', v) } }"
+  - file: app/shop/actions/register_review.ts
+    code: "export default class A { async handle() { const v = await db.transaction(async (trx) => Review.create({}, { client: trx }))\nawait ReviewRegistered.dispatch(v) } }"
+  - file: app/shop/tests/unit/actions/a.spec.ts
+    code: "await db.transaction(async () => { await emitter.emit('x', {}) })"
+  - file: app/actions/a.ts
+    code: "await db.transaction(async (trx) => { store.dispatch(x) })"
+invalid:
+  - file: app/actions/register_review.ts
+    code: "export default class A { async handle() { await db.transaction(async (trx) => { await Review.create({}, { client: trx })\nawait emitter.emit('review:registered', {}) }) } }"
+  - file: app/shop/actions/register_review.ts
+    code: "export default class A { async handle() { await db.transaction(async (trx) => { await ReviewRegistered.dispatch(v)\nawait SendWelcomeJob.dispatch({ id: 1 }) }) } }"
+    errors: 2
+  - file: app/services/apply.ts
+    code: "await db.transaction(async (trx) => { await events.QuestionnaireApplied.dispatch(id) })"
+  - file: app/shop/services/reviews.ts
+    code: "await Database.transaction(async (trx) => { if (ok) { emitter.emitSerial('x', {}) } })"

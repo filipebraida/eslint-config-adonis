@@ -1,0 +1,6 @@
+valid:
+  - { file: app/shop/tests/functional/invite/store.spec.ts, code: "test('x', async ({ client }) => {})" }
+  - { file: app/shop/tests/functional/web/invite/store.spec.ts, code: "test('x', async ({ client }) => {})" }
+  - { file: tests/functional/store.spec.ts, code: "test('x', async ({ client }) => {})" }
+invalid:
+  - { file: app/shop/tests/functional/store.spec.ts, code: "test('x', async ({ client }) => {})" }

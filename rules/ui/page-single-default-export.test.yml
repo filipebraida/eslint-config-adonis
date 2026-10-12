@@ -1,0 +1,7 @@
+valid:
+  - { file: inertia/pages/posts/index.tsx, code: "export default function Index() { return null }" }
+  - { file: app/shop/ui/pages/orders/show.tsx, code: "function Show() { return null }\nShow.layout = (page) => page\nexport default Show" }
+invalid:
+  - { file: inertia/pages/posts/index.tsx, code: "export function PostRow() { return null }\nexport default function Index() { return null }" }
+  - { file: app/shop/ui/pages/orders/show.tsx, code: "export const columns = []\nexport default function Show() { return null }" }
+  - { file: inertia/pages/posts/show.tsx, code: "function Show() { return null }\nexport { Show }" }

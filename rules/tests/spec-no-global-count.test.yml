@@ -1,0 +1,13 @@
+valid:
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', async ({ db }) => { await db.assertHas('reviews', { post_id: r.id }, 1) })" }
+  - { file: app/shop/tests/functional/reviews/store.spec.ts, code: "test('x', async ({ db }) => { await db.assertMissing('reviews', { post_id: r.id }) })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async ({ assert }) => { assert.lengthOf(await Review.query().where('postId', r.id), 1) })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async ({ assert }) => { assert.lengthOf(rows, 1) })" }
+  - { file: tests/unit/listeners/a.spec.ts, code: "test('x', () => { events.assertCount(1) })" }
+  - { file: app/queries/ranking.ts, code: "await db.assertCount('reviews', 3)" }
+invalid:
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', async ({ db }) => { await db.assertCount('reviews', 3) })" }
+  - { file: app/shop/tests/functional/reviews/store.spec.ts, code: "test('x', async ({ db }) => { await db.assertEmpty('reviews') })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async ({ assert }) => { assert.lengthOf(await Review.all(), 3) })" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', async ({ assert }) => { assert.lengthOf(await Review.query(), 0) })" }
+  - { file: tests/helpers/assertions.ts, code: "export const noReviews = (db) => db.assertCount(`reviews`, 0)" }

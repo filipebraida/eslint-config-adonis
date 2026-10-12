@@ -1,0 +1,12 @@
+id: migration-no-model-import
+language: typescript
+files: ['database/migrations/**/*.ts', 'app/*/database/migrations/**/*.ts']
+severity: error
+metadata:
+  description: "Migrations never import a model"
+message: 'Migration imports a model ($SOURCE).'
+note: 'A migration runs against the schema of its own time; the model follows today''s. Move data with `db.from(table)` inside `this.defer(async (db) => { ... })`.'
+rule:
+  kind: import_statement
+  not: { regex: '^import\s+type\b' }
+  has: { field: source, pattern: $SOURCE, regex: '^[''"](#models/|#[a-z_]+/models/|\.\.?/.*models/)' }

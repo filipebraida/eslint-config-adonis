@@ -1,0 +1,7 @@
+valid:
+  - { file: app/shop/routes.ts, code: 'export {}' }
+  - { file: app/actions/register_review.ts, code: 'export {}' }
+  - { file: start/routes.ts, code: 'export {}' }
+invalid:
+  - { file: app/loose.ts, code: 'export {}' }
+  - { file: app/helpers.ts, code: 'export {}' }

@@ -1,0 +1,11 @@
+valid:
+  - { file: app/policies/article_policy.ts, code: 'export default class P {}' }
+  - { file: app/policies/main.ts, code: 'export const policies = {}' }
+  - { file: app/policies/role_based.ts, code: 'export default abstract class B extends BasePolicy {}' }
+  - { file: app/shop/policies/order_policy.ts, code: 'export default class P {}' }
+  - { file: app/core/policies/main.ts, code: 'export const policies = {}' }
+  - { file: app/core/policies/base_role.ts, code: 'export abstract class B {}' }
+invalid:
+  - { file: app/policies/article.ts, code: 'export default class P {}' }
+  - { file: app/policies/roles.ts, code: 'export const roles = []' }
+  - { file: app/shop/policies/orders.ts, code: 'export default class P {}' }

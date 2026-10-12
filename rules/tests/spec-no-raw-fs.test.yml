@@ -1,0 +1,10 @@
+valid:
+  - { file: tests/functional/articles/store.spec.ts, code: "test('x', async ({ client }) => { using fake = drive.fake()\nawait client.post('/p').file('a', Buffer.from('x'), { filename: 'a.png' }) })" }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', () => { const b = readFileSync('fixtures/a.png') })" }
+  - { file: app/services/storage.ts, code: "await writeFile(path, data)" }
+invalid:
+  - { file: tests/functional/articles/store.spec.ts, code: "test('x', () => { writeFileSync('tmp/a.png', 'x') })" }
+  - { file: app/shop/tests/functional/articles/store.spec.ts, code: "test('x', async () => { await fs.writeFile('tmp/a.png', 'x') })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async () => { await unlink(path)\nunlinkSync(path)\nrmSync(dir, { recursive: true }) })", errors: 3 }
+  - { file: tests/helpers/files.ts, code: "export const clean = () => rm('tmp/uploads', { recursive: true })" }
+  - { file: app/shop/tests/helpers/files.ts, code: "export const clean = () => fsp.unlink('tmp/a')" }

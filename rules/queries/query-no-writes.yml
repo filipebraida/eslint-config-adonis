@@ -1,0 +1,17 @@
+id: query-no-writes
+language: typescript
+files: ['app/queries/**/*.ts', 'app/*/queries/**/*.ts']
+severity: error
+metadata:
+  description: "Queries never call `save`, `create`, `update`, `delete`, `merge`..."
+message: '`.$METHOD()` in a query.'
+note: 'A query only reads; writes go to an action in app/actions/<verb>_<object>.ts.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    has:
+      field: property
+      pattern: $METHOD
+      regex: '^(save|delete|create|createMany|updateOrCreate|updateOrCreateMany|firstOrCreate|merge|fill|insert|update|del|truncate)$'

@@ -1,0 +1,7 @@
+valid:
+  - { file: app/controllers/articles_controller.ts, code: 'export default class C {}' }
+  - { file: app/shop/controllers/web/orders_controller.ts, code: 'export default class C {}' }
+  - { file: app/services/articles.ts, code: 'export {}' }
+invalid:
+  - { file: app/controllers/articles.ts, code: 'export default class C {}' }
+  - { file: app/shop/controllers/api/helpers.ts, code: 'export {}' }

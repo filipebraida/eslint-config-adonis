@@ -1,0 +1,14 @@
+valid:
+  - { file: app/actions/redeem_coupon.ts, code: "/** Rejects an expired coupon: a coupon is valid for 48 hours. */\nexport default class A {}" }
+  - { file: tests/unit/actions/redeem_coupon.spec.ts, code: "test('004.CA03 an expired coupon is rejected', () => {})" }
+  - { file: inertia/css/x.ts, code: "// Color #fff comes from the token.\nconst a = 1" }
+  - { file: app/models/post.ts, code: "// TLS 1.3 and HTTP/2.\nconst a = 1" }
+invalid:
+  - { file: app/models/badge.ts, code: "/** A blocked badge scores zero (R19). */\nconst a = 1" }
+  - { file: database/migrations/1_a.ts, code: "// who staffs the booth (R15, R33)\nconst a = 1" }
+  - { file: app/actions/redeem_coupon.ts, code: "/** Rejects an expired coupon (CA14). */\nexport default class A {}" }
+  - { file: app/shop/actions/a.ts, code: "// T03: keep the order of the steps.\nconst a = 1" }
+  - { file: app/actions/a.ts, code: "// See #286 and ADR 0007.\nconst a = 1" }
+  - { file: tests/unit/actions/a.spec.ts, code: "// 004.CA03 covered here\ntest('x', () => {})" }
+  - { file: app/services/x.ts, code: "/**\n * Sums.\n * @param a first\n * @returns the sum\n */\nexport function sum(a) {}" }
+  - { file: inertia/pages/posts/index.tsx, code: "// Lists the posts — newest first.\nexport default function Index() { return null }" }

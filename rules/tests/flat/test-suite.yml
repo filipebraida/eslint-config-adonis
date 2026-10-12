@@ -1,0 +1,11 @@
+id: test-suite
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}']
+ignores: ['tests/{unit,functional,browser}/**']
+severity: error
+metadata:
+  description: "Specs live in `tests/unit/`, `tests/functional/` or `tests/browser/`"
+message: 'Test outside a suite.'
+note: 'Tests live in tests/unit/, tests/functional/ or tests/browser/.'
+rule:
+  kind: program

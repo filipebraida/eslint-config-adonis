@@ -1,0 +1,11 @@
+id: no-ts-enum
+language: tsx
+files: ['app/**/*.{ts,tsx}', 'inertia/**/*.{ts,tsx}', 'start/**/*.ts', 'database/**/*.ts']
+severity: error
+metadata:
+  description: "No TypeScript `enum`; a constant list in `enums/`"
+message: 'TypeScript `enum $NAME`.'
+note: 'An enum is a constant list in `app/enums/`: `export const POST_STATUSES = [''draft'', ''published''] as const`, its type `(typeof POST_STATUSES)[number]` and its labels. The validator consumes the list (`vine.enum(POST_STATUSES)`), the model and the page read the same one.'
+rule:
+  kind: enum_declaration
+  has: { field: name, pattern: $NAME }

@@ -1,0 +1,6 @@
+valid:
+  - { file: app/exceptions/handler.ts, code: 'export default class H {}' }
+  - { file: app/shop/exceptions/invite_expired_exception.ts, code: 'export default class E {}' }
+invalid:
+  - { file: app/exceptions/post_locked.ts, code: 'export default class E {}' }
+  - { file: app/shop/exceptions/handler.ts, code: 'export default class H {}' }

@@ -1,0 +1,11 @@
+id: factory-file-suffix
+language: typescript
+files: ['database/factories/**/*.ts']
+ignores: ['database/factories/**/*_factory.ts']
+severity: error
+metadata:
+  description: "Files in `database/factories/` end in `_factory.ts`"
+message: 'File in database/factories/ without the `_factory.ts` suffix.'
+note: 'Name it `<model>_factory.ts`, the name `node ace make:factory` writes, and export `<Model>Factory`.'
+rule:
+  kind: program

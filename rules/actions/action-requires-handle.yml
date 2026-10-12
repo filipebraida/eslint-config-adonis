@@ -1,0 +1,26 @@
+id: action-requires-handle
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "The exported action class has a public `handle()`"
+message: 'Action without `handle()`.'
+note: 'The exported class exposes a single public method `handle(input)`, as in app/actions/<verb>_<object>.ts.'
+rule:
+  all:
+    - any:
+        - { kind: class_declaration }
+        - { kind: class }
+    # Only the exported class: `export default class` or `class A {}` + `export default A`.
+    - any:
+        - inside: { kind: export_statement }
+        - all:
+            - has: { field: name, pattern: $CLASS }
+            - inside: { kind: program, has: { kind: export_statement, has: { kind: identifier, pattern: $CLASS } } }
+  not:
+    has:
+      kind: class_body
+      has:
+        kind: method_definition
+        has: { field: name, regex: '^handle$' }
+        not: { has: { kind: accessibility_modifier, regex: '^(private|protected)$' } }

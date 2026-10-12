@@ -1,0 +1,17 @@
+id: query-no-http-context
+language: typescript
+files: ['app/queries/**/*.ts', 'app/*/queries/**/*.ts']
+severity: error
+metadata:
+  description: "Queries do not import `HttpContext` as a value (`import type` is fine)"
+message: 'Query receives HttpContext.'
+note: 'The controller extracts what the query needs (user id, filters, page) and passes it as plain input. A type-only import (`import type`) is fine.'
+rule:
+  kind: import_statement
+  all:
+    - has: { field: source, regex: '^[''"]@adonisjs/core/http[''"]$' }
+    - not: { regex: '^import\s+type\b' }
+    - has:
+        stopBy: end
+        kind: import_specifier
+        regex: '^HttpContext\b'

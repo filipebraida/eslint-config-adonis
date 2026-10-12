@@ -1,0 +1,18 @@
+id: policy-file-suffix
+language: typescript
+files: ['app/policies/**/*.ts', 'app/*/policies/**/*.ts']
+# main.ts is the policies index Bouncer generates.
+ignores:
+  - 'app/policies/**/*_policy.ts'
+  - 'app/*/policies/**/*_policy.ts'
+  - 'app/policies/main.ts'
+  - 'app/*/policies/main.ts'
+severity: error
+metadata:
+  description: "Files in `policies/` end in `_policy.ts`, except `main.ts` and files declaring an abstract class"
+message: 'File in policies/ without the `_policy.ts` suffix.'
+note: 'Name it `<resource>_policy.ts`. Only `main.ts` (the index) and abstract base policies have no suffix.'
+rule:
+  kind: program
+  # A shared abstract policy (`export default abstract class RolePolicy`) is not a policy of its own.
+  not: { has: { stopBy: end, kind: abstract_class_declaration } }

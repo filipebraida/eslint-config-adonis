@@ -1,0 +1,10 @@
+id: app-no-loose-files
+language: typescript
+files: ['app/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No loose file at the root of `app/`"
+message: 'Loose file at the root of app/.'
+note: 'Move it into the folder of its concept: a layer (actions, queries, controllers...) in the flat layout, a module in the modules layout.'
+rule:
+  kind: program

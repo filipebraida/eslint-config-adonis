@@ -1,0 +1,32 @@
+valid:
+  - file: inertia/pages/articles/show.tsx
+    code: "router.review(urlFor('articles.index'))\nform.post(urlFor('articles.store'))"
+  - file: app/shop/ui/pages/orders/index.tsx
+    code: "export default () => <Link route=\"orders.show\" params={{ id: 1 }}>Ver</Link>"
+  - file: inertia/pages/articles/show.tsx
+    code: "export default () => <><Link href=\"https://example.com\">x</Link><Link href=\"#top\">y</Link><Link href=\"mailto:a@b.c\">z</Link></>"
+  - file: inertia/components/footer.tsx
+    code: "export default () => <img src=\"//cdn.example.com/x.png\" alt=\"\" />"
+  - file: inertia/pages/articles/show.tsx
+    code: "const v = params.get('page')\nconst m = new Map()\nm.get(key)"
+  - file: inertia/pages/articles/show.tsx
+    code: "router.get(urlFor('articles.index'), { q: '/x' })"
+  - file: inertia/pages/articles/show.tsx
+    code: "export default () => <a href=\"/articles\">x</a>"
+  - file: app/shop/controllers/orders_controller.ts
+    code: "response.redirect().toPath('/x')\nrouter.get('/x', [C, 'index'])"
+invalid:
+  - file: inertia/pages/articles/show.tsx
+    code: "router.review('/articles')"
+  - file: app/shop/ui/pages/orders/index.tsx
+    code: "router.post(`/orders/${id}/archive`, {}, { preserveScroll: true })"
+  - file: inertia/pages/articles/edit.tsx
+    code: "export default function P() { const form = useForm({})\nform.put(`/articles/${id}`) }"
+  - file: app/shop/ui/components/delete_button.tsx
+    code: "export default () => <Link href=\"/orders\" method=\"delete\">x</Link>"
+  - file: inertia/pages/articles/new.tsx
+    code: "export default () => <form action=\"/articles\" method=\"post\" />"
+  - file: inertia/components/nav.tsx
+    code: "export default () => <Button href={`/articles/${id}`}>x</Button>"
+  - file: inertia/components/nav.tsx
+    code: "export default () => <Link href={'/'}>Home</Link>"

@@ -1,0 +1,11 @@
+id: unit-test-mirrors-layer
+language: tsx
+files: ['tests/unit/**/*.spec.{ts,tsx}']
+ignores: ['tests/unit/{actions,queries,controllers,models,policies,validators,transformers,middleware,events,listeners,jobs,mails,notifications,services,exceptions,enums,types,abilities}/**']
+severity: error
+metadata:
+  description: "Unit tests live in `tests/unit/<layer>/`"
+message: 'Unit test outside a layer folder.'
+note: 'A unit test mirrors the layer of its source in tests/unit/<layer>/, e.g. app/actions/register_review.ts → tests/unit/actions/register_review.spec.ts.'
+rule:
+  kind: program

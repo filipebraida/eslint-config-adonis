@@ -1,0 +1,8 @@
+valid:
+  - { file: inertia/pages/errors/not_found.tsx, code: 'export default () => null' }
+  - { file: inertia/pages/articles/index.tsx, code: 'export default () => null' }
+  - { file: inertia/pages/articles/edit/form.tsx, code: 'export default () => null' }
+invalid:
+  - { file: inertia/pages/home.tsx, code: 'export default () => null' }
+  - { file: inertia/pages/articles.tsx, code: 'export default () => null' }
+  - { file: inertia/pages/dashboard.tsx, code: 'export default () => null' }

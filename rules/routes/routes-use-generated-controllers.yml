@@ -1,0 +1,21 @@
+id: routes-use-generated-controllers
+language: typescript
+files: ['start/routes.ts', 'start/**/routes.ts', 'app/*/routes.ts']
+severity: error
+metadata:
+  description: "Route files never import a controller (static or `import()`); they use `controllers` from `#generated/controllers`"
+message: 'Route file imports a controller directly.'
+note: 'Use `import { controllers } from ''#generated/controllers''` and `router.get(''/x'', [controllers.Articles, ''index''])`: the controllers are lazy loaded and typed.'
+utils:
+  controller-source:
+    regex: '^[''"`](#|\.)[^''"`]*controllers/'
+rule:
+  any:
+    # import ArticlesController from '#controllers/articles_controller'
+    - kind: import_statement
+      has: { field: source, matches: controller-source }
+    # const ArticlesController = () => import('#shop/controllers/articles_controller')
+    - kind: call_expression
+      all:
+        - has: { field: function, kind: import }
+        - has: { field: arguments, has: { matches: controller-source } }

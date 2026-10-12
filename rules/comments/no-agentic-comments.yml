@@ -1,0 +1,14 @@
+id: no-agentic-comments
+language: tsx
+files: ['app/**/*.{ts,tsx}', 'inertia/**/*.{ts,tsx}', 'start/**/*.ts', 'database/**/*.ts', 'tests/**/*.{ts,tsx}', 'config/**/*.ts']
+severity: error
+metadata:
+  description: "No comment citing a spec criterion or rule (`CA03`, `R19`), task (`T02`), ticket (`#286`) or ADR, no `@param`/`@returns`, no em dash"
+message: 'Comment cites a spec criterion or rule, task, ticket or ADR, uses `@param`/`@returns`, or an em dash.'
+note: 'A comment states the rule in the file, for a reader with no spec, ticket, ADR or diff in front of them: "Rejects an expired coupon: a coupon is valid for 48 hours", not "(CA14)". The traceability id goes in the test title; the history goes in the commit. No `@param`/`@returns`, no em dash: two sentences, a colon or a comma.'
+rule:
+  kind: comment
+  any:
+    - regex: '\b(\d{3}\.)?(CA|R)\d{1,3}\b|\bT\d{2}\b|\bADR[ -]?\d+|(^|[\s(])#\d{2,}\b'
+    - regex: '@(param|returns?)\b'
+    - regex: '—'

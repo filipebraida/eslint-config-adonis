@@ -1,0 +1,47 @@
+id: unit-test-no-http
+language: tsx
+files: ['tests/unit/**/*.spec.{ts,tsx}', 'app/*/tests/unit/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "Unit tests do not use the HTTP `client`"
+message: 'Unit test using `client`.'
+note: 'A test that uses `client` is HTTP: move it to functional/<resource>/<action>.spec.ts in the same tests/ folder.'
+utils:
+  # test(title, cb), and test(title).with(data).run(cb)
+  test-call:
+    kind: call_expression
+    has:
+      field: function
+      any:
+        - { kind: identifier, regex: '^test$' }
+        - kind: member_expression
+          all:
+            - has: { field: property, regex: '^run$' }
+            - has:
+                field: object
+                any:
+                  - { kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+                  - has: { stopBy: end, kind: call_expression, has: { field: function, kind: identifier, regex: '^test$' } }
+  # A test callback that receives the HTTP client: ({ client }) or (ctx) => ctx.client
+  http-test:
+    any: [{ kind: arrow_function }, { kind: function_expression }]
+    inside: { kind: arguments, inside: { matches: test-call } }
+    has:
+      field: parameters
+      has:
+        nthChild: 1
+        kind: required_parameter
+        any:
+          - has:
+              kind: object_pattern
+              has:
+                any:
+                  - { kind: shorthand_property_identifier_pattern, regex: '^client$' }
+                  - { kind: pair_pattern, has: { field: key, regex: '^client$' } }
+          - all:
+              - has: { kind: identifier, pattern: $CTX }
+              - inside:
+                  kind: formal_parameters
+                  inside: { has: { field: body, stopBy: end, pattern: $CTX.client } }
+rule:
+  matches: http-test

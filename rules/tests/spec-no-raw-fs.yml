@@ -1,0 +1,16 @@
+id: spec-no-raw-fs
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No `writeFile(Sync)`, `unlink(Sync)`, `rm(Sync)` in test files"
+message: '`$FN` in a test writes or removes real files: a failed run leaves them behind.'
+note: 'Use `using fake = drive.fake()` and upload through the api client, `.file(name, Buffer.from(...), { filename })`, with a buffer generated in the test.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    any:
+      - { kind: identifier, pattern: $FN, regex: '^(writeFileSync|writeFile|unlinkSync|unlink|rmSync|rm)$' }
+      - kind: member_expression
+        has: { field: property, pattern: $FN, regex: '^(writeFileSync|writeFile|unlinkSync|unlink|rmSync|rm)$' }

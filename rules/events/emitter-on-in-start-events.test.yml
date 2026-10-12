@@ -1,0 +1,6 @@
+valid:
+  - { file: start/events.ts, code: "emitter.on(events.PostPublished, [listeners.SchedulePostNotifications])" }
+  - { file: app/shop/start/events.ts, code: "emitter.on(events.OrderFinalized, [listeners.ScheduleSync])" }
+invalid:
+  - { file: app/services/x.ts, code: "emitter.on('post:published', () => {})" }
+  - { file: providers/app_provider.ts, code: "this.app.emitter.once(events.A, [listeners.B])" }

@@ -1,0 +1,11 @@
+id: notification-file-suffix
+language: typescript
+files: ['app/notifications/**/*.ts', 'app/*/notifications/**/*.ts']
+ignores: ['app/notifications/**/*_notification.ts', 'app/*/notifications/**/*_notification.ts']
+severity: error
+metadata:
+  description: "Files in `notifications/` end in `_notification.ts`"
+message: 'File in notifications/ without the `_notification.ts` suffix.'
+note: 'Name it `<name>_notification.ts`, the name `node ace make:notification` writes. Code that is not a notification moves to the layer it belongs to.'
+rule:
+  kind: program

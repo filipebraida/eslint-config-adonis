@@ -1,0 +1,5 @@
+valid:
+  - { file: app/enums/post_status.ts, code: "export const POST_STATUSES = ['draft', 'published'] as const" }
+invalid:
+  - { file: app/enums/post_status.ts, code: "export enum PostStatus { Draft = 'draft' }" }
+  - { file: inertia/pages/posts/index.tsx, code: "const enum Tab { A, B }" }

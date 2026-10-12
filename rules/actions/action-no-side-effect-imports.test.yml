@@ -1,0 +1,16 @@
+valid:
+  - { file: app/shop/services/x.ts, code: "import mail from '@adonisjs/mail/services/main'\nexport default class A {}" }
+  - file: app/actions/archive_cart.ts
+    code: "import emitter from '@adonisjs/core/services/emitter'\nexport default class A { async handle() { await emitter.emit('x', {}) } }"
+  - file: app/actions/a.ts
+    code: "import mailer from '@adonisjs/mailer-like'\nexport default class A { handle() {} }"
+  - file: app/services/x.ts
+    code: "import mail from '@adonisjs/mail/services/main'\nexport default class A {}"
+invalid:
+  - { file: app/shop/actions/a.ts, code: "import mail from '@adonisjs/mail/services/main'\nexport default class A { handle() {} }" }
+  - file: app/actions/a.ts
+    code: "import mail from '@adonisjs/mail/services/main'\nexport default class A { handle() {} }"
+  - file: app/actions/archive_cart.ts
+    code: "import transmit from '@adonisjs/transmit/services/main'\nexport default class A { handle() {} }"
+  - file: app/actions/a.ts
+    code: "import type { MailService } from '@adonisjs/mail/types'\nexport default class A { handle() {} }"

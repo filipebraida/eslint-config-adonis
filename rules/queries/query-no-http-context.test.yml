@@ -1,0 +1,12 @@
+valid:
+  - file: app/queries/ranking.ts
+    code: "import type { HttpContext } from '@adonisjs/core/http'\nexport default class Q { handle(s: HttpContext['session']) {} }"
+  - file: app/shop/queries/orders.ts
+    code: "import { type HttpContext } from '@adonisjs/core/http'\nexport default class Q { handle() {} }"
+  - file: app/controllers/reviews_controller.ts
+    code: "import { HttpContext } from '@adonisjs/core/http'\nexport default class C {}"
+invalid:
+  - file: app/queries/ranking.ts
+    code: "import { HttpContext } from '@adonisjs/core/http'\nexport default class Q { handle(ctx: HttpContext) {} }"
+  - file: app/shop/queries/orders.ts
+    code: "import { HttpContext as Ctx } from '@adonisjs/core/http'\nexport default class Q { handle(ctx: Ctx) {} }"

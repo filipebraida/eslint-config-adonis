@@ -1,0 +1,20 @@
+# JS rule (route-param-matcher.js): ast-grep cannot compare the `:param` names
+# inside a string with the `.where()` arguments.
+valid:
+  - { file: app/shop/routes.ts, code: "router.get('/orders/:id', [C]).where('id', router.matchers.number())" }
+  - { file: app/shop/services/routes.ts, code: "router.get('/orders/:id', [C])" }
+  - { file: start/routes.ts, code: "router.get('/projects/:id', [C]).where('id', router.matchers.number())" }
+  - { file: start/routes.ts, code: "router.group(() => { router.get('/x/:id', [C]) }).where('id', router.matchers.number())" }
+  - { file: start/routes.ts, code: "router.get('/users/:id', [C]).as('x').where('id', /^[a-z]+$/)" }
+  - { file: start/routes.ts, code: "router.group(() => { router.group(() => { router.get('/i/:uuid', [C]) }).prefix('/y') }).prefix('/x').where('uuid', router.matchers.uuid())" }
+  - { file: start/routes.ts, code: "router.get('/users/:id2', [C, 'show']).where('id2', router.matchers.number())" }
+  - { file: start/routes.ts, code: "router.get('/users', [C, 'index'])" }
+  - { file: start/routes.ts, code: "router.resource('users', C)" }
+  - { file: app/services/x.ts, code: "router.get('/users/:id', [C])" }
+invalid:
+  - { file: app/shop/routes.ts, code: "router.get('/orders/:id', [C])" }
+  - { file: start/routes.ts, code: "router.get('/projects/:id', [C])" }
+  - { file: start/routes.ts, code: "router.get('/users/:id', [C, 'show'])" }
+  - { file: start/routes.ts, code: "router.post('/i/:orderId/m/:messageId', [C]).where('orderId', router.matchers.number())", errors: 1 }
+  - { file: start/routes.ts, code: "router.group(() => { router.get('/i/:uuid', [C]) }).prefix('/x')" }
+  - { file: start/routes/admin/routes.ts, code: "router.delete('/users/:id', [C])" }

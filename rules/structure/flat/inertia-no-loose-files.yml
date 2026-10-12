@@ -1,0 +1,11 @@
+id: inertia-no-loose-files
+language: tsx
+files: ['inertia/*.{ts,tsx}']
+ignores: ['inertia/{app.tsx,ssr.tsx,client.ts,types.ts}']
+severity: error
+metadata:
+  description: "Only app.tsx, ssr.tsx, client.ts and types.ts at the root of `inertia/`"
+message: 'Loose file at the root of inertia/.'
+note: 'A page goes in pages/, a component in components/, a hook in hooks/. Only app.tsx, ssr.tsx, client.ts and types.ts live at the root.'
+rule:
+  kind: program

@@ -1,0 +1,20 @@
+id: spec-mail-needs-fake
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "`mail.send`/`mail.sendLater` in a spec only with `mail.fake()` in the file"
+message: '`mail.$METHOD()` in a spec without `mail.fake()`: the e-mail really goes out (Mailpit locally, SMTP on CI).'
+note: 'Start the test with `using fake = mail.fake()` and assert with `fake.mails.assertSent(...)`. This rule only sees `mail.send`/`mail.sendLater` written in the spec: an action, listener or request that sends mail needs the same fake, and the lint cannot see it.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    all:
+      - has: { field: object, kind: identifier, regex: '^mail$' }
+      - has: { field: property, pattern: $METHOD, regex: '^(send|sendLater)$' }
+  inside:
+    stopBy: end
+    kind: program
+    not: { has: { stopBy: end, pattern: mail.fake($$$) } }

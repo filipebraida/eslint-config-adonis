@@ -1,0 +1,19 @@
+id: foreign-key-on-delete
+language: typescript
+files: ['database/migrations/**/*.ts', 'app/*/database/migrations/**/*.ts']
+severity: error
+metadata:
+  description: "Every `.references()` says `.onDelete()`"
+message: 'Foreign key without `onDelete`.'
+note: 'Say what happens to this row when the parent goes: `.references(''id'').inTable(''posts'').onDelete(''CASCADE'')` (or `SET NULL`, or `RESTRICT` when deleting the parent must fail). The default blocks the delete with an error nobody planned for.'
+rule:
+  kind: expression_statement
+  has:
+    stopBy: end
+    kind: call_expression
+    has: { field: function, kind: member_expression, has: { field: property, regex: '^references$' } }
+  not:
+    has:
+      stopBy: end
+      kind: call_expression
+      has: { field: function, kind: member_expression, has: { field: property, regex: '^onDelete$' } }

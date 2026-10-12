@@ -1,0 +1,76 @@
+{
+  "name": "@filipebraida/eslint-config-adonis",
+  "version": "0.1.0",
+  "description": "Lint for AdonisJS apps: architecture rules as ast-grep YAML and a UI preset (strict React, react-hooks, accessibility and design system). Every message says how to fix it.",
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "adonisjs",
+    "inertia",
+    "react",
+    "ast-grep",
+    "architecture",
+    "lint"
+  ],
+  "license": "MIT",
+  "author": "Filipe Braida",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filipebraida/eslint-config-adonis.git"
+  },
+  "homepage": "https://github.com/filipebraida/eslint-config-adonis#readme",
+  "bugs": {
+    "url": "https://github.com/filipebraida/eslint-config-adonis/issues"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "presets",
+    "rules",
+    "!rules/**/*.test.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "catalog": "node scripts/catalog.js",
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
+  },
+  "peerDependencies": {
+    "eslint": ">=10",
+    "typescript": ">=5"
+  },
+  "dependencies": {
+    "@adonisjs/eslint-ast-grep": "^1.0.0",
+    "@adonisjs/eslint-config": "^3.1.0",
+    "@eslint-react/eslint-plugin": "^5.24.10",
+    "@shadcn/lint": "^0.2.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1"
+  },
+  "devDependencies": {
+    "@ast-grep/cli": "^0.50.0",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "typescript-eslint": "^8.46.0",
+    "yaml": "^2.9.1"
+  },
+  "packageManager": "pnpm@12.11.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120,
+    "trailingComma": "all"
+  }
+}

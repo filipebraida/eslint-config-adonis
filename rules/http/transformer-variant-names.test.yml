@@ -1,0 +1,5 @@
+valid:
+  - { file: app/transformers/post_transformer.ts, code: "export default class PostTransformer extends BaseTransformer { toObject() {}\nforList() {}\nforEdit() {}\nprivate label() {}\nstatic x() {} }" }
+invalid:
+  - { file: app/transformers/post_transformer.ts, code: "export default class PostTransformer extends BaseTransformer { toObject() {}\nlist() {}\nwithAuthor() {} }", errors: 2 }
+  - { file: app/shop/transformers/order_transformer.ts, code: "export default class T { serializeForShow() {} }" }

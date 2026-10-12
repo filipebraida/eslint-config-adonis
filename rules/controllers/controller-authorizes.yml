@@ -1,0 +1,45 @@
+id: controller-authorizes
+language: typescript
+files: ['app/controllers/**/*.ts', 'app/*/controllers/**/*.ts']
+severity: error
+metadata:
+  description: "Every public method calls `bouncer.authorize()` / `bouncer.with(Policy).authorize()`, unless the class declares `static readonly public = true`"
+message: '`$NAME()` does not authorize: no `bouncer.authorize()` or `bouncer.with(Policy).authorize()` in it.'
+note: 'Call `await bouncer.with(XPolicy).authorize(''action'', resource)` before doing anything. A controller that is public on purpose (login, landing page, webhook, health check) declares `static readonly public = true` in its class; a public method inside an authorized controller moves to its own controller, named by its noun.'
+utils:
+  # bouncer.authorize(...), bouncer.with(P).authorize(...), ctx.bouncer.with(P).authorize(...)
+  # and `const policy = bouncer.with(P)` followed by `policy.authorize(...)`.
+  authorize-call:
+    kind: call_expression
+    has: { field: function, kind: member_expression, has: { field: property, regex: '^authorize$' } }
+  bouncer-ref:
+    any:
+      - { kind: identifier, regex: '^bouncer$' }
+      - { kind: property_identifier, regex: '^bouncer$' }
+rule:
+  kind: method_definition
+  inside:
+    kind: class_body
+    # The marker of a public controller: `static readonly public = true`.
+    not:
+      has:
+        kind: public_field_definition
+        all:
+          - has: { field: name, regex: '^public$' }
+          - has: { field: value, kind: 'true' }
+          - regex: '^static\b'
+  has: { field: name, pattern: $NAME }
+  all:
+    - not:
+        any:
+          - has: { field: name, regex: '^constructor$' }
+          - has: { field: name, kind: private_property_identifier }
+          - has: { kind: accessibility_modifier, regex: '^(private|protected)$' }
+          # Static members, getters and setters are not actions.
+          - regex: '^(public\s+)?(static|get|set)\b'
+    - not:
+        has:
+          field: body
+          all:
+            - has: { stopBy: end, matches: authorize-call }
+            - has: { stopBy: end, matches: bouncer-ref }

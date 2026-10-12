@@ -1,0 +1,15 @@
+valid:
+  - { file: app/services/payment/payment_gateway.ts, code: "/** The contract of whoever charges an order. */\nexport default abstract class PaymentGateway { abstract charge(valor: number): Promise<string> }" }
+  - { file: app/actions/publish_post.ts, code: "import Post from '#models/post'\n\n/** Publishes a draft and announces it after the commit. */\nexport default class PublishPost { async handle() {} }" }
+  - { file: app/shop/validators/post.ts, code: "/** A post as the editor submits it. */\nexport const createPostValidator = vine.create({})" }
+  - { file: app/transformers/post_transformer.ts, code: "export default class PostTransformer {}" }
+  - { file: app/models/post.ts, code: "export default class Post {}" }
+  - { file: app/actions/a.ts, code: "/** Types of the input. */\nexport type Input = { a: number }" }
+  - { file: app/jobs/prune_audits_job.ts, code: "export const RETENTION_DAYS = 90\n/** Drops audits past the retention. */\nexport default class PruneAuditsJob {}" }
+  - { file: app/actions/a.ts, code: "/** Registers a review. */\n@inject()\nexport default class RegisterReview { constructor(private s: S) {} }" }
+  - { file: app/queries/list_contacts.ts, code: "/** The contacts a course received. */\nexport default class ListContacts {}\nexport function emptyInbox() { return [] }" }
+invalid:
+  - { file: app/actions/publish_post.ts, code: "import Post from '#models/post'\nexport default class PublishPost { async handle() {} }" }
+  - { file: app/shop/queries/list_posts.ts, code: "// lists the posts\nexport default class ListPosts {}" }
+  - { file: app/validators/post.ts, code: "export const createPostValidator = vine.create({})\n/** x */\nexport const updatePostValidator = vine.create({})" }
+  - { file: app/listeners/schedule_welcome.ts, code: "export default class ScheduleWelcome {}" }

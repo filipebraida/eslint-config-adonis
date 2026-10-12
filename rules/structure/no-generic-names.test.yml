@@ -1,0 +1,15 @@
+valid:
+  - { file: app/shop/tests/helpers/orders.ts, code: 'export {}' }
+  - { file: app/shop/services/review_counter.ts, code: 'export {}' }
+  - { file: inertia/lib/utils.ts, code: 'export {}' }
+  - { file: app/services/review_counter.ts, code: 'export {}' }
+  - { file: inertia/pages/home.tsx, code: 'export {}' }
+invalid:
+  - { file: app/shop/utils/format.ts, code: 'export {}' }
+  - { file: app/shop/ui/components/shared/button.tsx, code: 'export {}' }
+  - { file: app/shop/services/helpers.ts, code: 'export {}' }
+  - { file: app/actions/utils/format.ts, code: 'export {}' }
+  - { file: app/services/helpers.ts, code: 'export {}' }
+  - { file: inertia/pages/home/helpers.ts, code: 'export {}' }
+  - { file: inertia/components/shared/button.tsx, code: 'export {}' }
+  - { file: inertia/lib/misc.ts, code: 'export {}' }

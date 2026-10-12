@@ -1,0 +1,9 @@
+valid:
+  - { file: inertia/app.tsx, code: 'export {}' }
+  - { file: inertia/ssr.tsx, code: 'export {}' }
+  - { file: inertia/client.ts, code: 'export {}' }
+  - { file: inertia/types.ts, code: 'export {}' }
+  - { file: inertia/pages/home.tsx, code: 'export {}' }
+invalid:
+  - { file: inertia/format.ts, code: 'export {}' }
+  - { file: inertia/index.tsx, code: 'export {}' }

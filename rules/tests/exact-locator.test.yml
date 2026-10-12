@@ -1,0 +1,22 @@
+valid:
+  - { file: app/shop/tests/browser/invite/accept.spec.ts, code: "page.getByText('Sign in', { exact: true })" }
+  - { file: app/shop/ui/pages/x.tsx, code: "page.getByText('Sign in')" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByText('Sign in', { exact: true })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByLabel('Email', { exact: false })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "const exact = true\npage.getByLabel('Email', { exact })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: 'page.getByText(/sign in/i)' }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByRole('button', { name: 'Sign in', exact: true })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByRole('button', { name: /sign in/i })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByRole('button')" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByText('Sign in', options)" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByText('Sign in', { ...options })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "screen.getByText('Sign in')" }
+  - { file: app/services/x.ts, code: "page.getByText('Sign in')" }
+invalid:
+  - { file: app/shop/tests/browser/invite/accept.spec.ts, code: "page.getByText('Sign in')" }
+  - { file: app/shop/tests/helpers/browser.ts, code: "export const signIn = (page) => page.getByTitle('Sign in')" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByText('Sign in')" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByLabel('Email', { timeout: 10 })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.getByRole('button', { name: 'Sign in' })" }
+  - { file: tests/browser/access/sign_in.spec.ts, code: "page.locator('form').getByPlaceholder('Code')" }
+  - { file: tests/helpers/browser.ts, code: "export const signIn = (page) => page.getByTitle('Sign in')" }

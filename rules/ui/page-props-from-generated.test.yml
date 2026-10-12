@@ -1,0 +1,10 @@
+valid:
+  - { file: inertia/pages/posts/show.tsx, code: "type Props = InertiaProps<{ post: Data.Post.Variants['forShow'] }>\nexport default function Show({ post }: Props) { return null }" }
+  - { file: app/shop/ui/pages/orders/edit.tsx, code: "type EditProps = InertiaProps<{ order: Data.Order.Variants['forEdit']; stages: Data.Stage[] }>\nexport default function Edit(p: EditProps) { return null }" }
+  - { file: inertia/pages/posts/form.tsx, code: "import { Modal } from '~/components/app/page_modal'\ntype PageProps = { post?: Data.Post.Variants['forForm']; categories: Data.Category[] }\nexport default function Form(p: PageProps) { return null }" }
+  - { file: inertia/components/posts/card.tsx, code: "type Props = { post: Data.Post }" }
+  - { file: inertia/pages/posts/form.tsx, code: "type ChoiceFieldProps = { name: string }\nfunction ChoiceField(p: ChoiceFieldProps) { return null }" }
+invalid:
+  - { file: inertia/pages/posts/form.tsx, code: "import { Modal } from '~/components/app/page_modal'\ntype PageProps = { title: string }\nexport default function Form(p: PageProps) { return null }" }
+  - { file: inertia/pages/posts/show.tsx, code: "type Props = { post: { id: number; title: string } }\nexport default function Show({ post }: Props) { return null }" }
+  - { file: app/shop/ui/pages/auth/login.tsx, code: "interface LoginPageProps { errors: Record<string, string> }\nexport default function Login(p: LoginPageProps) { return null }" }

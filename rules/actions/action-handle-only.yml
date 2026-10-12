@@ -1,0 +1,19 @@
+id: action-handle-only
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "An action exposes no public method besides `handle()`"
+message: 'Action exposes `$NAME()` besides `handle()`.'
+note: 'An action is one use case with a single public `handle(input)`: make the method private or move it to another action.'
+rule:
+  kind: method_definition
+  inside: { kind: class_body }
+  has: { field: name, pattern: $NAME }
+  not:
+    any:
+      - has: { field: name, regex: '^(handle|constructor)$' }
+      - has: { field: name, kind: private_property_identifier }
+      - has: { kind: accessibility_modifier, regex: '^(private|protected)$' }
+      # Static members, getters and setters are not instance methods.
+      - regex: '^(public\s+)?(static|get|set)\b'

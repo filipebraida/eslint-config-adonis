@@ -1,0 +1,12 @@
+id: spec-no-substring-id
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No `assert.include/notInclude(JSON.stringify(...), String(id))`"
+message: 'Looking for an id as a substring of serialized JSON: id 1 is found inside 12, 21 or a date, so the assertion passes or fails by accident.'
+note: 'Assert on the parsed field: `assert.equal(body.id, article.id)`, or compare the list of ids, `assert.notInclude(body.map((row) => row.id), article.id)`.'
+rule:
+  any:
+    - pattern: $A.include(JSON.stringify($$$X), String($$$Y))
+    - pattern: $A.notInclude(JSON.stringify($$$X), String($$$Y))

@@ -1,0 +1,10 @@
+id: spec-no-exports
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "A spec file exports nothing"
+message: 'A test file exports nothing.'
+note: 'Whatever another test reuses goes to helpers/<name>.ts in the same tests/ folder.'
+rule:
+  kind: export_statement

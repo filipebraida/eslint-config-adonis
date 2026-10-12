@@ -1,0 +1,29 @@
+valid:
+  - { file: app/shop/tests/helpers/stubs.ts, code: 'let cache = null' }
+  - { file: app/shop/services/x.ts, code: 'let cache = null' }
+  - file: tests/unit/actions/a.spec.ts
+    code: "test('x', () => { let n = 0 })"
+  - file: tests/unit/services/green_service.spec.ts
+    code: "const payload = { a: 1 }\ntest('x', async () => { let user = 1\nuser++ })"
+  - file: tests/unit/services/green_service.spec.ts
+    code: "test.group('g', (group) => { group.each.teardown(() => sinon.restore())\ntest('x', () => { const s = sinon.stub()\nlet n = 0 }) })"
+  - file: tests/unit/services/green_service.spec.ts
+    code: "test('x').with([1, 2]).run(async (_ctx, n) => { let total = n })"
+  - file: tests/helpers/stubs.ts
+    code: 'let cache = null'
+  - file: app/services/green_service.ts
+    code: 'let cache = null'
+invalid:
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "let n = 0\ntest('x', () => {})" }
+  - file: tests/unit/actions/a.spec.ts
+    code: "let n = 0\ntest('x', () => {})"
+  - file: tests/unit/services/green_service.spec.ts
+    code: "let user\ntest('x', () => {})"
+  - file: tests/unit/services/green_service.spec.ts
+    code: 'var n = 0'
+  - file: tests/unit/services/green_service.spec.ts
+    code: "test.group('g', (group) => { let fetchStub\ngroup.each.setup(() => { fetchStub = sinon.stub() }) })"
+  - file: tests/unit/services/green_service.spec.ts
+    code: "test.group('g', (group) => { group.setup(async () => { let user = await createUser() }) })"
+  - file: tests/unit/services/green_service.spec.ts
+    code: "test.group('g', () => { foo.run(() => { let x = 1 }) })"

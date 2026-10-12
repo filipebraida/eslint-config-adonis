@@ -1,0 +1,14 @@
+id: controller-no-serialize
+language: typescript
+files: ['app/controllers/**/*.ts', 'app/*/controllers/**/*.ts']
+severity: error
+metadata:
+  description: "No `.serialize()`/`.toJSON()` in a controller; data leaves through a transformer"
+message: '`.$METHOD()` in a controller: the model shape goes to the client as is.'
+note: 'What leaves for the client passes through a transformer: `PostTransformer.transform(post).useVariant(''forShow'')`. Without it, every new column leaks on the next migration, personal data included.'
+rule:
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    has: { field: property, pattern: $METHOD, regex: '^(serialize|toJSON)$' }

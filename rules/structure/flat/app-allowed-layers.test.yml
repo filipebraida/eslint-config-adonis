@@ -1,0 +1,15 @@
+valid:
+  # A port: the contract and its implementations under services/<concept>/.
+  - { file: app/services/payment/payment_gateway.ts, code: 'export {}' }
+  - { file: app/actions/register_review.ts, code: 'export default class {}' }
+  - { file: app/actions/coupons/reserve_coupon.ts, code: 'export default class {}' }
+  - { file: app/controllers/web/orders_controller.ts, code: 'export {}' }
+  - { file: app/abilities/x.ts, code: 'export {}' }
+  - { file: app/actions/app/x.ts, code: 'export {}' }
+  - { file: start/routes.ts, code: 'export {}' }
+  - { file: tests/functional/api/x.spec.ts, code: 'export {}' }
+invalid:
+  - { file: app/utils/x.ts, code: 'export {}' }
+  - { file: app/support/x.ts, code: 'export {}' }
+  - { file: app/lib/x.ts, code: 'export {}' }
+  - { file: app/billing/x.ts, code: 'export {}' }

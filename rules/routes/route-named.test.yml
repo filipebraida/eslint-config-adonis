@@ -1,0 +1,7 @@
+valid:
+  - { file: start/routes.ts, code: "router.get('/posts/:id', [controllers.Posts, 'show']).where('id', router.matchers.number()).as('posts.show')" }
+  - { file: app/shop/routes.ts, code: "router.group(() => {\n  router.get('/', [controllers.Orders, 'index']).as('index')\n}).prefix('/orders').as('orders')" }
+  - { file: start/routes.ts, code: "router.resource('posts', controllers.Posts)" }
+invalid:
+  - { file: start/routes.ts, code: "router.get('/posts', [controllers.Posts, 'index'])" }
+  - { file: app/shop/routes.ts, code: "router.group(() => {\n  router.post('/', [controllers.Orders, 'store'])\n}).as('orders')" }

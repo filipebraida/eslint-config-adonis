@@ -1,0 +1,32 @@
+id: vine-file-requires-size
+language: typescript
+files: ['app/**/*.ts']
+severity: error
+metadata:
+  description: "`vine.file()` always gets a `size` limit (anywhere in `app/`)"
+message: '`vine.file()` without a `size` limit.'
+note: 'Pass the limit and the accepted types: `vine.file({ size: ''2mb'', extnames: [''pdf''] })`. Without `size`, any upload size is accepted.'
+rule:
+  kind: call_expression
+  all:
+    - has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, kind: identifier, regex: '^vine$' }
+          - has: { field: property, regex: '^file$' }
+    - has:
+        field: arguments
+        any:
+          # vine.file()
+          - not: { has: { kind: object } }
+            regex: '^\(\s*\)$'
+          # vine.file({ extnames: ['pdf'] })
+          - has:
+              kind: object
+              not:
+                has:
+                  any:
+                    - { kind: pair, has: { field: key, regex: '^[''"]?size[''"]?$' } }
+                    - { kind: shorthand_property_identifier, regex: '^size$' }
+                    - kind: spread_element

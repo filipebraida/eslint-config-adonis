@@ -1,0 +1,33 @@
+id: test-entity-from-factory
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "Entities are born from factories: no `Model.create/createMany/firstOrCreate`, `db.table().insert()` or `db.insertQuery()` in tests or helpers"
+message: 'Entity created without its factory (`$CALL`).'
+note: 'Entities in tests are born from factories, with states for the variations: `await PostFactory.apply(''published'').with(''author'').create()`. A helper composes factories; it never wraps a single one nor calls `Model.create`, `db.table().insert()` or `new Model().save()`. A missing state goes to the factory.'
+utils:
+  not-a-factory:
+    kind: identifier
+    regex: '^[A-Z]'
+    not: { regex: 'Factory$|^(Object|Array|Promise|Map|Set|Reflect|Symbol|Response|Request|Error|DateTime|Date)$' }
+rule:
+  pattern: $CALL
+  any:
+    # Post.create({}), Post.createMany([]), Post.firstOrCreate(...)
+    - kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, matches: not-a-factory }
+          - has: { field: property, regex: '^(create|createMany|createQuietly|createManyQuietly|firstOrCreate|updateOrCreate|updateOrCreateMany|fetchOrCreateMany)$' }
+    # db.table('posts').insert({}), db.insertQuery().table('posts')
+    - kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: property, regex: '^(insert|multiInsert)$' }
+          - has: { field: object, stopBy: end, kind: identifier, regex: '^(db|trx)$' }
+    - pattern: db.insertQuery($$$)

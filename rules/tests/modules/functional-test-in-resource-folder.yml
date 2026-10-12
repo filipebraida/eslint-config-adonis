@@ -1,0 +1,10 @@
+id: functional-test-in-resource-folder
+language: tsx
+files: ['app/*/tests/functional/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "Functional tests live in `app/<module>/tests/functional/<area>/`"
+message: 'Functional test outside a resource folder.'
+note: 'Functional tests live in app/<module>/tests/functional/<area>/<resource>.spec.ts.'
+rule:
+  kind: program

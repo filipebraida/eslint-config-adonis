@@ -1,0 +1,29 @@
+id: ui-no-role-flags
+language: tsx
+files: ['inertia/**/*.{ts,tsx}', 'app/*/ui/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No role decisions in the UI (`isAdmin`, `user.role === 'x'`, `roles.includes('x')`); ask permissions (`useCan`, `<Can permission>`)"
+message: 'The UI decides by role (`$FLAG`).'
+note: 'Ask what the user can do, not who they are: `useCan(''staff.posts'')` or `<Can permission="staff.posts">` from `@adonis-agora/authz-react`, read from the shared `authz` prop. For one record, the transformer exposes a predicate (`post.isEditable`). The policy is the only place that maps roles to permissions.'
+rule:
+  any:
+    - pattern: $FLAG
+      any:
+        - kind: identifier
+        - kind: property_identifier
+        - kind: shorthand_property_identifier
+        - kind: shorthand_property_identifier_pattern
+      regex: '^is(Admin|SuperAdmin|Staff|Manager|Owner|Moderator|Editor|Gestor)$'
+    # user.role === 'editor', roles.includes('admin')
+    - kind: binary_expression
+      regex: '^[^=!]*\b(role|roles|papel|papeis)\s*[!=]=='
+      pattern: $FLAG
+    - kind: call_expression
+      pattern: $FLAG
+      has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, regex: '\b(roles|papeis)$' }
+          - has: { field: property, regex: '^(includes|some|find)$' }

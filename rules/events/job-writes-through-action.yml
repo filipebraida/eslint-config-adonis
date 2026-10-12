@@ -1,0 +1,31 @@
+id: job-writes-through-action
+language: typescript
+files: ['app/jobs/**/*.ts', 'app/*/jobs/**/*.ts']
+severity: error
+metadata:
+  description: "A job owns the external effect (mail, notification, HTTP) but writes to the database only through an action; a maintenance job says why in a comment"
+message: 'Job writes to the database in `$METHOD()` itself: the change lives outside an action.'
+note: 'The job owns the external effect (mail, notification, HTTP) and stays idempotent: check if it already happened, do it, then record it through an action, e.g. `await new MarkWelcomeSent().handle(user)`. Maintenance that is not a use case (pruning past a retention) may write here: say so in a comment on the line above.'
+rule:
+  kind: call_expression
+  not: { inside: { stopBy: end, any: [{ kind: expression_statement }, { kind: lexical_declaration }], follows: { kind: comment } } }
+  any:
+    # review.save(), review.delete(); map.delete(key) takes an argument and is not a write.
+    - all:
+        - has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(save|delete)$' }
+        - not: { has: { field: arguments, has: { nthChild: 1 } } }
+    # Review.create({}), Review.createMany([])
+    - has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, kind: identifier, regex: '^[A-Z]', not: { regex: '^(Object|Array|Promise|Map|Set|Reflect|Symbol)$' } }
+          - has: { field: property, regex: '^(create|createMany|updateOrCreate|updateOrCreateMany|firstOrCreate)$' }
+  # process() in @nemoventures/adonis-jobs
+  inside:
+    stopBy: end
+    kind: method_definition
+    has: { field: name, pattern: $METHOD, regex: '^process$' }

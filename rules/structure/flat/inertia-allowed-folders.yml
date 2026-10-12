@@ -1,0 +1,11 @@
+id: inertia-allowed-folders
+language: tsx
+files: ['inertia/*/**/*.{ts,tsx}']
+ignores: ['inertia/{components,css,hooks,layouts,lib,pages}/**']
+severity: error
+metadata:
+  description: "Only components, css, hooks, layouts, lib and pages under `inertia/`"
+message: 'This folder under inertia/ is not allowed.'
+note: 'Folders: components, css, hooks, layouts, lib, pages. A new folder is an architecture decision: add it to this rule.'
+rule:
+  kind: program

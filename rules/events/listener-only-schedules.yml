@@ -1,0 +1,40 @@
+id: listener-only-schedules
+language: typescript
+files: ['app/listeners/**/*.ts', 'app/*/listeners/**/*.ts']
+severity: error
+metadata:
+  description: "A listener only schedules (`XJob.dispatch`, or `mail.sendLater` without a job queue): no `mail.send`, notify, broadcast, `fetch`, no read (`Model.query/find*`, `db.*`) and no write"
+message: 'Listener executes instead of scheduling (mail.send, notification, broadcast, HTTP, a database read or write): the in-process emitter has no retry, and a failure here is lost.'
+note: 'A listener only schedules: `await SendWelcomeJob.dispatch({ userId: event.userId })`, with the ids from the event, or, for a single e-mail in a project without a job queue, `await mail.sendLater(new WelcomeMail(...))`. The job decides whom to reach, performs the effect with retries, and writes only through an action.'
+utils:
+  model-ref:
+    kind: identifier
+    regex: '^[A-Z]'
+    not: { regex: '^(Object|Array|Promise|Map|Set|Reflect|Symbol|JSON|Math|Number|String|Date|DateTime)$' }
+rule:
+  any:
+    - pattern: mail.send($$$)
+    - pattern: transmit.broadcast($$$)
+    - kind: call_expression
+      has: { field: function, kind: identifier, regex: '^fetch$' }
+    - kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        has: { field: object, kind: identifier, regex: '^(facteur|db)$' }
+    # review.save()
+    - kind: call_expression
+      all:
+        - has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^save$' }
+        - not: { has: { field: arguments, has: { nthChild: 1 } } }
+    # Review.create({}), Review.query(), Review.findOrFail(id): writes and the reads that decide whom.
+    - kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: object, matches: model-ref }
+          - has: { field: property, regex: '^(create|createMany|updateOrCreate|updateOrCreateMany|firstOrCreate|query|all|find|findOrFail|findBy|findByOrFail|findMany|findManyBy|first|firstOrFail)$' }

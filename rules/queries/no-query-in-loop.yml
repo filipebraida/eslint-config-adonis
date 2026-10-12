@@ -1,0 +1,30 @@
+id: no-query-in-loop
+language: typescript
+files: ['app/{actions,queries,services,jobs,controllers,transformers}/**/*.ts', 'app/*/{actions,queries,services,jobs,controllers,transformers}/**/*.ts']
+severity: error
+metadata:
+  description: "No `Model.find*/query/all/first` inside a loop or a `.map/.forEach` callback (N+1)"
+message: '`$CALL` inside a loop: one query per row (N+1).'
+note: 'Load once for the whole set: `preload` the relation, `whereIn(''id'', ids)` and a `Map` by id, or `withCount`/`withAggregate` for numbers.'
+utils:
+  model-read:
+    kind: call_expression
+    has:
+      field: function
+      kind: member_expression
+      all:
+        - has: { field: object, kind: identifier, regex: '^[A-Z]', not: { regex: '^(Object|Array|Promise|Map|Set|Reflect|Symbol|JSON|Math|Number|String|DateTime|Date)$' } }
+        - has: { field: property, regex: '^(find|findOrFail|findBy|findByOrFail|query|all|first|firstOrFail)$' }
+  loop:
+    any:
+      - kind: for_statement
+      - kind: for_in_statement
+      - kind: while_statement
+      - kind: do_statement
+      # rows.map(async (row) => ...), rows.forEach(...)
+      - kind: arrow_function
+        inside: { kind: arguments, inside: { kind: call_expression, has: { field: function, kind: member_expression, has: { field: property, regex: '^(map|forEach|flatMap|filter|reduce)$' } } } }
+rule:
+  pattern: $CALL
+  matches: model-read
+  inside: { stopBy: end, matches: loop }

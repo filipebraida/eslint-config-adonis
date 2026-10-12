@@ -1,0 +1,3 @@
+allowBuilds:
+  # The binaries come from the per-platform optional packages; the postinstall is not needed.
+  '@ast-grep/cli': false

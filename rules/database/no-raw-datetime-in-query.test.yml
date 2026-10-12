@@ -1,0 +1,20 @@
+valid:
+  - file: app/queries/expired_invites.ts
+    code: "Invite.query().where('expires_at', '<', DateTime.now().toSQL())"
+  - file: app/shop/actions/close_order.ts
+    code: "await Order.query().where('id', id).update({ closed_at: DateTime.now().toSQL() })"
+  - file: app/actions/close_project.ts
+    code: "project.merge({ closedAt: DateTime.now() })\nproject.closedAt = DateTime.now()\nawait project.save()"
+  - file: app/shop/queries/orders.ts
+    code: "Order.query().where('created_at', '>', DateTime.fromISO(from).toSQL()!)"
+  - file: app/shop/tests/unit/queries/orders.spec.ts
+    code: "Order.query().where('created_at', DateTime.now())"
+invalid:
+  - file: app/queries/expired_invites.ts
+    code: "Invite.query().where('expires_at', '<', DateTime.now())"
+  - file: app/shop/actions/close_order.ts
+    code: "await Order.query().where('id', id).update({ closedAt: DateTime.now() })"
+  - file: app/shop/queries/orders.ts
+    code: "Order.query().where('created_at', '>', DateTime.fromISO(from).minus({ days: 1 }))"
+  - file: app/jobs/purge.ts
+    code: "db.from('sessions').andWhere('expires_at', '<=', DateTime.fromJSDate(d)).delete()"

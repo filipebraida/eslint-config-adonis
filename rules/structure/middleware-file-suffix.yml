@@ -1,0 +1,11 @@
+id: middleware-file-suffix
+language: typescript
+files: ['app/middleware/**/*.ts', 'app/*/middleware/**/*.ts']
+ignores: ['app/middleware/**/*_middleware.ts', 'app/*/middleware/**/*_middleware.ts']
+severity: error
+metadata:
+  description: "Files in `middleware/` end in `_middleware.ts`, as `make:middleware` writes them"
+message: 'File in middleware/ without the `_middleware.ts` suffix.'
+note: 'Name it `<name>_middleware.ts`, the name `node ace make:middleware` writes. Code that is not a middleware moves to the layer it belongs to.'
+rule:
+  kind: program

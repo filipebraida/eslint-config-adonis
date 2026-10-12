@@ -1,0 +1,4 @@
+valid:
+  - { file: app/validators/article.ts, code: "export const v = vine.create({ image: vine.file({ size: '2mb', extnames: ['jpg', 'png', 'webp'] }) })" }
+invalid:
+  - { file: app/validators/article.ts, code: "export const v = vine.create({ image: vine.file({ size: '2mb', extnames: ['png', 'svg'] }) })" }

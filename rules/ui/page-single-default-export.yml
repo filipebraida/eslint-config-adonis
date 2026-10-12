@@ -1,0 +1,14 @@
+id: page-single-default-export
+language: tsx
+files: ['inertia/pages/**/*.tsx', 'app/*/ui/pages/**/*.tsx']
+severity: error
+metadata:
+  description: "A page exports only its default component"
+message: 'Named export in a page.'
+note: 'A page file exports exactly one thing, `export default` the page component: the page indexer reads it to build the props contract. A component another screen reuses moves to `components/<resource>/`.'
+rule:
+  kind: export_statement
+  not:
+    any:
+      - regex: '^export\s+default\b'
+      - regex: '^export\s+type\b'

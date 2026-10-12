@@ -1,0 +1,16 @@
+valid:
+  - { file: tests/unit/mails/welcome.spec.ts, code: "test('x', () => { using fake = mail.fake() })" }
+  - { file: app/shop/tests/functional/articles/store.spec.ts, code: "test('x', async () => { using fake = drive.fake()\nusing events = emitter.fake()\nusing notifications = facteur.fake() })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', async () => { await using fake = drive.fake() })" }
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', () => { const s = sinon.fake()\nsinon.restore() })" }
+  - { file: app/services/x.ts, code: 'mail.fake()' }
+  # adonis-jobs has no fake: the job's dispatch is stubbed with sinon.
+  - { file: tests/unit/actions/a.spec.ts, code: "test('x', () => { const dispatch = sinon.stub(SendJob, 'dispatch').resolves({} as never) })" }
+invalid:
+  - { file: tests/unit/mails/welcome.spec.ts, code: "test('x', () => { const fake = mail.fake() })" }
+  - { file: app/shop/tests/unit/mails/welcome.spec.ts, code: "test('x', () => { let fake = emitter.fake() })" }
+  - file: tests/functional/articles/store.spec.ts
+    code: "test.group('g', (group) => { group.each.setup(() => { drive.fake()\nreturn () => drive.restore() }) })"
+    errors: 2
+  - { file: app/shop/tests/functional/articles/store.spec.ts, code: "test('x', () => { facteur.fake()\nemitter.fake() })", errors: 2 }
+  - { file: tests/helpers/fakes.ts, code: "export const restoreAll = () => { mail.restore()\nemitter.restore() }", errors: 2 }

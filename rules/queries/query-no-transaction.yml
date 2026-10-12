@@ -1,0 +1,10 @@
+id: query-no-transaction
+language: typescript
+files: ['app/queries/**/*.ts', 'app/*/queries/**/*.ts']
+severity: error
+metadata:
+  description: "Queries never open a transaction"
+message: 'Query opens a transaction.'
+note: 'A query only reads, and a read needs no transaction of its own. If it must see the caller''s writes, take the client as input (`{ client: trx }`); if it writes, it is an action.'
+rule:
+  pattern: $X.transaction($$$)

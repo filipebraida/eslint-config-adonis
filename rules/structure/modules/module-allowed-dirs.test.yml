@@ -1,0 +1,16 @@
+valid:
+  - { file: app/orders/services/payment/stripe_gateway.ts, code: 'export {}' }
+  - { file: app/shop/actions/archive_cart.ts, code: 'export {}' }
+  - { file: app/shop/controllers/web/orders_controller.ts, code: 'export {}' }
+  - { file: app/shop/database/migrations/1_create_orders.ts, code: 'export {}' }
+  - { file: app/shop/start/events.ts, code: 'export {}' }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: 'export {}' }
+  - { file: app/shop/ui/pages/orders/index.tsx, code: 'export {}' }
+  - { file: app/core/abilities/x.ts, code: 'export {}' }
+  - { file: app/shop/routes.ts, code: 'export {}' }
+  - { file: start/routes.ts, code: 'export {}' }
+invalid:
+  - { file: app/shop/utils/format.ts, code: 'export {}' }
+  - { file: app/core/providers/x.ts, code: 'export {}' }
+  - { file: app/vendor/dtos/x.ts, code: 'export {}' }
+  - { file: app/shop/lib/x.tsx, code: 'export {}' }

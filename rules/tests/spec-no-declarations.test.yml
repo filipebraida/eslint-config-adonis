@@ -1,0 +1,31 @@
+valid:
+  - { file: app/shop/tests/helpers/users.ts, code: 'function build() {}' }
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: "test('x', () => { function help() {} })" }
+  - file: tests/unit/actions/register_review.spec.ts
+    code: "test('004.CA01 x', () => { function help() {} })"
+  - file: tests/functional/order/create.spec.ts
+    code: "test('x', async () => { function build() {}\ntype P = { a: number }\nclass Fake {} })"
+  - file: tests/functional/order/create.spec.ts
+    code: "test.group('g', () => { test('x', () => { function build() {} }) })"
+  - file: tests/functional/order/create.spec.ts
+    code: "test('x').with([1]).run(async (_ctx, n) => { function build() {} })"
+  - file: tests/functional/order/create.spec.ts
+    code: "test('x').run(async function () { function build() {} })"
+  - file: tests/helpers/users.ts
+    code: "function build() {}\ntype P = { a: number }"
+  - file: app/services/x.ts
+    code: 'function build() {}'
+  # A local function that composes factories.
+  - file: tests/functional/order/create.spec.ts
+    code: "async function publishedOrderIn(n) { return OrderFactory.apply('published').createMany(n) }\ntest('x', () => {})"
+  - file: tests/functional/order/create.spec.ts
+    code: "test.group('g', (group) => { async function createAdmin() {}\ntest('x', () => {}) })"
+invalid:
+  - { file: app/shop/tests/unit/actions/a.spec.ts, code: 'class Fake {}' }
+  - file: tests/unit/actions/a.spec.ts
+    code: 'type Row = { id: number }'
+  - file: tests/functional/order/create.spec.ts
+    code: "type P = { a: number }\ninterface Q { b: string }\nclass Fake {}"
+    errors: 3
+  - file: tests/functional/order/create.spec.ts
+    code: "test.group('g', (group) => { class Stub {}\ntest('x', () => {}) })"

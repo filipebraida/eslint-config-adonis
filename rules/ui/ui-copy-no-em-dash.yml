@@ -1,0 +1,13 @@
+id: ui-copy-no-em-dash
+language: tsx
+files: ['inertia/**/*.tsx', 'app/*/ui/**/*.tsx']
+ignores: ['inertia/components/ui/**', 'app/*/ui/components/ui/**']
+severity: error
+metadata:
+  description: "No em dash in interface text"
+message: 'Em dash in interface text.'
+note: 'Write two sentences, or use a colon or a comma. For an empty value in a table, use the component the registry provides.'
+rule:
+  any:
+    - { kind: jsx_text, regex: '—' }
+    - { kind: string_fragment, regex: '—' }

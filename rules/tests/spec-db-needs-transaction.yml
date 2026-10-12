@@ -1,0 +1,50 @@
+id: spec-db-needs-transaction
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+# Browser tests drive a real server in another connection: they cannot share
+# the global transaction, so they clean up after themselves instead.
+ignores: ['tests/browser/**', 'app/*/tests/browser/**']
+severity: error
+metadata:
+  description: "A spec that uses a factory, a `client` write (post, put, patch, delete) or `db` calls `wrapInGlobalTransaction` (browser specs excepted)"
+message: 'This spec touches the database (factory, a `client` write or `db`) without `wrapInGlobalTransaction`: its rows stay in the developer database.'
+note: 'Add `group.each.setup(() => testUtils.db().wrapInGlobalTransaction())` to the group, so every test rolls back what it wrote.'
+utils:
+  # UserFactory.create(), UserFactory.merge({}).createMany(2), UserFactory.with('x').create()
+  factory-create:
+    kind: call_expression
+    has:
+      field: function
+      kind: member_expression
+      all:
+        - has: { field: property, regex: '^(create|createMany)$' }
+        - has:
+            field: object
+            any:
+              - { kind: identifier, regex: 'Factory$' }
+              - has: { stopBy: end, kind: identifier, regex: 'Factory$' }
+  # client.post('/x').json({}). A bare client.get('/') of a public page writes
+  # nothing; a GET over data needs a factory first, which is caught above.
+  http-call:
+    kind: call_expression
+    has:
+      field: function
+      kind: member_expression
+      all:
+        - has: { field: object, kind: identifier, regex: '^client$' }
+        - has: { field: property, regex: '^(post|put|patch|delete)$' }
+  # db.from('reviews'), db.rawQuery(...), db.table('x').insert(...)
+  db-access:
+    kind: member_expression
+    has: { field: object, kind: identifier, regex: '^db$' }
+rule:
+  kind: program
+  all:
+    - has:
+        stopBy: end
+        any:
+          - matches: factory-create
+          - matches: http-call
+          - matches: db-access
+    - not:
+        has: { stopBy: end, kind: property_identifier, regex: '^wrapInGlobalTransaction$' }

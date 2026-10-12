@@ -1,0 +1,15 @@
+id: action-no-authorization
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "Actions do not use `bouncer`; the controller authorizes through a policy"
+message: 'Action uses `bouncer`: authorization in the use case mixes who may do it with what it does.'
+note: 'Authorize in the controller, through a policy (`await bouncer.with(ArticlePolicy).authorize(...)`), before calling the action.'
+rule:
+  kind: member_expression
+  any:
+    # ctx.bouncer.with(...), this.bouncer.allows(...)
+    - has: { field: property, regex: '^bouncer$' }
+    # bouncer.with(...), bouncer.authorize(...)
+    - has: { field: object, kind: identifier, regex: '^bouncer$' }

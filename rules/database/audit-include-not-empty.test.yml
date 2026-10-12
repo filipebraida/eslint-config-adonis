@@ -1,0 +1,10 @@
+valid:
+  - file: app/models/article.ts
+    code: "export default class Article extends compose(BaseModel, Auditable) { static auditInclude = ['id', 'title'] }"
+  - file: app/shop/models/order.ts
+    code: "export default class Order extends BaseModel { static auditInclude: string[] = ['id'] }"
+invalid:
+  - file: app/models/article.ts
+    code: 'export default class Article extends compose(BaseModel, Auditable) { static auditInclude = [] }'
+  - file: app/shop/models/order.ts
+    code: 'export default class Order extends BaseModel { public static auditInclude: string[] = [ ] }'

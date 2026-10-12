@@ -1,0 +1,18 @@
+id: model-hook-no-effects
+language: typescript
+files: ['app/models/**/*.ts', 'app/*/models/**/*.ts']
+severity: error
+metadata:
+  description: "No dispatch, emit, mail, notify, broadcast or `fetch` inside a `@before*`/`@after*` hook"
+message: 'Model hook with a side effect (`$CALL`).'
+note: 'A hook runs on every save, from any caller, inside whatever transaction is open. The effect belongs to the action: it writes, commits, then emits its event.'
+rule:
+  pattern: $CALL
+  kind: call_expression
+  any:
+    - has: { field: function, kind: member_expression, has: { field: property, regex: '^(dispatch|emit|emitSerial|send|sendLater|notify|broadcast)$' } }
+    - has: { field: function, kind: identifier, regex: '^fetch$' }
+  inside:
+    stopBy: end
+    kind: method_definition
+    follows: { kind: decorator, regex: '^@(before|after)[A-Z]' }

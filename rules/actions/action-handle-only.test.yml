@@ -1,0 +1,15 @@
+valid:
+  - { file: app/shop/actions/archive_cart.ts, code: 'export default class A { handle() {} private x() {} }' }
+  - { file: app/shop/tests/unit/actions/archive_cart.spec.ts, code: "test('x', () => {})" }
+  - file: app/actions/register_review.ts
+    code: 'export default class RegisterReview { async handle(input) {} private x() {} }'
+  - file: app/actions/archive_cart.ts
+    code: 'export default class A { async handle(input) { return input } protected y() {} #z() {} static make() {} get g() { return 1 } }'
+  - file: app/services/x.ts
+    code: 'export default class A { handle() {} other() {} }'
+invalid:
+  - { file: app/shop/actions/archive_cart.ts, code: 'export default class A { handle() {} other() {} }' }
+  - file: app/actions/a.ts
+    code: 'export default class A { handle() {} other() {} }'
+  - file: app/actions/a.ts
+    code: 'export default class A { handle() {} public other() {} }'

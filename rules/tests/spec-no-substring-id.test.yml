@@ -1,0 +1,6 @@
+valid:
+  - { file: tests/functional/articles/index.spec.ts, code: "test('x', ({ assert }) => { assert.notInclude(body.map((row) => row.id), article.id) })" }
+  - { file: app/shop/tests/functional/articles/index.spec.ts, code: "test('x', ({ assert }) => { assert.include(JSON.stringify(body), 'Article title') })" }
+invalid:
+  - { file: tests/functional/articles/index.spec.ts, code: "test('x', ({ assert }) => { assert.notInclude(JSON.stringify(response.body()), String(article.id)) })" }
+  - { file: app/shop/tests/functional/articles/index.spec.ts, code: "test('x', ({ assert }) => { assert.include(JSON.stringify(body), String(article.id)) })" }

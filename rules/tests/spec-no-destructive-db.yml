@@ -1,0 +1,30 @@
+id: spec-no-destructive-db
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No `truncate()`, `migrate()` or `seed()` in test files, bootstrap included, nor `migration:*`/`db:seed` passed to a command runner"
+message: 'A test truncates, migrates or seeds the database: tests run against the developer database and must not wipe or rewrite it.'
+note: 'Migrate and seed outside the test run (`node ace migration:run`, `node ace db:seed`). Each test creates the rows it needs inside `wrapInGlobalTransaction()`, which rolls them back.'
+rule:
+  any:
+    # testUtils.db().migrate() / .seed() / .truncate(), db.truncate('reviews'), Review.truncate()
+    - kind: call_expression
+      has:
+        field: function
+        kind: member_expression
+        all:
+          - has: { field: property, regex: '^(truncate|migrate|seed)$' }
+          # string.truncate('text', 10) is the string helper, not the database.
+          - not: { has: { field: object, kind: identifier, regex: '^(string|str)$' } }
+    # seed() imported from a helper
+    - kind: call_expression
+      has: { field: function, kind: identifier, regex: '^seed$' }
+    # ace.exec('migration:fresh'), execa('node', ['ace', 'db:seed']). Only as
+    # an argument of a command runner: a parser test may hold 'db:seed' as data.
+    - kind: string
+      regex: '^[''"](db:(seed|wipe)|migration:(run|fresh|refresh|reset|rollback))\b'
+      inside:
+        stopBy: end
+        kind: call_expression
+        has: { field: function, regex: '(^|\.)(exec|execa|execSync|execFile|execFileSync|spawn|spawnSync|command)$' }

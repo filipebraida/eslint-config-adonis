@@ -1,0 +1,5 @@
+valid:
+  - { file: app/queries/list_posts.ts, code: "export default class ListPosts { handle({ client }) { return Post.query({ client }) } }" }
+invalid:
+  - { file: app/queries/list_posts.ts, code: "export default class ListPosts { handle() { return db.transaction(async (trx) => Post.query({ client: trx })) } }" }
+  - { file: app/shop/queries/find_page.ts, code: "const trx = await db.transaction()" }

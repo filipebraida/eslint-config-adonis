@@ -1,0 +1,29 @@
+id: raw-table-needs-reason
+language: typescript
+files: ['app/**/*.ts', 'start/**/*.ts']
+ignores: ['app/*/database/migrations/**', 'app/*/tests/**']
+severity: error
+metadata:
+  description: "`db.from/table/query/rawQuery` and `trx.from/table` only with a comment on the line above saying why the model is not used"
+message: '`$CALL` without a comment saying why the model is not used.'
+note: 'A table that has a model is read and written through the model and its relations: `Post.query({ client: trx })`, `post.related(''tags'').attach(ids)`. `db.from`/`trx.from`/`trx.table` are for a table without a model (a library pivot), SQL the model cannot express, or a count across tables; then say which, in a comment on the line above, so the next agent does not copy it as the default.'
+rule:
+  pattern: $CALL
+  kind: call_expression
+  has:
+    field: function
+    kind: member_expression
+    all:
+      - has: { field: object, kind: identifier, regex: '^(db|trx|client)$' }
+      - has: { field: property, regex: '^(from|table|query|insertQuery|rawQuery|knexQuery|knexRawQuery)$' }
+  not:
+    inside:
+      stopBy: end
+      # The statement, the object key or the call argument that holds it.
+      any:
+        - kind: expression_statement
+        - kind: lexical_declaration
+        - kind: return_statement
+        - kind: pair
+        - inside: { kind: arguments }
+      follows: { kind: comment }

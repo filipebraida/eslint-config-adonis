@@ -1,0 +1,6 @@
+valid:
+  - { file: inertia/pages/posts/index.tsx, code: "export default function I() { return <p>Draft: not published yet.</p> }" }
+  - { file: inertia/components/ui/table.tsx, code: "export const Empty = () => <span>—</span>" }
+invalid:
+  - { file: inertia/pages/posts/index.tsx, code: "export default function I() { return <p>Draft — not published yet.</p> }" }
+  - { file: app/shop/ui/components/orders/row.tsx, code: "export const Row = () => <Cell>{value ?? '—'}</Cell>" }

@@ -1,0 +1,6 @@
+valid:
+  - { file: app/notifications/send_welcome_notification.ts, code: 'export default class A {}' }
+  - { file: app/shop/notifications/sync_notification.ts, code: 'export default class A {}' }
+invalid:
+  - { file: app/notifications/send_welcome.ts, code: 'export default class A {}' }
+  - { file: app/shop/notifications/sync.ts, code: 'export default class A {}' }

@@ -1,0 +1,31 @@
+valid:
+  - file: app/controllers/articles_controller.ts
+    code: "export default class C { async show({ bouncer, params }) { await bouncer.with(ArticlePolicy).authorize('view', params.id) } }"
+  - file: app/shop/controllers/orders_controller.ts
+    code: "export default class C { async index({ bouncer }) { await bouncer.authorize('listOrders') } }"
+  - file: app/shop/controllers/web/orders_controller.ts
+    code: "export default class C { async index(ctx) { await ctx.bouncer.with(OrderPolicy).authorize('list') }\nasync store(ctx) { if (x) { await ctx.bouncer.authorize('create') } } }"
+  - file: app/controllers/home_controller.ts
+    code: "export default class HomeController { static readonly public = true\nasync index({ inertia }) { return inertia.render('site/home') } }"
+  - file: app/auth/controllers/sign_in_controller.ts
+    code: "export default class C { static public = true\nasync create() {}\nasync store() {} }"
+  - file: app/controllers/articles_controller.ts
+    code: "export default class C { constructor(private s: S) {}\nprivate load() {}\nprotected x() {}\n#y() {}\nstatic z() {}\nget w() { return 1 }\nasync index({ bouncer }) { await bouncer.authorize('x') } }"
+  - file: app/services/articles.ts
+    code: 'export default class C { async index() {} }'
+  - file: app/controllers/news_controller.ts
+    code: "export default class C { async update({ bouncer }) { const policy = bouncer.with(NewsPolicy)\nawait policy.authorize('update') } }"
+invalid:
+  - file: app/controllers/articles_controller.ts
+    code: "export default class C { async show({ params }) { return params.id } }"
+  - file: app/shop/controllers/orders_controller.ts
+    code: "export default class C { async index({ bouncer }) { await bouncer.authorize('list') }\nasync store() {}\nasync destroy() {} }"
+    errors: 2
+  - file: app/shop/controllers/web/orders_controller.ts
+    code: "export default class C { async index({ bouncer }) { if (await bouncer.allows('list')) return } }"
+  - file: app/controllers/home_controller.ts
+    code: "export default class C { static readonly public = false\nasync index() {} }"
+  - file: app/controllers/home_controller.ts
+    code: "export default class C { readonly public = true\nasync index() {} }"
+  - file: app/controllers/news_controller.ts
+    code: "export default class C { async update({ form }) { await form.authorize() } }"

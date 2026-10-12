@@ -1,0 +1,14 @@
+id: action-no-side-effect-imports
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "Actions do not import `@adonisjs/mail` or `@adonisjs/transmit`; side effects go through events"
+message: 'Action imports $SOURCE.'
+note: 'Mail and notifications go through events: the action emits after the commit (`await events.X.dispatch(id)`), a listener dispatches a job, and the job performs the effect.'
+rule:
+  kind: import_statement
+  has:
+    field: source
+    pattern: $SOURCE
+    regex: '^[''"]@adonisjs/(mail|transmit)([/''"])'

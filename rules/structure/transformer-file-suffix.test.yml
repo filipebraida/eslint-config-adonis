@@ -1,0 +1,6 @@
+valid:
+  - { file: app/transformers/article_transformer.ts, code: 'export default class T {}' }
+  - { file: app/shop/transformers/order_transformer.ts, code: 'export default class T {}' }
+invalid:
+  - { file: app/transformers/article.ts, code: 'export default class T {}' }
+  - { file: app/shop/transformers/paginate_orders.ts, code: 'export {}' }

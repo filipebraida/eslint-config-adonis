@@ -1,0 +1,44 @@
+id: no-raw-datetime-in-query
+language: typescript
+files: ['app/**/*.ts']
+ignores: ['app/*/tests/**']
+severity: error
+metadata:
+  description: "No Luxon `DateTime` passed straight to `.where()`/`.update({...})`; call `.toSQL()`"
+message: 'Luxon `DateTime` passed straight to the query builder.'
+note: 'The query builder does not serialize Luxon: call `.toSQL()` (or `.toSQLDate()`) on the value, e.g. `.where(''expires_at'', ''<'', DateTime.now().toSQL())`. Model attributes (`merge`, `fill`, `save`) take a DateTime as is.'
+utils:
+  # DateTime.now(), DateTime.fromISO(x).plus({ days: 1 }): a chain that ends in a DateTime.
+  datetime-value:
+    kind: call_expression
+    all:
+      - has:
+          field: function
+          kind: member_expression
+          has: { field: property, regex: '^(now|local|utc|fromISO|fromJSDate|fromSQL|fromFormat|fromMillis|fromSeconds|fromObject|plus|minus|startOf|endOf|set)$' }
+      - has: { field: function, has: { stopBy: end, kind: identifier, regex: '^DateTime$' } }
+rule:
+  matches: datetime-value
+  any:
+    # .where('col', DateTime.now()), .where('col', '<', DateTime.now())
+    - inside:
+        kind: arguments
+        inside:
+          kind: call_expression
+          has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(where|andWhere|orWhere|whereNot|andWhereNot|orWhereNot)$' }
+    # .update({ col: DateTime.now() })
+    - inside:
+        kind: pair
+        inside:
+          kind: object
+          inside:
+            kind: arguments
+            inside:
+              kind: call_expression
+              has:
+                field: function
+                kind: member_expression
+                has: { field: property, regex: '^update$' }

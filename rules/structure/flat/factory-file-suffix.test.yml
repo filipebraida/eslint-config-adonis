@@ -1,0 +1,4 @@
+valid:
+  - { file: database/factories/post_factory.ts, code: 'export const PostFactory = factory' }
+invalid:
+  - { file: database/factories/post.ts, code: 'export const PostFactory = factory' }

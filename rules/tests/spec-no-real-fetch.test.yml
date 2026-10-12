@@ -1,0 +1,18 @@
+valid:
+  - file: tests/unit/services/geo.spec.ts
+    code: "test('x', async () => { sinon.stub(globalThis, 'fetch').resolves(new Response('{}'))\nawait fetch('https://x') })"
+  - file: app/shop/tests/unit/services/geo.spec.ts
+    code: "test('x', async () => { const s = stub(globalThis, \"fetch\")\nawait globalThis.fetch('https://x') })"
+  - file: tests/unit/services/geo.spec.ts
+    code: "test('x', async () => { await service.fetch() })"
+  - file: tests/helpers/http.ts
+    code: "export const get = () => fetch('https://x')"
+  - file: tests/unit/services/geo.spec.ts
+    code: "test('x', async () => { using http = fakeFetch({ status: 200 })\nawait fetch('https://x') })"
+invalid:
+  - file: tests/unit/services/geo.spec.ts
+    code: "test('x', async () => { await fetch('https://x') })"
+  - file: app/shop/tests/unit/services/geo.spec.ts
+    code: "test('x', async () => { await globalThis.fetch('https://x') })"
+  - file: tests/functional/geo/index.spec.ts
+    code: "test('x', async () => { sinon.stub(service, 'fetch')\nawait fetch('https://x') })"

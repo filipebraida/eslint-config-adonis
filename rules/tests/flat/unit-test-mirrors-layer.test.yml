@@ -1,0 +1,10 @@
+valid:
+  - { file: tests/unit/actions/register_review.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/unit/services/order_service/workflow.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/unit/abilities/authorizer.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/functional/reviews/store.spec.ts, code: "test('x', () => {})" }
+invalid:
+  - { file: tests/unit/register_review.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/unit/misc/x.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/unit/order/stage.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/unit/tests/a.spec.ts, code: "test('x', () => {})" }

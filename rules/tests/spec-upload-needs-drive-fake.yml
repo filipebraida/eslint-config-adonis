@@ -1,0 +1,32 @@
+id: spec-upload-needs-drive-fake
+language: tsx
+files: ['tests/**/*.spec.{ts,tsx}', 'app/*/tests/**/*.spec.{ts,tsx}']
+severity: error
+metadata:
+  description: "A spec that uploads (`.file()`, `setInputFiles`, or `createFromBuffer/File` plus `.save()`) calls `drive.fake()`"
+message: 'This spec uploads files without `drive.fake()`: every run leaves real files in the upload folders.'
+note: 'Start the test with `using fake = drive.fake()`: uploads go to a temporary disk that is removed when the test ends, and `fake.assertExists()` checks them.'
+rule:
+  kind: program
+  all:
+    - any:
+        # client.post('/x').file('photo', buffer), page.setInputFiles(...)
+        - has:
+            stopBy: end
+            kind: call_expression
+            has:
+              field: function
+              kind: member_expression
+              has: { field: property, regex: '^(file|setInputFiles)$' }
+        # An attachment only reaches the disk when its model is saved.
+        - all:
+            - has:
+                stopBy: end
+                kind: call_expression
+                has: { field: function, regex: '(^|\.)(createFromBuffer|createFromFile)$' }
+            - has:
+                stopBy: end
+                kind: call_expression
+                has: { field: function, kind: member_expression, has: { field: property, regex: '^save$' } }
+    - not:
+        has: { stopBy: end, pattern: drive.fake($$$) }

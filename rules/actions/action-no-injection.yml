@@ -1,0 +1,14 @@
+id: action-no-injection
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "No constructor and no `@inject()` in an action; a provider to swap is injected into a service"
+message: 'Action with a constructor or `@inject()`.'
+note: 'An action is called as `new PublishPost().handle(input)`: its dependency is the database, which is global and real in the test. A provider that must be swapped (a payment gateway, a remote API) is injected into a service, and the effect runs there, outside the action.'
+rule:
+  any:
+    - kind: method_definition
+      has: { field: name, regex: '^constructor$' }
+    - kind: decorator
+      regex: '^@inject\b'

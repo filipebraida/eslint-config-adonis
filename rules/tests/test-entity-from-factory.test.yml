@@ -1,0 +1,12 @@
+valid:
+  - { file: tests/unit/actions/publish_post.spec.ts, code: "test('x', async () => { const post = await PostFactory.apply('draft').with('author').create()\nconst many = await PostFactory.createMany(3) })" }
+  - { file: app/shop/tests/helpers/scenarios.ts, code: "export async function publishedIn(n) { return OrderFactory.merge({ n }).createMany(n) }" }
+  - { file: tests/unit/services/x.spec.ts, code: "test('x', async () => { const m = new Map()\nconst o = Object.create(null)\nconst r = new Response('{}') })" }
+  - { file: app/actions/create_post.ts, code: "await Post.create({ title })" }
+  - { file: tests/functional/posts/store.spec.ts, code: "test('x', async ({ client }) => { await client.post('/x').form({}) })" }
+  - { file: tests/unit/actions/install.spec.ts, code: "test('x', async () => { await new Install().handle()\nconst row = await PostFactory.create()\nawait row.save() })" }
+invalid:
+  - { file: tests/unit/actions/publish_post.spec.ts, code: "test('x', async () => { const post = await Post.create({ title: 'a' }) })" }
+  - { file: app/shop/tests/helpers/users.ts, code: "export const createAdmin = () => User.createMany([{ role: 'admin' }])" }
+  - { file: tests/functional/posts/index.spec.ts, code: "test('x', async () => { await db.table('posts').insert({ title: 'a' }) })" }
+  - { file: tests/functional/posts/index.spec.ts, code: "test('x', async () => { await db.insertQuery().table('posts').insert({}) })" }

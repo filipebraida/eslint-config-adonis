@@ -1,0 +1,11 @@
+id: transformer-file-suffix
+language: typescript
+files: ['app/transformers/**/*.ts', 'app/*/transformers/**/*.ts']
+ignores: ['app/transformers/**/*_transformer.ts', 'app/*/transformers/**/*_transformer.ts']
+severity: error
+metadata:
+  description: "Files in `transformers/` end in `_transformer.ts`"
+message: 'File in transformers/ without the `_transformer.ts` suffix.'
+note: 'Name it `<model>_transformer.ts`: the codegen derives the frontend types from transformers with this suffix. Pagination or formatting helpers move to the transformer that uses them or to services/.'
+rule:
+  kind: program

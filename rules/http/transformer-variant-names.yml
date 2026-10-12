@@ -1,0 +1,17 @@
+id: transformer-variant-names
+language: typescript
+files: ['app/transformers/**/*_transformer.ts', 'app/*/transformers/**/*_transformer.ts']
+severity: error
+metadata:
+  description: "Transformer methods are `toObject()` or `for<Screen>()`"
+message: 'Transformer method `$NAME()` is neither `toObject()` nor a `for<Screen>` variant.'
+note: 'A transformer has a base `toObject()` and one variant per screen that needs a different shape, `forList()`, `forEdit()`, `forShow()`, consumed as `.useVariant(''forEdit'')` and typed as `Data.<Name>.Variants[''forEdit'']`. The codegen only types variants named `for<Screen>`.'
+rule:
+  kind: method_definition
+  has: { field: name, pattern: $NAME }
+  not:
+    any:
+      - has: { field: name, regex: '^(toObject|for[A-Z]\w*|constructor)$' }
+      - has: { field: name, kind: private_property_identifier }
+      - has: { kind: accessibility_modifier, regex: '^(private|protected)$' }
+      - regex: '^(public\s+)?(static|get|set)\b'

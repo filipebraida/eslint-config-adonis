@@ -1,0 +1,6 @@
+valid:
+  - { file: app/actions/publish_post.ts, code: "export default class PublishPost { async handle(input) { return input } }" }
+  - { file: app/services/payment/charge_order.ts, code: "@inject()\nexport default class ChargeOrder { constructor(private gateway: PaymentGateway) {} }" }
+invalid:
+  - { file: app/actions/publish_post.ts, code: "@inject()\nexport default class PublishPost { constructor(private s: S) {} async handle() {} }", errors: 2 }
+  - { file: app/orders/actions/close_order.ts, code: "export default class CloseOrder { constructor(private gateway: PaymentGateway) {} async handle() {} }" }

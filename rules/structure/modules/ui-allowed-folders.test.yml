@@ -1,0 +1,10 @@
+valid:
+  - { file: app/shop/ui/pages/orders/index.tsx, code: 'export {}' }
+  - { file: app/shop/ui/components/order_card.tsx, code: 'export {}' }
+  - { file: app/shop/ui/context/order_context.tsx, code: 'export {}' }
+  - { file: app/shop/ui/hooks/use_order.ts, code: 'export {}' }
+  - { file: app/shop/controllers/ui/x_controller.ts, code: 'export {}' }
+invalid:
+  - { file: app/shop/ui/utils/format.ts, code: 'export {}' }
+  - { file: app/core/ui/app/app.tsx, code: 'export {}' }
+  - { file: app/shop/ui/navigation/items.ts, code: 'export {}' }

@@ -1,0 +1,11 @@
+id: module-no-loose-files
+language: tsx
+files: ['app/*/*.{ts,tsx}']
+ignores: ['app/*/routes.ts']
+severity: error
+metadata:
+  description: "Only `routes.ts` at the root of `app/<module>/`"
+message: 'Loose file at the root of a module.'
+note: 'Only routes.ts lives at the root of app/<module>/; move the file into the folder of its concept (actions, queries, controllers, services...).'
+rule:
+  kind: program

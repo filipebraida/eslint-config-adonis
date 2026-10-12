@@ -1,0 +1,8 @@
+valid:
+  - file: database/migrations/1_create_comments_table.ts
+    code: "this.schema.createTable('comments', (table) => {\n  table.integer('post_id').unsigned().notNullable().references('id').inTable('posts').onDelete('CASCADE')\n})"
+invalid:
+  - file: database/migrations/1_create_comments_table.ts
+    code: "this.schema.createTable('comments', (table) => {\n  table.integer('post_id').unsigned().references('id').inTable('posts')\n})"
+  - file: app/shop/database/migrations/1_a.ts
+    code: "this.schema.alterTable('a', (t) => {\n  t.integer('b_id').references('b.id')\n})"
