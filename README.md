@@ -31,7 +31,7 @@ export default configApp(...ui(), ...adonis())
 ```
 
 Globs are relative to the ESLint working directory, which is the app root.
-Requires Node 22+ and ESLint 10.
+Requires Node 24+ (as AdonisJS 7) and ESLint 10.
 
 ## What it checks
 
