@@ -19,7 +19,7 @@ app/actions/publish_post.ts
 ## Install
 
 ```bash
-pnpm add -D @filipebraida/eslint-config-adonis eslint typescript
+pnpm add -D @filipebraida/eslint-config-adonis
 ```
 
 ```js
@@ -31,6 +31,8 @@ export default configApp(...ui(), ...adonis())
 ```
 
 Globs are relative to the ESLint working directory, which is the app root.
+An AdonisJS 7 app already has `eslint`, `typescript` and
+`@adonisjs/eslint-config`; this package uses the ones the app installs.
 Requires Node 24+ (as AdonisJS 7) and ESLint 10.
 
 ## What it checks
