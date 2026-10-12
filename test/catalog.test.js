@@ -9,5 +9,7 @@ test('every rule has a description for the catalog', async () => {
 })
 
 test('the README catalog matches the rules (run `pnpm catalog`)', async () => {
-  assert.ok(readFileSync(README, 'utf8').includes(await catalog()))
+  // A checkout on Windows may turn the README into CRLF.
+  const readme = readFileSync(README, 'utf8').replace(/\r\n/g, '\n')
+  assert.ok(readme.includes(await catalog()))
 })

@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs'
-import { basename, join } from 'node:path'
+import { basename, join, resolve } from 'node:path'
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
 import { ESLint } from 'eslint'
@@ -8,7 +8,8 @@ import { parse, parseAllDocuments } from 'yaml'
 import { adonis, LAYOUTS, layoutOf, RULES_DIR } from '../presets/adonis.js'
 
 const NAMESPACE = 'adonis'
-const ROOT = '/project'
+// A fake app root; `resolve` makes it absolute on Windows too (`D:\project`).
+const ROOT = resolve('/project')
 
 /** One ESLint per layout, each with the full `adonis({ layout })` preset. */
 const linters = Object.fromEntries(
@@ -77,7 +78,7 @@ test('adonis() rejects an unknown layout', () => {
 })
 
 async function messagesFor(layout, id, { file, code }) {
-  const [result] = await linters[layout].lintText(code, { filePath: `${ROOT}/${file}` })
+  const [result] = await linters[layout].lintText(code, { filePath: join(ROOT, file) })
   const fatal = result.messages.filter((m) => m.fatal)
   assert.deepEqual(fatal, [], `parse error in ${file}`)
   return result.messages.filter((m) => m.ruleId === `${NAMESPACE}/${id}`)
