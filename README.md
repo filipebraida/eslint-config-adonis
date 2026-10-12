@@ -363,6 +363,20 @@ ones (`rules/routes/route-param-matcher.js`, `rules/size/function-size.js`),
 registered in `JS_RULES` in `presets/adonis.js`, with its cases in a
 `.test.yml` like any other.
 
+## Releasing
+
+Bump `version` in `package.json`, commit, then tag and push:
+
+```bash
+git tag v0.2.0 && git push origin main v0.2.0
+```
+
+The `release` workflow runs the checks, verifies that the tag matches the
+version, publishes to npm with provenance through trusted publishing (no npm
+token is stored in the repository) and creates the GitHub release. A version
+with `-alpha`, `-beta` or `-rc` goes to that dist-tag and is marked as a
+prerelease.
+
 ## License
 
 MIT
