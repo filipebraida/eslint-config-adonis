@@ -1,0 +1,26 @@
+valid:
+  # Only the id at hand: there is no instance to go through.
+  - { file: app/controllers/posts_controller.ts, code: "await Comment.query().where('postId', params.post_id)" }
+  - { file: app/queries/list_comments.ts, code: "await Comment.query().where('postId', postId)" }
+  - { file: app/queries/list_comments.ts, code: "await Comment.query().where('postId', input.postId)" }
+  - { file: app/queries/find_post.ts, code: "await Post.query().where('id', post.id)" }
+  - { file: app/models/post.ts, code: "Comment.query().where('postId', this.id)" }
+  - { file: app/actions/a.ts, code: "await post.related('comments').query().where('status', 'open')" }
+  - { file: app/actions/a.ts, code: "await post.related('comments').create({ body })" }
+  # A second parent on a related() call has no relation left to go through.
+  - { file: app/actions/a.ts, code: "await post.related('comments').create({ authorId: user.id, body })" }
+  - { file: app/actions/a.ts, code: "await post.related('comments').query().where('authorId', user.id)" }
+  - { file: app/actions/a.ts, code: "await Comment.query().where('postId', '>', post.id)" }
+  # A whereHas callback, a grouping callback or a table without a model: no relation to go through.
+  - { file: app/queries/a.ts, code: "await Comment.query().whereHas('post', (p) => p.where('authorId', user.id))" }
+  - { file: app/queries/a.ts, code: "await Comment.query().where((q) => q.where('postId', post.id))" }
+  - { file: app/queries/a.ts, code: "await db.from('post_tags').select('tag_id').where('post_id', post.id)" }
+  - { file: app/actions/a.ts, code: "await Comment.create({ postId, body })" }
+  - { file: tests/functional/a.spec.ts, code: "await Comment.query().where('postId', post.id)" }
+  - { file: app/blog/tests/functional/a.spec.ts, code: "await Comment.query().where('postId', post.id)" }
+invalid:
+  - { file: app/models/user.ts, code: "Comment.query().where('postId', post.id)" }
+  - { file: app/actions/a.ts, code: "await Lancamento.query({ client: trx }).where('resgateId', resgate.id).first()" }
+  - { file: app/queries/a.ts, code: "await Comment.query().where('status', 'open').andWhere('post_id', post.id)" }
+  - { file: app/blog/actions/a.ts, code: "await Comment.create({ postId: post.id, body }, { client: trx })" }
+  - { file: app/actions/a.ts, code: "await Comment.create({ postId: post.id, authorId: user.id })", errors: 2 }

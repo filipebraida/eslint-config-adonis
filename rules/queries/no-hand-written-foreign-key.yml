@@ -1,0 +1,50 @@
+id: no-hand-written-foreign-key
+language: typescript
+files: ['app/**/*.ts']
+ignores: ['app/*/tests/**', 'app/*/database/**']
+severity: error
+metadata:
+  description: "No foreign key written by hand from an instance at hand: `.where('postId', post.id)` and `create({ postId: post.id })` go through `post.related('<relation>')`"
+message: '`$KEY` filled by hand from `$INST.id`: the instance is at hand, go through its relation.'
+note: 'Read with `$INST.related(''<relation>'').query()` and write with `$INST.related(''<relation>'').create({...})`; declare the relation on the model if it is missing. Inside a transaction the instance carries the client: load it with `{ client: trx }` or call `$INST.useTransaction(trx)` before `related()`, or the relation runs outside the transaction. A second parent set on a `related()` call is fine; with only the id (no instance), filtering by the column is fine too.'
+utils:
+  # post.id: an identifier, never `this.id`, `params.id` nor a bare `postId`.
+  instance-id:
+    kind: member_expression
+    all:
+      - has: { field: object, kind: identifier, pattern: $INST }
+      - has: { field: property, regex: '^id$' }
+  # inscricao.related('resgates').create({ lancamentoId: l.id }): the second parent has no relation to go through.
+  through-relation:
+    has: { field: function, has: { stopBy: end, kind: property_identifier, regex: '^related$' } }
+rule:
+  any:
+    # Comment.query({ client: trx }).where('postId', post.id): a chain that starts at `Model.query()`.
+    # A `whereHas` callback or a `db.from()` table has no relation to go through.
+    - kind: call_expression
+      not: { matches: through-relation }
+      all:
+        - has: { field: function, kind: member_expression, has: { field: property, regex: '^(where|andWhere)$' } }
+        - has: { field: function, has: { stopBy: end, kind: call_expression, has: { field: function, kind: member_expression, has: { field: property, regex: '^query$' } } } }
+        - has:
+            field: arguments
+            all:
+              - has: { nthChild: 1, kind: string, pattern: $KEY, regex: '^[''"]\w+(Id|_id)[''"]$' }
+              - has: { nthChild: 2, matches: instance-id }
+            not: { has: { nthChild: 3 } }
+    # Comment.create({ postId: post.id, body }): one report per key.
+    - kind: pair
+      all:
+        - has: { field: key, kind: property_identifier, pattern: $KEY, regex: 'Id$' }
+        - has: { field: value, matches: instance-id }
+      inside:
+        kind: object
+        inside:
+          kind: arguments
+          inside:
+            kind: call_expression
+            not: { matches: through-relation }
+            has:
+              field: function
+              kind: member_expression
+              has: { field: property, regex: '^(create|createQuietly|firstOrCreate|updateOrCreate)$' }

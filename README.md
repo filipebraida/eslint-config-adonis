@@ -221,6 +221,7 @@ invert the condition and return early.
 | actions | `action-no-injection` | No constructor and no `@inject()` in an action; a provider to swap is injected into a service |
 | actions | `action-no-side-effect-imports` | Actions do not import `@adonisjs/mail` or `@adonisjs/transmit`; side effects go through events |
 | actions | `action-requires-handle` | The exported action class has a public `handle()` |
+| queries | `no-hand-written-foreign-key` | No foreign key written by hand from an instance at hand: `.where('postId', post.id)` and `create({ postId: post.id })` go through `post.related('<relation>')` |
 | queries | `no-query-in-loop` | No `Model.find*/query/all/first` inside a loop or a `.map/.forEach` callback (N+1) |
 | queries | `query-no-http-context` | Queries do not import `HttpContext` as a value (`import type` is fine) |
 | queries | `query-no-transaction` | Queries never open a transaction |
