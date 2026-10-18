@@ -3,9 +3,9 @@ language: typescript
 files: ['app/controllers/**/*_controller.ts', 'app/*/controllers/**/*_controller.ts']
 severity: error
 metadata:
-  description: "Public methods are only index, show, create, store, edit, update, destroy; another verb is another resource named by its noun (no `handle()`)"
-message: '`$NAME()` is not a CRUD method (index, show, create, store, edit, update, destroy).'
-note: 'The verb is another resource, named by its noun, with a CRUD method: `PostsController.archive` becomes `PostArchivalsController.update` (`PUT /posts/:id/archival`), `duplicate` becomes `PostCopiesController.store`. A single-action controller with `handle()` is the same violation.'
+  description: "Public methods are only index, show, create, store, edit, update, destroy, or a single `handle()` alone; another verb is another resource named by its noun"
+message: '`$NAME()` is not a CRUD method (index, show, create, store, edit, update, destroy) nor the `handle()` of a single-action controller.'
+note: 'The verb is another resource, named by its noun, with a CRUD method: `PostsController.archive` becomes `PostArchivalsController.update` (`PUT /posts/:id/archival`), `duplicate` becomes `PostCopiesController.store`. A single-action controller has only `handle()` as its public method; `handle()` next to another public method is a mix and fails.'
 rule:
   kind: method_definition
   inside: { kind: class_body }
@@ -13,6 +13,19 @@ rule:
   not:
     any:
       - has: { field: name, regex: '^(index|show|create|store|edit|update|destroy|constructor)$' }
+      # A single-action controller: `handle()` as the only public method.
+      - all:
+          - has: { field: name, regex: '^handle$' }
+          - inside:
+              kind: class_body
+              not:
+                has:
+                  kind: method_definition
+                  all:
+                    - not: { has: { field: name, regex: '^(handle|constructor)$' } }
+                    - not: { has: { field: name, kind: private_property_identifier } }
+                    - not: { has: { kind: accessibility_modifier, regex: '^(private|protected)$' } }
+                    - not: { regex: '^(public\s+)?(static|get|set)\b' }
       - has: { field: name, kind: private_property_identifier }
       - has: { kind: accessibility_modifier, regex: '^(private|protected)$' }
       # Static members, getters and setters are not actions.

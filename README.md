@@ -228,7 +228,7 @@ invert the condition and return early.
 | queries | `query-no-writes` | Queries never call `save`, `create`, `update`, `delete`, `merge`... |
 | controllers | `controller-authorizes` | Every public method calls `bouncer.authorize()` / `bouncer.with(Policy).authorize()`, unless the class declares `static readonly public = true` |
 | controllers | `controller-authorizes-first` | `request.validateUsing()` never comes before `authorize()` |
-| controllers | `controller-crud-methods` | Public methods are only index, show, create, store, edit, update, destroy; another verb is another resource named by its noun (no `handle()`) |
+| controllers | `controller-crud-methods` | Public methods are only index, show, create, store, edit, update, destroy, or a single `handle()` alone; another verb is another resource named by its noun |
 | controllers | `controller-no-authenticate` | No `auth.authenticate()`/`authenticateUsing()` in a controller; the `auth` middleware authenticates, the controller calls `auth.getUserOrFail()` |
 | controllers | `controller-no-inline-validator` | No `vine.create/compile/object` in a controller; validators live in `validators/` |
 | controllers | `controller-no-serialize` | No `.serialize()`/`.toJSON()` in a controller; data leaves through a transformer |
