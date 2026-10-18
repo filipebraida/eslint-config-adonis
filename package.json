@@ -1,6 +1,6 @@
 {
   "name": "@filipebraida/eslint-config-adonis",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lint for AdonisJS apps: architecture rules as ast-grep YAML and a UI preset (strict React, react-hooks, accessibility and design system). Every message says how to fix it.",
   "keywords": [
     "eslint",
