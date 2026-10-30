@@ -207,11 +207,9 @@ invert the condition and return early.
 |---|---|---|
 | structure | `app-no-loose-files` | No loose file at the root of `app/` |
 | structure | `controller-file-suffix` | Files in `controllers/` end in `_controller.ts` |
-| structure | `exception-file-suffix` | Files in `exceptions/` end in `_exception.ts`, except the global `handler.ts` |
 | structure | `job-file-suffix` | Files in `jobs/` end in `_job.ts`, as `make:job` writes them |
 | structure | `middleware-file-suffix` | Files in `middleware/` end in `_middleware.ts`, as `make:middleware` writes them |
 | structure | `no-generic-names` | No folder or file named utils, helpers, common, shared or misc at any depth in `app/` or `inertia/` (except shadcn's `inertia/lib/utils.ts` and the test helpers in `app/<module>/tests/helpers/`) |
-| structure | `notification-file-suffix` | Files in `notifications/` end in `_notification.ts` |
 | structure | `policy-file-suffix` | Files in `policies/` end in `_policy.ts`, except `main.ts` and files declaring an abstract class |
 | structure | `transformer-file-suffix` | Files in `transformers/` end in `_transformer.ts` |
 | actions | `action-handle-only` | An action exposes no public method besides `handle()` |
@@ -289,9 +287,11 @@ invert the condition and return early.
 | Area | Rule | What it enforces |
 |---|---|---|
 | structure | `app-allowed-layers` | Only the allowed layers under `app/` (actions, queries, controllers, models, policies, validators, transformers, middleware, events, listeners, jobs, mails, notifications, services, exceptions, enums, types, abilities, audit_resolvers) |
+| structure | `exception-file-suffix` | Files in `exceptions/` end in `_exception.ts`, except the global `handler.ts` |
 | structure | `factory-file-suffix` | Files in `database/factories/` end in `_factory.ts` |
 | structure | `inertia-allowed-folders` | Only components, css, hooks, layouts, lib and pages under `inertia/` |
 | structure | `inertia-no-loose-files` | Only app.tsx, ssr.tsx, client.ts and types.ts at the root of `inertia/` |
+| structure | `notification-file-suffix` | Files in `notifications/` end in `_notification.ts` |
 | tests | `functional-test-in-resource-folder` | Functional tests live in `tests/functional/<area>/` |
 | tests | `test-suite` | Specs live in `tests/unit/`, `tests/functional/` or `tests/browser/` |
 | tests | `unit-test-mirrors-layer` | Unit tests live in `tests/unit/<layer>/` |
@@ -301,8 +301,10 @@ invert the condition and return early.
 
 | Area | Rule | What it enforces |
 |---|---|---|
+| structure | `exception-file-suffix` | Files in `<module>/exceptions/` end in `_exception.ts`, except the global `core/exceptions/handler.ts` |
 | structure | `module-allowed-dirs` | Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers) |
 | structure | `module-no-loose-files` | Only `routes.ts` at the root of `app/<module>/` |
+| structure | `notification-file-suffix` | Files in `<module>/notifications/` end in `_notification.ts` |
 | structure | `ui-allowed-folders` | Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` |
 | structure | `ui-no-loose-files` | No loose file at the root of `app/<module>/ui/` |
 | tests | `functional-test-in-resource-folder` | Functional tests live in `app/<module>/tests/functional/<area>/` |

@@ -1,7 +1,7 @@
 id: notification-file-suffix
 language: typescript
-files: ['app/notifications/**/*.ts', 'app/*/notifications/**/*.ts']
-ignores: ['app/notifications/**/*_notification.ts', 'app/*/notifications/**/*_notification.ts']
+files: ['app/notifications/**/*.ts']
+ignores: ['app/notifications/**/*_notification.ts']
 severity: error
 metadata:
   description: "Files in `notifications/` end in `_notification.ts`"

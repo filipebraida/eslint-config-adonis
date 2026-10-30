@@ -1,0 +1,8 @@
+valid:
+  - { file: app/shop/notifications/sync_notification.ts, code: 'export default class A {}' }
+  # A module named `notifications` is not the notifications/ folder of a module.
+  - { file: app/notifications/actions/mark_read.ts, code: 'export default class A {}' }
+  - { file: app/notifications/notifications/digest_notification.ts, code: 'export default class A {}' }
+invalid:
+  - { file: app/shop/notifications/sync.ts, code: 'export default class A {}' }
+  - { file: app/notifications/notifications/digest.ts, code: 'export default class A {}' }
