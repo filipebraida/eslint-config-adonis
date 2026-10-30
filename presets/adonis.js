@@ -98,6 +98,33 @@ const DEPTH = {
   rules: { 'max-depth': ['error', 3] },
 }
 
+/**
+ * The AdonisJS preset rejects a leading underscore on any variable, while
+ * TypeScript's `noUnusedLocals` accepts an unused variable only when it starts
+ * with one. `using _fake = drive.fake()`, a fake a test needs but never
+ * asserts, hits both. An unused variable may take the underscore; every other
+ * selector is the AdonisJS one, unchanged.
+ */
+const UNUSED_UNDERSCORE = {
+  name: 'adonis/naming-unused-underscore',
+  files: ['**/*.{ts,tsx}'],
+  rules: {
+    '@typescript-eslint/naming-convention': [
+      'error',
+      { selector: 'variable', format: ['camelCase', 'UPPER_CASE', 'PascalCase'] },
+      {
+        selector: 'variable',
+        modifiers: ['unused'],
+        format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+        leadingUnderscore: 'allow',
+      },
+      { selector: 'typeLike', format: ['PascalCase'] },
+      { selector: 'class', format: ['PascalCase'] },
+      { selector: 'interface', format: ['PascalCase'], custom: { regex: '^I[A-Z]', match: false } },
+    ],
+  },
+}
+
 /** Rules that ast-grep YAML cannot express, as plain ESLint rules. */
 const JS_RULES = [
   {
@@ -147,5 +174,6 @@ export function adonis({ layout = 'flat', namespace = 'adonis' } = {}) {
       })),
     ),
     DEPTH,
+    UNUSED_UNDERSCORE,
   ]
 }

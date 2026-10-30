@@ -19,6 +19,8 @@ const linters = Object.fromEntries(
       cwd: ROOT,
       overrideConfigFile: true,
       overrideConfig: [
+        // `adonis()` configures a typescript-eslint rule; in an app `configApp` registers the plugin.
+        { plugins: { '@typescript-eslint': tseslint.plugin } },
         {
           files: ['**/*.ts'],
           languageOptions: { parser: tseslint.parser, ecmaVersion: 'latest', sourceType: 'module' },

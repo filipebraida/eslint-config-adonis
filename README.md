@@ -78,7 +78,10 @@ what keeps the next agent from copying the exception as the default.
 
 Architecture rules, written as [ast-grep](https://ast-grep.github.io/) YAML in
 `rules/<area>/<id>.yml` and run inside ESLint by `@adonisjs/eslint-ast-grep`,
-reported as `adonis/<id>`. It also sets the size limits and `max-depth`.
+reported as `adonis/<id>`. It also sets the size limits and `max-depth`, and
+lets an unused variable start with an underscore (`using _disk = drive.fake()`),
+which TypeScript's `noUnusedLocals` requires and the AdonisJS preset otherwise
+rejects.
 
 | Option      | Default    |                                                   |
 | ----------- | ---------- | ------------------------------------------------- |
