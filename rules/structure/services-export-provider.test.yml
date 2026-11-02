@@ -1,0 +1,21 @@
+valid:
+  - file: app/pessoas/services/orcid.ts
+    code: "export interface IdentidadeOrcid { orcid: string }\nexport default class OrcidClient { async buscar() {} }"
+  - file: app/auth/services/registro_de_pessoas.ts
+    code: 'export default abstract class RegistroDePessoas { abstract registrar(): Promise<void> }'
+  - file: app/inpi/services/fonte_bulk.ts
+    code: "export const RECURSOS_PATENTES = { base: 'x' }\nexport type LeitorRecurso = (url: string) => Promise<Readable>\nexport class FonteBulk implements FonteInpi {}"
+  - file: app/orders/services/payment_gateway.ts
+    code: "function sign(x: string) { return x }\nexport default class PaymentGateway { charge() { return sign(1) } }"
+  - file: app/core/utils/internal_path.ts
+    code: 'export function isSafeInternalPath(path: string) { return path }'
+invalid:
+  - file: app/auth/services/internal_path.ts
+    code: 'export function isSafeInternalPath(path?: string | null): path is string { return !!path }'
+  - file: app/users/services/global_permissions.ts
+    code: "export type GlobalPermissions = { a: boolean }\nexport async function globalPermissions(user: User) { return { a: true } }"
+    errors: 1
+  - file: app/services/slug.ts
+    code: 'export const slugify = (text: string) => text.toLowerCase()'
+  - file: app/common/services/mail_context.ts
+    code: 'export default function mailContext() { return {} }'

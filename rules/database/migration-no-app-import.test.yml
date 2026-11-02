@@ -1,0 +1,12 @@
+valid:
+  - { file: database/migrations/1_a.ts, code: "import { BaseSchema } from '@adonisjs/lucid/schema'" }
+  - { file: app/auth/database/migrations/1_a.ts, code: "import { AUTHZ_TABLES } from '@adonis-agora/authz'" }
+  - { file: app/cards/database/migrations/1_a.ts, code: "import type { CardKind } from '#cards/enums/card'" }
+  # A model import is the other rule's.
+  - { file: database/migrations/1_a.ts, code: "import Post from '#models/post'" }
+  - { file: app/cards/actions/create_card.ts, code: "import { CARD_KINDS } from '#cards/enums/card'" }
+invalid:
+  - { file: app/cards/database/migrations/1_a.ts, code: "import { CARD_KINDS, CARD_STATUSES } from '#cards/enums/card'" }
+  - { file: app/auth/database/migrations/1_a.ts, code: "import { LOCALE_PREFERENCE } from '#auth/enums/locale_preference'" }
+  - { file: database/migrations/1_a.ts, code: "import { STATUSES } from '#enums/post_status'" }
+  - { file: database/migrations/1_a.ts, code: "import { slug } from '../../app/services/slug'" }

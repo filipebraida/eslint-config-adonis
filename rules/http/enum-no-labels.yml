@@ -1,0 +1,31 @@
+id: enum-no-labels
+language: typescript
+files: ['app/enums/**/*.ts', 'app/*/enums/**/*.ts']
+severity: error
+metadata:
+  description: "No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>`"
+message: '`$NAME` holds display text in an enum file.'
+note: 'An enum holds the values, never the text the user reads: a label map is in one language, so a screen or a flash in another locale shows it untranslated. The label is the i18n key `<module>.<enum>.<value>` (`deliveries.stage.in_progress`) in every locale file, read with `t()` on the screen and `i18n.t()` on the server.'
+rule:
+  kind: variable_declarator
+  has: { field: name, pattern: $NAME }
+  any:
+    # DELIVERY_STAGE_LABELS, STATUS_LABEL
+    - has: { field: name, regex: '_LABELS?$' }
+    # Record<Stage, string> whose values are text for a person: a capital or a space.
+    # A map to slugs or codes (`'patente'`, `'ready-for-dev'`) is data, not a label.
+    - all:
+        - has: { field: type, regex: '^:\s*Record\s*<[\s\S]*,\s*string\s*>$' }
+        - has:
+            field: value
+            kind: object
+            has: { kind: pair, has: { field: value, kind: string, regex: '[A-Z\s]' } }
+    # [{ value: 'draft', label: 'Draft' }]
+    - has:
+        field: value
+        has:
+          stopBy: end
+          kind: pair
+          all:
+            - has: { field: key, regex: '^[''"]?label[''"]?$' }
+            - has: { field: value, any: [{ kind: string }, { kind: template_string }] }

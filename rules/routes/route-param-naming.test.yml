@@ -1,0 +1,19 @@
+valid:
+  - file: app/pedidos/routes.ts
+    code: "router.get('/pedidos/:id/pareceres/:designacaoId/novo', [controllers.pedidos.EmitirParecer, 'create']).as('pedidos.pareceres.novo')"
+  - file: start/routes.ts
+    code: "router.get('/docs/:slug?', [controllers.Docs]).as('docs.show')"
+  - file: app/orders/routes.ts
+    code: "router.group(() => {}).prefix('/orders/:id')"
+  - file: app/orders/actions/x.ts
+    code: "const path = '/orders/:order_id'"
+invalid:
+  - file: app/deliveries/routes.ts
+    code: "router.get('/:project_id/board', [Board, 'show']).as('projects.board.show')"
+  - file: app/deliveries/routes.ts
+    code: "router.post('/:project_id/deliveries/:delivery_id/stage', [DeliveryStage, 'store']).as('x')"
+    errors: 1
+  - file: start/routes.ts
+    code: "router.group(() => {}).prefix('/projects/:project_id')"
+  - file: app/orders/routes.ts
+    code: "router.get('/orders/:Id', [controllers.orders.Orders, 'show']).as('orders.show')"

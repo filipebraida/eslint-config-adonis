@@ -1,0 +1,16 @@
+id: migration-no-app-import
+language: typescript
+files: ['database/migrations/**/*.ts', 'app/*/database/migrations/**/*.ts']
+severity: error
+metadata:
+  description: "Migrations import nothing from the app (`#enums`, `#<module>/enums`, services...); models are `migration-no-model-import`"
+message: 'Migration imports $SOURCE from the app.'
+note: 'A migration is frozen in time: the enum, the constant or the helper it imports follows today''s code, so replaying the migration later builds another schema. Write the values literally in the migration (`table.enum(''status'', [''draft'', ''published''])`); a later change of the list is a new migration.'
+rule:
+  kind: import_statement
+  not:
+    any:
+      - regex: '^import\s+type\b'
+      # A model import is reported by migration-no-model-import.
+      - has: { field: source, regex: '^[''"](#models/|#[a-z_]+/models/|\.\.?/.*models/)' }
+  has: { field: source, pattern: $SOURCE, regex: '^[''"](#|\.\./)' }

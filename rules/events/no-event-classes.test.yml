@@ -1,0 +1,26 @@
+valid:
+  - file: app/pedidos/types/events.ts
+    code: |
+      declare module '@adonisjs/core/types' {
+        interface EventsList { 'pedido:submetido': { pedidoId: number } }
+      }
+  - file: app/pedidos/actions/submeter_pedido.ts
+    code: "import emitter from '@adonisjs/core/services/emitter'\nemitter.emit('pedido:submetido', { pedidoId: 1 })"
+  - file: start/events.ts
+    code: "import type {} from '#pedidos/types/events'\nconst NotificarSubmissao = () => import('#pedidos/listeners/notificar_submissao')"
+  - file: app/orders/models/order.ts
+    code: 'export default class Order extends BaseModel {}'
+invalid:
+  - file: app/projects/events/project_created_event.ts
+    code: |
+      import { BaseEvent } from '@adonisjs/core/events'
+      export default class ProjectCreatedEvent extends BaseEvent {
+        constructor(public project: Project) { super() }
+      }
+    errors: 1
+  - file: app/projects/actions/create_project.ts
+    code: "import ProjectCreatedEvent from '#projects/events/project_created_event'"
+  - file: start/events.ts
+    code: "import MessagePostedEvent from '#channels/events/message_posted_event'"
+  - file: app/events/order_placed.ts
+    code: 'export default class OrderPlaced extends BaseEvent {}'

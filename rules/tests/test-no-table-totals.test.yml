@@ -1,0 +1,46 @@
+valid:
+  # agencia: the delta helper.
+  - file: app/conteudo/tests/functional/documentos/painel.spec.ts
+    code: |
+      test.group('painel', () => {
+        // A suíte compartilha o banco com o dev: conta delta, nunca absoluto.
+        async function contarDocumentos() {
+          const result = await Documento.query().count('* as total')
+          return Number(result[0].$extras.total)
+        }
+      })
+  # agencia: scoped by the key the test wrote.
+  - file: app/inpi/tests/unit/models/inpi_processo.spec.ts
+    code: |
+      test('x', async ({ assert }) => {
+        const { total } = await db.from('inpi_processos').where('numero_normalizado', '1').count('* as total').firstOrFail()
+        assert.equal(Number(total), 1)
+      })
+  - file: app/channels/tests/functional/projects/project_channels.spec.ts
+    code: "test('x', async ({ assert }) => { assert.lengthOf(await Channel.query().where('projectId', project.id), 0) })"
+  - file: app/users/tests/unit/queries/list_users.spec.ts
+    code: "test('x', async ({ assert }) => { assert.lengthOf(pagina1.all(), 2) })"
+  - file: app/orders/tests/unit/models/order.spec.ts
+    code: "test('x', async ({ assert }) => { assert.equal(await order.related('items').query().getCount(), 2) })"
+  - file: app/orders/tests/unit/models/order.spec.ts
+    code: "test('x', async ({ assert }) => { assert.lengthOf((await Order.query().whereIn('id', ids)), 2) })"
+  - file: app/orders/actions/x.ts
+    code: "const [row] = await Order.query().count('* as total')"
+invalid:
+  - file: app/auth/tests/unit/mixins/with_social_identity.spec.ts
+    code: |
+      test('x', async ({ assert }) => {
+        const identityCount = await SocialIdentity.query().count('* as total')
+        assert.equal(Number(identityCount[0].$extras.total), 0)
+      })
+  - file: tests/functional/cards/index.spec.ts
+    code: "test('x', async ({ assert }) => { const [{ total }] = await db.from('cards').count('* as total') })"
+  - file: app/projects/tests/unit/actions/create_project.spec.ts
+    code: "test('x', async ({ assert }) => { assert.equal((await Project.all()).length, 1) })"
+  - file: app/projects/tests/unit/actions/create_project.spec.ts
+    code: "test('x', async ({ assert }) => { assert.lengthOf(await db.from('projects'), 1) })"
+  - file: app/projects/tests/unit/actions/create_project.spec.ts
+    code: "test('x', async ({ assert }) => { assert.isEmpty(await Project.query().preload('settings')) })"
+  # A helper without the comment counts a total.
+  - file: app/orders/tests/helpers/count.ts
+    code: "export async function countOrders() { const [r] = await Order.query().count('*'); return r }"

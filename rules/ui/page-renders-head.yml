@@ -1,0 +1,22 @@
+id: page-renders-head
+language: tsx
+files: ['inertia/pages/**/*.tsx', 'app/*/ui/pages/**/*.tsx']
+severity: error
+metadata:
+  description: "A page renders `<Head>` (or a component named `*Head` that wraps it, never `PageHead` alone); a modal page is exempt"
+message: 'Page without `<Head>`.'
+note: 'Every page sets its title: `<Head title={t(''deliveries.show.title'')} />` from `@inertiajs/react`, next to the shared `PageHead` that draws the heading on the screen. A wrapper that renders `<Head>` (`<SeoHead>`) counts; `PageHead` does not set the title. A modal page (it imports the modal components) keeps the title of the page under it.'
+utils:
+  head-element:
+    any: [{ kind: jsx_opening_element }, { kind: jsx_self_closing_element }]
+    has: { field: name, regex: 'Head$', not: { regex: '^PageHead$' } }
+rule:
+  kind: export_statement
+  regex: '^export\s+default\b'
+  not:
+    inside:
+      kind: program
+      any:
+        - has: { stopBy: end, matches: head-element }
+        # A modal page renders inside the page that opened it.
+        - has: { kind: import_statement, has: { field: source, regex: 'modal' } }

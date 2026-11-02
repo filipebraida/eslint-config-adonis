@@ -1,0 +1,20 @@
+id: no-event-classes
+language: typescript
+files: ['app/**/*.ts', 'start/**/*.ts']
+severity: error
+metadata:
+  description: "No `BaseEvent` subclass and no import from an `events/` folder; events are strings typed in `types/events.ts`"
+message: 'Event class `$NAME$SOURCE`.'
+note: 'An event is a string with its payload typed in `<module>/types/events.ts` (`declare module ''@adonisjs/core/types'' { interface EventsList { ''delivery:moved'': { deliveryId: number } } }`), emitted after the commit with `emitter.emit(''delivery:moved'', { deliveryId })`. No `BaseEvent` class, no `events/` folder: one way to declare an event, and the listener registered in `start/events.ts` reads the payload without importing the emitting module.'
+rule:
+  any:
+    # class ProjectCreatedEvent extends BaseEvent
+    - kind: class_declaration
+      all:
+        - has: { field: name, pattern: $NAME }
+        - has:
+            kind: class_heritage
+            has: { kind: extends_clause, has: { field: value, regex: '^BaseEvent$' } }
+    # import ProjectCreatedEvent from '#projects/events/project_created_event'
+    - kind: import_statement
+      has: { field: source, pattern: $SOURCE, regex: '^[''"](#events/|#[a-z_]+/events/|\.\.?/(.*/)?events/)' }

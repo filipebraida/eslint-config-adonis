@@ -1,0 +1,17 @@
+id: policy-decides
+language: typescript
+files: ['app/policies/**/*.ts', 'app/*/policies/**/*.ts']
+severity: error
+metadata:
+  description: "A policy method that receives the user or the record decides on them: no bare `return true`, unless a comment above it says why the action is open"
+message: '`$NAME()` takes the user (and the record) and allows without looking at them.'
+note: 'A policy decides: the capability (`this.authz.can(user, CAPABILITIES_DELIVERIES.move)`), then the record (membership, state). A verb open to every signed-in user takes no parameters (`viewList(): AuthorizerResponse { return true }`) and the class docblock says who it is for; if it must keep the parameters, a comment on the line above says why the action is open.'
+rule:
+  kind: method_definition
+  all:
+    - has: { field: name, pattern: $NAME }
+    - has: { field: body, regex: '^\{\s*return\s+true;?\s*\}$' }
+    - has:
+        field: parameters
+        has: { any: [{ kind: required_parameter }, { kind: optional_parameter }] }
+  not: { follows: { kind: comment } }

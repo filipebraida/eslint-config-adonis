@@ -1,0 +1,30 @@
+id: action-no-status-result
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "An action returns the model (or nothing), never a `{ status: '...' }` result; an expected refusal throws a domain exception"
+message: '`$NAME` is a status result.'
+note: 'The action returns what it wrote (the model) or nothing. An expected business refusal throws a domain exception from `<module>/exceptions/` (`throw new CardAlreadyAnsweredException()`), whose `handle()` flashes the translated message and redirects back; the action documents it with `@throws`. The controller stays a straight line, with no table of refusals.'
+utils:
+  status-literal:
+    kind: property_signature
+    all:
+      - has: { field: name, regex: '^[''"]?status[''"]?$' }
+      - has: { field: type, has: { stopBy: end, kind: literal_type } }
+rule:
+  any:
+    # export type AnswerCardResult = { status: 'answered' } | { status: 'expired' }
+    - kind: type_alias_declaration
+      all:
+        - has: { field: name, pattern: $NAME }
+        - has: { field: value, has: { stopBy: end, matches: status-literal } }
+    - kind: interface_declaration
+      all:
+        - has: { field: name, pattern: $NAME }
+        - has: { field: body, has: { matches: status-literal } }
+    # async handle(): Promise<{ status: 'ok' } | { status: 'refused' }>
+    - kind: method_definition
+      all:
+        - has: { field: name, pattern: $NAME }
+        - has: { field: return_type, has: { stopBy: end, matches: status-literal } }

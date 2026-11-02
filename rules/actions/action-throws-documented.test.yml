@@ -1,0 +1,54 @@
+valid:
+  # agencia: @throws in the class docblock.
+  - file: app/pessoas/actions/cadastrar_pessoa_rapido.ts
+    code: |
+      /**
+       * Cadastra a pessoa sem conta.
+       *
+       * @throws EmailJaVinculadoException se o e-mail já tem usuário.
+       */
+      export default class CadastrarPessoaRapido {
+        async handle(input: Input) {
+          if (existe) throw new EmailJaVinculadoException()
+        }
+      }
+  - file: app/orders/actions/cancel_order.ts
+    code: |
+      /** Cancels an order. */
+      export default class CancelOrder {
+        /**
+         * @throws OrderShippedException when the order already left.
+         */
+        async handle(order: Order) {
+          if (order.shipped) throw new OrderShippedException()
+        }
+      }
+  # A rethrow inside catch.
+  - file: app/inpi/actions/sincronizar_bulk.ts
+    code: |
+      /** Sincroniza o bulk. */
+      export default class SincronizarBulk {
+        async handle() {
+          try { await x() } catch (erro) { await registrar(erro); throw erro }
+        }
+      }
+  - file: app/orders/actions/place_order.ts
+    code: '/** Places an order. */ export default class PlaceOrder { async handle() { return Order.create({}) } }'
+invalid:
+  - file: app/tecnologias/actions/criar_tecnologia_de_pedido.ts
+    code: |
+      /** Cria a tecnologia a partir de um pedido registrado. */
+      export default class CriarTecnologiaDePedido {
+        async handle(input: Input) {
+          if (!registrado) throw new Error('Só é possível criar ativo a partir de um pedido registrado.')
+          if (vinculado) throw new Error('Este pedido já possui um ativo vinculado.')
+        }
+      }
+    errors: 2
+  - file: app/orders/actions/cancel_order.ts
+    code: |
+      export default class CancelOrder {
+        async handle(order: Order) {
+          try { await x() } catch (error) { throw new OrderShippedException() }
+        }
+      }

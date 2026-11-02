@@ -1,0 +1,50 @@
+valid:
+  # agencia: a verb is a single-action controller.
+  - file: app/pedidos/routes.ts
+    code: "router.post('/pedidos/:id/submeter', [controllers.pedidos.SubmeterPedido]).as('pedidos.submeter')"
+  # agencia: the form and the submit of one verb (create + store).
+  - file: app/pedidos/routes.ts
+    code: |
+      router.get('/pedidos/:id/pareceres/:designacaoId/novo', [controllers.pedidos.EmitirParecer, 'create']).as('pedidos.pareceres.novo')
+      router.post('/pedidos/:id/pareceres/:designacaoId', [controllers.pedidos.EmitirParecer, 'store']).as('pedidos.pareceres.store')
+  # A resource declared with router.resource is never a verb.
+  - file: app/channels/routes.ts
+    code: "router.resource('channels.messages', controllers.channels.Messages).only(['store'])"
+  # agencia: the methods list of a resource is not a route handler.
+  - file: app/pedidos/routes.ts
+    code: "router.resource('pedidos', controllers.pedidos.Pedidos).except(['edit', 'update'])"
+  - file: app/conteudo/routes.ts
+    code: "router.resource('painel/noticias', controllers.conteudo.Noticias).only(['index', 'create', 'store'])"
+  # agencia: a resource controller with an extra hand-written route.
+  - file: app/auth/routes.ts
+    code: |
+      router.resource('/configuracoes/tokens', controllers.auth.Tokens).only(['index', 'store', 'destroy'])
+      router.post('/api/tokens', [controllers.auth.Tokens, 'store']).as('api.tokens.store')
+  # edit + update of the same controller.
+  - file: app/projects/routes.ts
+    code: |
+      router.get('/projects/:id/settings', [controllers.projects.Settings, 'edit']).as('projects.settings.edit')
+      router.put('/projects/:id/settings', [controllers.projects.Settings, 'update']).as('projects.settings.update')
+  # store + update of the same controller.
+  - file: app/orders/routes.ts
+    code: |
+      router.post('/orders/:id/notes', [controllers.orders.Notes, 'store']).as('orders.notes.store')
+      router.put('/orders/:id/notes/:noteId', [controllers.orders.Notes, 'update']).as('orders.notes.update')
+  - file: app/orders/routes.ts
+    code: "router.get('/orders/:id', [controllers.orders.Orders, 'show']).as('orders.show')"
+invalid:
+  - file: app/deliveries/routes.ts
+    code: "router.post('/:project_id/deliveries/:delivery_id/stage', [DeliveryStage, 'store']).as('projects.deliveries.stage.store')"
+  - file: app/projects/routes.ts
+    code: |
+      router.post('/projects/:id/archive', [controllers.projects.ProjectArchive, 'store']).as('projects.archive.store')
+      router.get('/projects/:id', [controllers.projects.Projects, 'show']).as('projects.show')
+    errors: 1
+  - file: app/cards/routes.ts
+    code: "router.put('/cards/:id/answer', [controllers.cards.CardAnswer, 'update']).as('cards.answer.update')"
+  # Two routes to the same store are still one verb.
+  - file: app/orders/routes.ts
+    code: |
+      router.post('/orders/:id/archive', [controllers.orders.OrderArchive, 'store']).as('a')
+      router.post('/orders/:id/archive2', [controllers.orders.OrderArchive, 'store']).as('b')
+    errors: 2

@@ -1,0 +1,27 @@
+valid:
+  # agencia: the input carries a status typed by its enum; the action returns the model.
+  - file: app/contato/actions/atualizar_status_mensagem.ts
+    code: |
+      export interface AtualizarStatusMensagemInput { mensagemId: number; status: StatusMensagemContato }
+      export default class AtualizarStatusMensagem {
+        async handle(input: AtualizarStatusMensagemInput): Promise<MensagemContato> { return m }
+      }
+  - file: app/pedidos/actions/submeter_pedido.ts
+    code: 'export default class SubmeterPedido { async handle(input: Input): Promise<Pedido> { return pedido } }'
+  - file: app/orders/queries/x.ts
+    code: "export type R = { status: 'ok' }"
+invalid:
+  - file: app/cards/actions/answer_card.ts
+    code: |
+      export type AnswerCardResult =
+        | { status: 'answered'; card: Card; answer: string }
+        | { status: 'already_answered' }
+        | { status: 'expired' }
+    errors: 1
+  - file: app/channels/actions/ensure_director_channel.ts
+    code: "export type EnsureDirectorChannelResult = { status: 'ensured'; channel: Channel }"
+  - file: app/orders/actions/cancel_order.ts
+    code: "interface Result { status: 'cancelled' | 'already_cancelled' }"
+  - file: app/orders/actions/cancel_order.ts
+    code: "export default class CancelOrder { async handle(): Promise<{ status: 'cancelled' } | { status: 'shipped' }> { return x } }"
+    errors: 1

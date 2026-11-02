@@ -1,0 +1,14 @@
+valid:
+  - file: start/inertia_middleware.ts
+    code: "import usePageProps from '#core/ui/hooks/use_page_props'\nimport ListarNotificacoes from '#notifications/queries/listar_notificacoes'"
+  - file: app/core/middleware/inertia_middleware.ts
+    code: "import type Delivery from '#deliveries/models/delivery'"
+  - file: app/channels/listeners/x.ts
+    code: "import EnsureProjectChannels from '#channels/actions/ensure_project_channels'"
+invalid:
+  - file: app/core/middleware/inertia_middleware.ts
+    code: "import EnsureProjectChannels from '#channels/actions/ensure_project_channels'"
+  - file: start/inertia_middleware.ts
+    code: "const MarkSeen = () => import('#notifications/actions/mark_seen')"
+  - file: app/middleware/silent_auth_middleware.ts
+    code: "import TouchSession from '#actions/touch_session'"

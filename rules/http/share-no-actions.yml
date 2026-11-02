@@ -1,0 +1,17 @@
+id: share-no-actions
+language: typescript
+files: ['app/middleware/**/*.ts', 'app/*/middleware/**/*.ts', 'start/**/*middleware*.ts', 'config/inertia.ts']
+severity: error
+metadata:
+  description: "Middleware and the Inertia shared props never import an action; they only read"
+message: 'Middleware or Inertia share imports the action $SOURCE.'
+note: 'A middleware runs on every request and the shared props are read on every page: a write there runs again on each navigation, outside the controller that authorizes it. Shared props are lazy closures over queries (`user: () => ...`); a write that must exist before the page (a default channel) happens in the action that creates its owner, or in a listener of that event.'
+rule:
+  any:
+    - kind: import_statement
+      not: { regex: '^import\s+type\b' }
+      has: { field: source, pattern: $SOURCE, regex: '^[''"](#actions/|#[a-z_]+/actions/|\.\.?/(.*/)?actions/)' }
+    - kind: call_expression
+      all:
+        - has: { field: function, kind: import }
+        - has: { field: arguments, has: { pattern: $SOURCE, regex: '^[''"`](#actions/|#[a-z_]+/actions/|\.\.?/(.*/)?actions/)' } }

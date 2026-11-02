@@ -1,0 +1,26 @@
+id: action-throws-documented
+language: typescript
+files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
+severity: error
+metadata:
+  description: "A `throw` in an action is documented with `@throws` in the docblock of the action (or of the method or function that throws)"
+message: '`throw` without `@throws` in the docblock.'
+note: 'A refusal the caller must expect is part of the contract: name it in the class docblock, `@throws CardAlreadyAnsweredException if the card was answered.`, so the controller and the tests know what to expect without reading the body. Rethrowing the error a `catch` received is not a new refusal.'
+rule:
+  kind: throw_statement
+  not:
+    any:
+      # Documented on the class, the method or the function that throws.
+      - inside:
+          stopBy: end
+          any:
+            - kind: export_statement
+            - kind: class_declaration
+            - kind: method_definition
+            - kind: function_declaration
+            - kind: lexical_declaration
+          follows: { kind: comment, regex: '@throws\b' }
+      # catch (error) { ...; throw error }
+      - all:
+          - has: { kind: identifier }
+          - inside: { stopBy: end, kind: catch_clause }

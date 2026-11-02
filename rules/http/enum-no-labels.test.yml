@@ -1,0 +1,25 @@
+valid:
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const DELIVERY_TYPES = { FEATURE: 'feature', BUG: 'bug' } as const"
+  # A map to slugs is data (agencia's guide per protection type).
+  - file: app/pedidos/enums/modelos_agencia.ts
+    code: "export const GUIA_POR_TIPO: Record<TipoProtecao, string> = { [TIPOS.PATENTE]: 'patente', [TIPOS.SOFTWARE]: 'programa-de-computador' }"
+  - file: app/auth/enums/papel.ts
+    code: 'export const PESO_PAPEL: Record<Papel, number> = { [PAPEIS.ADMIN]: 3 }'
+  - file: app/pedidos/enums/transicoes_pedido.ts
+    code: "export const TRANSICOES: Record<Acao, Regra> = { submeter: { de: ['rascunho'], para: 'submetido' } }"
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const DELIVERY_TRANSITIONS: Record<DeliveryStage, readonly DeliveryStage[]> = { inbox: ['product'] }"
+  # Outside enums/ the rule does not apply.
+  - file: app/deliveries/ui/components/stage_badge.tsx
+    code: "const LABELS: Record<Stage, string> = { inbox: 'Inbox' }"
+invalid:
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const DELIVERY_TYPE_LABELS: Record<DeliveryType, string> = { [DELIVERY_TYPES.FEATURE]: 'Feature', [DELIVERY_TYPES.BUG]: 'Bug' }"
+    errors: 1
+  - file: app/projects/enums/project_settings.ts
+    code: "export const PROJECT_TEAM_LABELS = { product: 'product' }"
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const STAGE_NAMES: Record<Stage, string> = { inbox: 'inbox', ready: 'Ready for dev' }"
+  - file: app/enums/post_status.ts
+    code: "export const POST_STATUS_OPTIONS = [{ value: 'draft', label: 'draft' }]"

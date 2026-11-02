@@ -1,0 +1,12 @@
+id: route-param-naming
+language: typescript
+files: ['start/routes.ts', 'start/**/routes.ts', 'start/routes/**/*.ts', 'app/*/routes.ts']
+severity: error
+metadata:
+  description: "Route params are `:id` for the resource and camelCase for the others (`:pessoaId`), never snake_case"
+message: 'Route param in snake_case or PascalCase in $PATH.'
+note: 'The resource the route acts on is `:id`; any other param is camelCase, as the controller reads it (`params.id`, `params.designacaoId`): `/projects/:id/deliveries/:deliveryId`. The matcher goes on the group or the route with the same name (`.where(''id'', router.matchers.number())`).'
+rule:
+  kind: string
+  pattern: $PATH
+  regex: '/:([A-Z]|[A-Za-z0-9]*_)'

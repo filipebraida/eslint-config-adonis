@@ -1,0 +1,54 @@
+id: test-no-table-totals
+language: tsx
+files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
+severity: error
+metadata:
+  description: "No total of a whole table in a test: no unscoped `.count()` (`db.from(t)`, `Model.query()`), no `.length` of a whole-table read; a delta helper says so in a comment"
+message: '`$READ` reads a total of the whole table.'
+note: 'The test database is shared and already has rows this test did not create, so a total depends on its state. Assert on what the test created: `db.assertHas(''cards'', { id: card.id })`, `Card.query().where(''projectId'', project.id)`. To measure a delta, count before and after in a helper with a comment above it saying so (`// Shared table: count the delta, never the total.`).'
+utils:
+  # db.from('t'), trx.from('t'), db.query(), Model.query(), Model.all()
+  whole-table:
+    regex: '^((db|trx)\s*\.\s*(from|table|query)\s*\(|[A-Z]\w*\s*\.\s*(query|all)\s*\(\s*\))'
+    not: { regex: '([wW]here\w*|\.related|withScopes|\.apply)\s*\(' }
+rule:
+  any:
+    # Model.query().count('* as total'), db.from('cards').count('*')
+    - kind: call_expression
+      pattern: $READ
+      matches: whole-table
+      has:
+        field: function
+        kind: member_expression
+        has: { field: property, regex: '^(count|countDistinct|getCount)$' }
+    # (await Model.all()).length, (await db.from('cards')).length
+    - kind: member_expression
+      pattern: $READ
+      all:
+        - has: { field: property, regex: '^length$' }
+        - has:
+            field: object
+            kind: parenthesized_expression
+            has: { kind: await_expression, has: { matches: whole-table, kind: call_expression } }
+    # assert.lengthOf(await db.from('cards'), 3); assert.isEmpty(await Card.query().preload('x'))
+    - kind: call_expression
+      pattern: $READ
+      all:
+        - has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(lengthOf|isEmpty|isNotEmpty)$' }
+        - has:
+            field: arguments
+            has: { nthChild: 1, kind: await_expression, has: { matches: whole-table, kind: call_expression } }
+      # spec-no-global-count already reports these two.
+      not:
+        any:
+          - pattern: $A.lengthOf(await $M.all(), $N)
+          - pattern: $A.lengthOf(await $M.query(), $N)
+  not:
+    # A delta helper: a function with a comment above it that says delta.
+    inside:
+      stopBy: end
+      kind: function_declaration
+      follows: { kind: comment, regex: '(?i)delta' }

@@ -1,0 +1,49 @@
+id: verb-controller-handle
+language: typescript
+files: ['start/routes.ts', 'start/**/routes.ts', 'start/routes/**/*.ts', 'app/*/routes.ts']
+severity: error
+metadata:
+  description: "A controller routed only to `store` or only to `update` by hand is a verb: a single-action controller with `handle()`; a real resource uses `router.resource()`"
+message: '`$CONTROLLER` answers this route only with `$METHOD`.'
+note: 'A verb outside CRUD is a single-action controller named verb_object with `handle()` as its only public method: `move_delivery_controller.ts`, routed as `router.post(''/deliveries/:id/move'', [controllers.deliveries.MoveDelivery]).as(''deliveries.move'')`. If it is a real resource with one CRUD method, declare it with `router.resource(''messages'', controllers.channels.Messages).only([''store''])`.'
+utils:
+  # [Controller, 'method'] with the controller of this match.
+  same-controller:
+    kind: array
+    has: { nthChild: 1, pattern: $CONTROLLER }
+rule:
+  kind: array
+  all:
+    - has: { nthChild: 1, pattern: $CONTROLLER }
+    - has: { nthChild: 2, kind: string, pattern: $METHOD, regex: '^[''"](store|update)[''"]$' }
+    # The handler of a route: router.post('/x', [C, 'store'])
+    - inside:
+        kind: arguments
+        inside:
+          kind: call_expression
+          has:
+            field: function
+            kind: member_expression
+            all:
+              - has: { field: object, regex: '^router$' }
+              - has: { field: property, regex: '^(get|post|put|patch|delete|any)$' }
+  # The same controller answers another route of the resource in this file,
+  # or is a resource: router.resource('tokens', controllers.auth.Tokens).
+  not:
+    inside:
+      stopBy: end
+      kind: program
+      has:
+        stopBy: end
+        any:
+          - pattern: router.resource($PATH, $CONTROLLER)
+          - all:
+              - matches: same-controller
+              - any:
+                  - has: { nthChild: 2, regex: '^[''"](index|show|create|edit|destroy)[''"]$' }
+                  - all:
+                      - has: { nthChild: 2, regex: '^[''"]store[''"]$' }
+                      - not: { has: { nthChild: 2, pattern: $METHOD } }
+                  - all:
+                      - has: { nthChild: 2, regex: '^[''"]update[''"]$' }
+                      - not: { has: { nthChild: 2, pattern: $METHOD } }

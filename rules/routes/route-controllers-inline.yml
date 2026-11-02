@@ -1,0 +1,12 @@
+id: route-controllers-inline
+language: typescript
+files: ['start/routes.ts', 'start/**/routes.ts', 'start/routes/**/*.ts', 'app/*/routes.ts']
+severity: error
+metadata:
+  description: "Controllers are written inline as `controllers.<module>.X` in each route, never destructured or aliased"
+message: '`$DECL` takes controllers out of `controllers`.'
+note: 'Write the controller inline in the route: `router.post(''/deliveries/:id/move'', [controllers.deliveries.MoveDelivery]).as(''deliveries.move'')`. The full path says which module answers the route, and a search for `controllers.deliveries.MoveDelivery` finds every route of the controller.'
+rule:
+  kind: variable_declarator
+  pattern: $DECL
+  has: { field: value, regex: '^controllers(\.|$)' }

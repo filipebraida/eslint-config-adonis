@@ -1,0 +1,14 @@
+valid:
+  - file: app/pedidos/routes.ts
+    code: "router.resource('pedidos', controllers.pedidos.Pedidos).except(['edit', 'update'])"
+  - file: app/pedidos/routes.ts
+    code: "router.post('/pedidos/:id/submeter', [controllers.pedidos.SubmeterPedido]).as('pedidos.submeter')"
+  - file: app/pedidos/routes.ts
+    code: "import { controllers } from '#generated/controllers'"
+invalid:
+  - file: app/deliveries/routes.ts
+    code: 'const { Board, DeliveryStage } = controllers.deliveries'
+  - file: start/routes.ts
+    code: 'const { users } = controllers'
+  - file: app/orders/routes.ts
+    code: 'const Orders = controllers.orders.Orders'

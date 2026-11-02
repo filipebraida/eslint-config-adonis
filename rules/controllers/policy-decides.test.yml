@@ -1,0 +1,57 @@
+valid:
+  # agencia: open to every signed-in user, said in the class docblock.
+  - file: app/notifications/policies/notification_policy.ts
+    code: |
+      /**
+       * As notificações do próprio usuário: qualquer pessoa logada, sobre as suas.
+       * O recorte por dono fica nas queries e actions, que filtram por `notifiableId`.
+       */
+      export default class NotificationPolicy extends BasePolicy {
+        viewList(): AuthorizerResponse {
+          return true
+        }
+
+        update(): AuthorizerResponse {
+          return true
+        }
+      }
+  - file: app/pedidos/policies/pedido_parecer_policy.ts
+    code: |
+      export default class PedidoParecerPolicy extends BasePolicy {
+        async view(user: User, pedido: Pedido, parecer: PedidoParecer): Promise<AuthorizerResponse> {
+          if (parecer.analistaId === user.id) return true
+          return this.authz.can(user, CAPACIDADES_PEDIDOS.pedidosVerPareceresInternos)
+        }
+      }
+  # Kept parameters, with the reason above.
+  - file: app/posts/policies/post_policy.ts
+    code: |
+      export default class PostPolicy extends BasePolicy {
+        // Published posts are public: the query only returns published ones.
+        view(_user: User | null, _post: Post): AuthorizerResponse {
+          return true
+        }
+      }
+invalid:
+  - file: app/deliveries/policies/delivery_policy.ts
+    code: |
+      /**
+       * Decides who may see and act on a delivery.
+       */
+      export default class DeliveryPolicy extends BasePolicy {
+        async view(_user: User, _delivery: Delivery): Promise<AuthorizerResponse> {
+          return true
+        }
+
+        async move(_user: User, _delivery: Delivery): Promise<AuthorizerResponse> {
+          return true
+        }
+      }
+    errors: 2
+  - file: app/projects/policies/project_policy.ts
+    code: |
+      export default class ProjectPolicy extends BasePolicy {
+        async create(_user: User): Promise<AuthorizerResponse> {
+          return true;
+        }
+      }

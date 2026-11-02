@@ -1,0 +1,21 @@
+valid:
+  # agencia: the shared formatter.
+  - file: app/core/ui/formatacao/format_data.ts
+    code: "export function formatarData(d: Date) { return new Intl.DateTimeFormat('pt-BR').format(d) }"
+  - file: app/core/ui/format/date.ts
+    code: "export const formatDate = (d: Date, locale: string) => d.toLocaleDateString(locale)"
+  - file: inertia/lib/format.ts
+    code: "export const formatDate = (d: Date, locale: string) => d.toLocaleDateString(locale)"
+  - file: app/deliveries/ui/components/deliveries/delivery_timeline.tsx
+    code: "const label = formatDate(event.createdAt, locale)"
+  - file: app/orders/actions/x.ts
+    code: "const code = name.toLocaleUpperCase('tr')"
+invalid:
+  - file: app/runs/ui/hooks/use_run_format.ts
+    code: "const f = new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' })"
+  - file: app/deliveries/ui/components/deliveries/delivery_timeline.tsx
+    code: 'export function T({ at }) { return <time>{new Date(at).toLocaleString()}</time> }'
+  - file: inertia/pages/posts/show.tsx
+    code: "const d = post.createdAt.toLocaleDateString('pt-BR')"
+  - file: app/contato/ui/components/mensagens/mensagem_cartao.tsx
+    code: "const rtf = new Intl.RelativeTimeFormat('pt-BR')"
