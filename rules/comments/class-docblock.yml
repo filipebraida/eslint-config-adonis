@@ -7,7 +7,7 @@ severity: error
 metadata:
   description: "The default export of an action, query, policy, controller, service, job, listener, event, mail or notification, and every exported validator, opens with a `/** */`"
 message: 'Exported `$NAME` without a docblock.'
-note: 'Open it with a `/** */` that a reader understands without opening another file: one sentence of what it is (an action starts with its verb, a query with its noun), then the contract the signature does not say (each `status` of the result, the event emitted after the commit), then a domain rule that surprises. Usually one to five lines.'
+note: 'Open it with a `/** */` that a reader understands without opening another file: one sentence of what it is (an action starts with its verb, a query with its noun), then the contract the signature does not say (the domain exception it throws, as `@throws`, the event emitted after the commit), then a domain rule that surprises. Usually one to five lines.'
 rule:
   kind: export_statement
   any:

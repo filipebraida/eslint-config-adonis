@@ -42,8 +42,9 @@ export function ui({
       // The preset targets `inertia/**` with `*.ts` only; this glob adds tsx.
       files,
       rules: {
-        // `#enums/*` are plain constants, the single source of the labels both
-        // server and screens show. The rest of the backend stays out of the frontend.
+        // `#enums/*` are plain constants, the single source of the values both
+        // server and screens use; their labels are i18n keys `<module>.<enum>.<value>`,
+        // never text in the enum. The rest of the backend stays out of the frontend.
         '@adonisjs/no-backend-import-in-frontend': ['error', { allowed: ['#enums/*'] }],
       },
     },

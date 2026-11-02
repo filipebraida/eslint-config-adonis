@@ -3,9 +3,9 @@ language: typescript
 files: ['app/controllers/**/*_controller.ts', 'app/*/controllers/**/*_controller.ts']
 severity: error
 metadata:
-  description: "Public methods are only index, show, create, store, edit, update, destroy, or a single `handle()` alone; another verb is another resource named by its noun"
+  description: "Public methods are only index, show, create, store, edit, update, destroy, or a single `handle()` alone; another verb is a single-action controller named verb_object"
 message: '`$NAME()` is not a CRUD method (index, show, create, store, edit, update, destroy) nor the `handle()` of a single-action controller.'
-note: 'The verb is another resource, named by its noun, with a CRUD method: `PostsController.archive` becomes `PostArchivalsController.update` (`PUT /posts/:id/archival`), `duplicate` becomes `PostCopiesController.store`. A single-action controller has only `handle()` as its public method; `handle()` next to another public method is a mix and fails.'
+note: 'A verb outside CRUD is a single-action controller named verb_object, with `handle()` as its only public method: `PostsController.archive` becomes `ArchivePostController.handle` (`archive_post_controller.ts`, `router.post(''/posts/:id/archive'', [controllers.posts.ArchivePost]).as(''posts.archive'')`). `handle()` next to another public method is a mix and fails.'
 rule:
   kind: method_definition
   inside: { kind: class_body }

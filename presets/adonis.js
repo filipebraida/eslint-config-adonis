@@ -50,7 +50,7 @@ export const SIZE_LIMITS = [
     files: layer('controllers'),
     max: 100,
     advice:
-      'A controller method authorizes, validates, delegates, transforms and responds. Domain logic goes to the action or the query, the shape of the data to the transformer, a second verb to another controller named by its noun.',
+      'A controller method authorizes, validates, delegates, transforms and responds. Domain logic goes to the action or the query, the shape of the data to the transformer, a second verb to its own single-action controller (`handle()`, named verb_object).',
   },
   {
     files: layer('queries'),
