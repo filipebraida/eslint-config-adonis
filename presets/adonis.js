@@ -98,6 +98,9 @@ const DEPTH = {
   rules: { 'max-depth': ['error', 3] },
 }
 
+/** Code the assembler generates (routes, controllers, client registry), never edited by hand. */
+const GENERATED = ['.adonisjs/**']
+
 /**
  * The AdonisJS preset rejects a leading underscore on any variable, while
  * TypeScript's `noUnusedLocals` accepts an unused variable only when it starts
@@ -108,6 +111,9 @@ const DEPTH = {
 const UNUSED_UNDERSCORE = {
   name: 'adonis/naming-unused-underscore',
   files: ['**/*.{ts,tsx}'],
+  // The assembler writes `.adonisjs/`; the AdonisJS preset leaves it out, and
+  // a block that matched it would make ESLint lint the generated code.
+  ignores: GENERATED,
   rules: {
     '@typescript-eslint/naming-convention': [
       'error',

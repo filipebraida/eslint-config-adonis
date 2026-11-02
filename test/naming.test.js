@@ -42,3 +42,10 @@ describe('naming of unused variables', () => {
     assert.deepEqual(await namingMessages(code), [])
   })
 })
+
+// The assembler writes `.adonisjs/`; the AdonisJS preset leaves it out, so no
+// block of this package may bring it back into the lint.
+test('generated code under .adonisjs/ is not linted', async () => {
+  const config = await eslint.calculateConfigForFile(resolve(ROOT, '.adonisjs/server/controllers.ts'))
+  assert.equal(config, undefined)
+})
