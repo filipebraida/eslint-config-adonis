@@ -8,6 +8,11 @@ valid:
       }
   - file: app/pedidos/actions/submeter_pedido.ts
     code: 'export default class SubmeterPedido { async handle(input: Input): Promise<Pedido> { return pedido } }'
+  # Hub: `status` written to a column is not a result.
+  - file: app/notifications/actions/mark_all_notifications_seen.ts
+    code: "export default class X { async handle() { await Notification.query().where('a', 1).update({ status: 'seen' }); return { count: 1 } } }"
+  - file: app/orders/actions/place_order.ts
+    code: "export default class PlaceOrder { async handle() { return Order.create({ status: 'draft' }) } }"
   - file: app/orders/queries/x.ts
     code: "export type R = { status: 'ok' }"
 invalid:
@@ -25,3 +30,13 @@ invalid:
   - file: app/orders/actions/cancel_order.ts
     code: "export default class CancelOrder { async handle(): Promise<{ status: 'cancelled' } | { status: 'shipped' }> { return x } }"
     errors: 1
+  # The type is inferred from the returned literal.
+  - file: app/projects/actions/archive_project.ts
+    code: |
+      export default class ArchiveProject {
+        async handle(project: Project) {
+          if (project.archivedAt) return { status: 'already_archived' } as const
+          return { status: 'archived' }
+        }
+      }
+    errors: 2

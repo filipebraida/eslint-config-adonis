@@ -11,6 +11,8 @@ rule:
   not:
     any:
       - regex: '^import\s+type\b'
+      # import { type CardKind, type CardStatus } from '...': erased
+      - regex: '^import\s*\{\s*type\s+\w+(\s+as\s+\w+)?(\s*,\s*type\s+\w+(\s+as\s+\w+)?)*\s*,?\s*\}'
       # A model import is reported by migration-no-model-import.
       - has: { field: source, regex: '^[''"](#models/|#[a-z_]+/models/|\.\.?/.*models/)' }
   has: { field: source, pattern: $SOURCE, regex: '^[''"](#|\.\./)' }

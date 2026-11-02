@@ -3,7 +3,7 @@ language: typescript
 files: ['app/actions/**/*.ts', 'app/*/actions/**/*.ts']
 severity: error
 metadata:
-  description: "An action returns the model (or nothing), never a `{ status: '...' }` result; an expected refusal throws a domain exception"
+  description: "An action returns the model (or nothing), never a `{ status: '...' }` result, declared or returned; an expected refusal throws a domain exception"
 message: '`$NAME` is a status result.'
 note: 'The action returns what it wrote (the model) or nothing. An expected business refusal throws a domain exception from `<module>/exceptions/` (`throw new CardAlreadyAnsweredException()`), whose `handle()` flashes the translated message and redirects back; the action documents it with `@throws`. The controller stays a straight line, with no table of refusals.'
 utils:
@@ -23,6 +23,17 @@ rule:
       all:
         - has: { field: name, pattern: $NAME }
         - has: { field: body, has: { matches: status-literal } }
+    # return { status: 'archived' } as const: the type is inferred
+    - kind: pair
+      pattern: $NAME
+      all:
+        - has: { field: key, regex: '^[''"]?status[''"]?$' }
+        - has: { field: value, any: [{ kind: string }, { kind: template_string }] }
+        - inside:
+            kind: object
+            inside:
+              stopBy: { not: { any: [{ kind: as_expression }, { kind: satisfies_expression }, { kind: parenthesized_expression }] } }
+              any: [{ kind: return_statement }, { kind: arrow_function }]
     # async handle(): Promise<{ status: 'ok' } | { status: 'refused' }>
     - kind: method_definition
       all:

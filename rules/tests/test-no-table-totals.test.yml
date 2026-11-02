@@ -26,6 +26,40 @@ valid:
     code: "test('x', async ({ assert }) => { assert.lengthOf((await Order.query().whereIn('id', ids)), 2) })"
   - file: app/orders/actions/x.ts
     code: "const [row] = await Order.query().count('* as total')"
+  # Hub: two-step read scoped by the project the test created.
+  - file: app/deliveries/tests/unit/models/request_deliveries_relation.spec.ts
+    code: |
+      test('x', async ({ assert }) => {
+        const deliveries = await Delivery.query().where('requestId', request.id)
+        assert.lengthOf(deliveries, 3)
+      })
+  - file: app/channels/tests/unit/queries/x.spec.ts
+    code: |
+      test('x', async ({ assert }) => {
+        const rows = await Channel.query().whereIn('projectId', ids).orderBy('id')
+        assert.deepEqual(rows.map((r) => r.id), ids)
+      })
+  # Hub: a marker makes the natural key unique.
+  - file: app/users/tests/unit/queries/list_users.spec.ts
+    code: |
+      test('x', async () => {
+        const tag = marker('list')
+        await UserFactory.merge({ fullName: `${tag}-1`, email: taggedEmail(tag) }).create()
+        await ProjectFactory.merge({ name: `a-${Date.now()}` }).create()
+      })
+  - file: app/auth/tests/functional/sign_up/endpoint.spec.ts
+    code: "test('x', async () => { const user = await User.findByOrFail('email', payload.email) })"
+  # Hub: a table-wide count kept true by an invariant (a singleton kind).
+  - file: app/channels/tests/unit/actions/ensure_director_channel.spec.ts
+    code: "test('x', async ({ db }) => { await db.assertHas('channels', { kind: 'director' }, 1) })"
+  - file: app/orders/tests/functional/orders/store.spec.ts
+    code: "test('x', async ({ db }) => { await db.assertHas('orders', { user_id: user.id, name: 'Book' }) })"
+  # A non-key field set to a fixed string.
+  - file: app/channels/tests/functional/messages/store.spec.ts
+    code: "test('x', async () => { await MessageFactory.merge({ channelId: channel.id, body: 'O que está bloqueado?' }).create() })"
+  # agencia: the newest row is the one the request just inserted.
+  - file: app/pedidos/tests/functional/pedidos/endpoint.spec.ts
+    code: "test('x', async () => { const pedido = await Pedido.query().orderBy('id', 'desc').first() })"
 invalid:
   - file: app/auth/tests/unit/mixins/with_social_identity.spec.ts
     code: |
@@ -41,6 +75,45 @@ invalid:
     code: "test('x', async ({ assert }) => { assert.lengthOf(await db.from('projects'), 1) })"
   - file: app/projects/tests/unit/actions/create_project.spec.ts
     code: "test('x', async ({ assert }) => { assert.isEmpty(await Project.query().preload('settings')) })"
+  # A where inside a preload callback does not scope the read.
+  - file: app/projects/tests/unit/actions/create_project.spec.ts
+    code: "test('x', async ({ assert }) => { assert.isEmpty(await Project.query().preload('settings', (q) => q.where('x', 1))) })"
   # A helper without the comment counts a total.
   - file: app/orders/tests/helpers/count.ts
     code: "export async function countOrders() { const [r] = await Order.query().count('*'); return r }"
+  # Two-step read of the whole table.
+  - file: app/cards/tests/unit/actions/create_card.spec.ts
+    code: |
+      test('x', async ({ assert }) => {
+        const cards = await Card.query().preload('options')
+        assert.lengthOf(cards, 3)
+        assert.deepEqual(cards.map((c) => c.id), [card.id])
+      })
+    errors: 2
+  # The record the test made is not the first row of the table.
+  - file: app/cards/tests/unit/actions/create_card.spec.ts
+    code: "test('x', async () => { const card = await Card.query().preload('options').firstOrFail() })"
+  - file: app/cards/tests/unit/actions/create_card.spec.ts
+    code: "test('x', async () => { const card = await Card.firstOrFail() })"
+  # Hub: seeder specs.
+  - file: app/deliveries/tests/unit/database/sandbox_seeder.spec.ts
+    code: "import SandboxSeeder from '#deliveries/database/seeders/sandbox_seeder'"
+  - file: app/desk/tests/unit/database/sandbox_seeders.spec.ts
+    code: |
+      import SandboxCardsSeeder from '#cards/database/seeders/sandbox_cards_seeder'
+      import SandboxChannelsSeeder from '#channels/database/seeders/sandbox_channels_seeder'
+    errors: 2
+  # Hub: fixed natural keys.
+  - file: app/projects/tests/functional/projects/project_create.spec.ts
+    code: |
+      test('x', async ({ db }) => {
+        await ProjectFactory.merge({ name: 'taken-name' }).create()
+        const project = await Project.findByOrFail('name', 'orders-hub')
+        await db.assertMissing('projects', { repo_url: 'acme/orders-hub' })
+        await db.assertMissing('projects', { name: 'orders-hub' })
+      })
+    errors: 4
+  - file: app/auth/tests/functional/forgot_password/endpoint.spec.ts
+    code: "test('x', async () => { const user = await UserFactory.merge({ email: 'reset-alvo@example.test' }).create() })"
+  - file: app/auth/tests/unit/actions/authenticate_with_social.spec.ts
+    code: "test('x', async ({ db }) => { await db.assertHas('users', { email: 'ja-existe@example.test' }, 1) })"

@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { astGrep } from '@adonisjs/eslint-ast-grep'
 import routeParamMatcher from '../rules/routes/route-param-matcher.js'
 import functionSize from '../rules/size/function-size.js'
+import policyDecides from '../rules/controllers/policy-decides.js'
 
 export const RULES_DIR = join(import.meta.dirname, '..', 'rules')
 
@@ -137,6 +138,11 @@ const JS_RULES = [
     id: 'route-param-matcher',
     rule: routeParamMatcher,
     blocks: [{ files: ['start/**/routes.ts', 'app/*/routes.ts'] }],
+  },
+  {
+    id: 'policy-decides',
+    rule: policyDecides,
+    blocks: [{ files: layer('policies') }],
   },
   {
     id: 'function-size',

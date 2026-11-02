@@ -13,23 +13,22 @@ valid:
   # The component is declared above and exported by name.
   - file: inertia/pages/posts/index.tsx
     code: |
+      import { Head, Link } from '@inertiajs/react'
       function Index() {
         return <><Head title="Posts" /><main /></>
       }
       export default Index
-  # agencia: a wrapper that renders <Head>.
-  - file: app/portal/ui/pages/noticias/show.tsx
-    code: |
-      export default function Page({ seo }) {
-        return <PortalLayout><SeoHead {...seo} type="article" /></PortalLayout>
-      }
-  # agencia: a modal page keeps the title of the page under it.
+  # agencia: a modal page (`form.tsx`, `<entity>_form.tsx`) keeps the title of the page under it.
   - file: app/auth/ui/pages/papeis/form.tsx
     code: |
       import { Modal } from 'adonis-inertia-modal/react'
       export default function PapelFormModal() {
         return <Modal maxWidth="lg"><h2>x</h2></Modal>
       }
+  - file: app/conteudo/ui/pages/taxonomia/tag_form.tsx
+    code: |
+      import { Modal } from 'adonis-inertia-modal/react'
+      export default function TagFormModal() { return <Modal><form /></Modal> }
   - file: app/deliveries/ui/components/deliveries/card.tsx
     code: 'export default function Card() { return <div /> }'
 invalid:
@@ -48,3 +47,29 @@ invalid:
     code: |
       function Index() { return <main /> }
       export default Index
+  # A table header is not the page head.
+  - file: app/users/ui/pages/users/index.tsx
+    code: |
+      export default function UsersIndex() {
+        return <Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader></Table>
+      }
+  # agencia tokens/index: a full page that imports a modal component is not a modal page.
+  - file: app/auth/ui/pages/tokens/index.tsx
+    code: |
+      import TokensGeneratedModal from '#auth/ui/components/tokens/tokens_generated_modal'
+      export default function TokensPage() { return <AdminLayout><TokensGeneratedModal /></AdminLayout> }
+  # Hub: a modal page not named as one (create.tsx), and a wrapper that is not Head.
+  - file: app/users/ui/pages/users/create.tsx
+    code: |
+      import { Modal } from 'adonis-inertia-modal/react'
+      export default function CreateUser() { return <Modal><form /></Modal> }
+  - file: app/portal/ui/pages/noticias/show.tsx
+    code: |
+      export default function Page({ seo }) {
+        return <PortalLayout><SeoHead {...seo} type="article" /></PortalLayout>
+      }
+  # A Head from another package.
+  - file: inertia/pages/posts/show.tsx
+    code: |
+      import { Head } from 'some-seo-lib'
+      export default function Show() { return <Head title="x" /> }

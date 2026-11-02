@@ -3,14 +3,36 @@ language: tsx
 files: ['tests/**/*.{ts,tsx}', 'app/*/tests/**/*.{ts,tsx}']
 severity: error
 metadata:
-  description: "No total of a whole table in a test: no unscoped `.count()` (`db.from(t)`, `Model.query()`), no `.length` of a whole-table read; a delta helper says so in a comment"
-message: '`$READ` reads a total of the whole table.'
-note: 'The test database is shared and already has rows this test did not create, so a total depends on its state. Assert on what the test created: `db.assertHas(''cards'', { id: card.id })`, `Card.query().where(''projectId'', project.id)`. To measure a delta, count before and after in a helper with a comment above it saying so (`// Shared table: count the delta, never the total.`).'
+  description: "A test asserts only on what it created: no unscoped `.count()`/`.first()` or length of a whole-table read (direct or through a variable), no seeder, no fixed natural key (`email`, `name`, `slug`, `repoUrl`) in a factory, lookup or `assertMissing`; a delta helper says so in a comment"
+message: '`$READ` depends on rows this test did not create.'
+note: 'The test database is shared and already has rows (seeds, other runs), so a total, a "first row", a seeder''s output or a fixed name or e-mail depends on its state. Assert on what the test created: `db.assertHas(''cards'', { id: card.id })`, `Card.query().where(''projectId'', project.id)`; make natural keys unique with a marker (`ProjectFactory.merge({ name: marker(''orders'') })`, a template literal); seeders are not tested. To measure a delta, count before and after in a helper with a comment above it saying so (`// Shared table: count the delta, never the total.`).'
 utils:
-  # db.from('t'), trx.from('t'), db.query(), Model.query(), Model.all()
+  # A chain that filters: .where*(), .related(), .withScopes(), .apply(), on the
+  # chain itself (a where inside a preload callback does not scope the read).
+  scoped:
+    kind: call_expression
+    has:
+      field: function
+      kind: member_expression
+      any:
+        - has: { field: property, regex: '^(where\w*|andWhere\w*|orWhere\w*|related|withScopes|apply)$' }
+        - has: { field: object, matches: scoped }
+  # db.from('t'), trx.from('t'), db.query(), Model.query(), Model.all(), unscoped
   whole-table:
+    kind: call_expression
     regex: '^((db|trx)\s*\.\s*(from|table|query)\s*\(|[A-Z]\w*\s*\.\s*(query|all)\s*\(\s*\))'
-    not: { regex: '([wW]here\w*|\.related|withScopes|\.apply)\s*\(' }
+    not: { matches: scoped }
+  awaited-whole-table:
+    kind: await_expression
+    has: { matches: whole-table }
+  natural-key:
+    regex: '^[''"]?(email|name|slug|repoUrl|repo_url|username)[''"]?$'
+  # { email: 'x@example.test' }: a fixed string (a template literal with a marker is unique).
+  fixed-natural-key-pair:
+    kind: pair
+    all:
+      - has: { field: key, matches: natural-key }
+      - has: { field: value, kind: string }
 rule:
   any:
     # Model.query().count('* as total'), db.from('cards').count('*')
@@ -21,15 +43,26 @@ rule:
         field: function
         kind: member_expression
         has: { field: property, regex: '^(count|countDistinct|getCount)$' }
+    # Model.query().first(): any row of the table. The newest row
+    # (`.orderBy('id', 'desc').first()`) is the one the test just inserted.
+    - kind: call_expression
+      pattern: $READ
+      matches: whole-table
+      has:
+        field: function
+        kind: member_expression
+        has: { field: property, regex: '^(first|firstOrFail)$' }
+      not: { regex: 'orderBy\s*\([^)]*[''"]desc[''"]' }
+    # Model.first(), Model.firstOrFail()
+    - kind: call_expression
+      pattern: $READ
+      regex: '^[A-Z]\w*\s*\.\s*(first|firstOrFail)\s*\(\s*\)$'
     # (await Model.all()).length, (await db.from('cards')).length
     - kind: member_expression
       pattern: $READ
       all:
         - has: { field: property, regex: '^length$' }
-        - has:
-            field: object
-            kind: parenthesized_expression
-            has: { kind: await_expression, has: { matches: whole-table, kind: call_expression } }
+        - has: { field: object, kind: parenthesized_expression, has: { matches: awaited-whole-table } }
     # assert.lengthOf(await db.from('cards'), 3); assert.isEmpty(await Card.query().preload('x'))
     - kind: call_expression
       pattern: $READ
@@ -38,14 +71,74 @@ rule:
             field: function
             kind: member_expression
             has: { field: property, regex: '^(lengthOf|isEmpty|isNotEmpty)$' }
-        - has:
-            field: arguments
-            has: { nthChild: 1, kind: await_expression, has: { matches: whole-table, kind: call_expression } }
+        - has: { field: arguments, has: { nthChild: 1, matches: awaited-whole-table } }
       # spec-no-global-count already reports these two.
       not:
         any:
           - pattern: $A.lengthOf(await $M.all(), $N)
           - pattern: $A.lengthOf(await $M.query(), $N)
+    # const rows = await Card.query(); assert.lengthOf(rows, 3) / rows.length / rows.map(...)
+    - pattern: $READ
+      all:
+        - any:
+            - pattern: $A.lengthOf($ROWS, $$$)
+            - pattern: $A.isEmpty($ROWS)
+            - pattern: $A.isNotEmpty($ROWS)
+            - pattern: $A.deepEqual($ROWS.map($$$), $$$)
+            - pattern: $A.equal($ROWS.length, $$$)
+        - inside:
+            stopBy: end
+            kind: statement_block
+            has:
+              stopBy: end
+              kind: variable_declarator
+              all:
+                - has: { field: name, pattern: $ROWS }
+                - has: { field: value, matches: awaited-whole-table }
+    # import SandboxSeeder from '#deliveries/database/seeders/sandbox_seeder'
+    - kind: import_statement
+      has: { field: source, pattern: $READ, regex: '^[''"](#seeders/|#database/seeders/|#[a-z_]+/database/seeders/|\.\.?/(.*/)?seeders/)' }
+    # ProjectFactory.merge({ name: 'orders-hub' }), UserFactory.create({ email: 'x@example.test' })
+    - kind: pair
+      pattern: $READ
+      matches: fixed-natural-key-pair
+      inside:
+        kind: object
+        inside:
+          kind: arguments
+          inside:
+            kind: call_expression
+            has:
+              field: function
+              kind: member_expression
+              all:
+                - has: { field: property, regex: '^(merge|create|createMany|make)$' }
+                - has: { field: object, regex: 'Factory\b' }
+    # Project.findByOrFail('name', 'orders-hub'), User.findBy('email', 'x@example.test')
+    - kind: call_expression
+      pattern: $READ
+      all:
+        - has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(findBy|findByOrFail)$' }
+        - has: { field: arguments, all: [{ has: { nthChild: 1, matches: natural-key } }, { has: { nthChild: 2, kind: string } }] }
+    # db.assertMissing('projects', { name: 'orders-hub' }): absent only if nobody else used the name
+    - kind: call_expression
+      pattern: $READ
+      all:
+        - has:
+            field: function
+            kind: member_expression
+            has: { field: property, regex: '^(assertMissing|assertHas)$' }
+        - has:
+            field: arguments
+            has:
+              nthChild: 2
+              kind: object
+              all:
+                - has: { matches: fixed-natural-key-pair }
+                - not: { has: { kind: pair, has: { field: key, regex: '(^[''"]?|_)(id|uuid)[''"]?$|Id[''"]?$' } } }
   not:
     # A delta helper: a function with a comment above it that says delta.
     inside:

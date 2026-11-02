@@ -1,37 +1,62 @@
+# JS rule (policy-decides.js): ast-grep cannot check every reference of every
+# parameter of the method.
 valid:
-  # agencia: open to every signed-in user, said in the class docblock.
-  - file: app/notifications/policies/notification_policy.ts
+  # agencia: open to every signed-in user, a /** */ on the method says who.
+  - file: app/auth/policies/impersonacao_policy.ts
     code: |
-      /**
-       * As notificações do próprio usuário: qualquer pessoa logada, sobre as suas.
-       * O recorte por dono fica nas queries e actions, que filtram por `notifiableId`.
-       */
-      export default class NotificationPolicy extends BasePolicy {
-        viewList(): AuthorizerResponse {
-          return true
-        }
-
-        update(): AuthorizerResponse {
+      export default class ImpersonacaoPolicy extends BasePolicy {
+        /**
+         * Voltar a si mesmo: quem está dentro já não é admin, e a action só
+         * encerra quando a sessão guarda quem entrou.
+         */
+        destroy(): AuthorizerResponse {
           return true
         }
       }
+  - file: app/notifications/policies/notification_policy.ts
+    code: |
+      export default class NotificationPolicy extends BasePolicy {
+        /** Every signed-in user, on their own notifications: the queries filter by `notifiableId`. */
+        viewList(): AuthorizerResponse {
+          return true
+        }
+      }
+  # agencia: the authorizer, then the record.
   - file: app/pedidos/policies/pedido_parecer_policy.ts
     code: |
       export default class PedidoParecerPolicy extends BasePolicy {
+        constructor(private authz: Autorizador) { super() }
+
         async view(user: User, pedido: Pedido, parecer: PedidoParecer): Promise<AuthorizerResponse> {
           if (parecer.analistaId === user.id) return true
           return this.authz.can(user, CAPACIDADES_PEDIDOS.pedidosVerPareceresInternos)
         }
-      }
-  # Kept parameters, with the reason above.
-  - file: app/posts/policies/post_policy.ts
-    code: |
-      export default class PostPolicy extends BasePolicy {
-        // Published posts are public: the query only returns published ones.
-        view(_user: User | null, _post: Post): AuthorizerResponse {
+
+        private async eAdmin(user: User): Promise<boolean> {
           return true
         }
       }
+  # Hub: decides on the parameters.
+  - file: app/users/policies/user_policy.ts
+    code: |
+      export default class UserPolicy extends BasePolicy {
+        async viewList(currentUser: User): Promise<AuthorizerResponse> {
+          return currentUser.hasPermission(PERMISSIONS.usersViewList)
+        }
+        async delete(currentUser: User, user: User): Promise<AuthorizerResponse> {
+          if (currentUser.id === user.id) return false
+          return currentUser.hasPermission(PERMISSIONS.usersDelete)
+        }
+      }
+  - file: app/orders/policies/order_policy.ts
+    code: |
+      export default class OrderPolicy extends BasePolicy {
+        async cancel(user: User, { ownerId }: Order): Promise<AuthorizerResponse> {
+          return ownerId === user.id
+        }
+      }
+  - file: app/orders/services/order_policy.ts
+    code: 'export default class X { view(_u: User) { return true } }'
 invalid:
   - file: app/deliveries/policies/delivery_policy.ts
     code: |
@@ -48,10 +73,39 @@ invalid:
         }
       }
     errors: 2
+  # Dropping the parameters keeps allow-all: still needs the /** */ that says who.
+  - file: app/deliveries/policies/delivery_policy.ts
+    code: |
+      /** Decides who may see and act on a delivery. */
+      export default class DeliveryPolicy extends BasePolicy {
+        async move(): Promise<AuthorizerResponse> {
+          return true
+        }
+      }
+  # A line comment is not the documentation.
   - file: app/projects/policies/project_policy.ts
     code: |
       export default class ProjectPolicy extends BasePolicy {
-        async create(_user: User): Promise<AuthorizerResponse> {
-          return true;
+        // TODO: membership
+        async create(): Promise<AuthorizerResponse> {
+          return true
+        }
+      }
+  # A comment does not excuse a method that receives the user and ignores it.
+  - file: app/projects/policies/project_policy.ts
+    code: |
+      export default class ProjectPolicy extends BasePolicy {
+        /** Anyone. */
+        async view(_user: User, _project: Project): Promise<AuthorizerResponse> {
+          return true
+        }
+      }
+  # Reading the parameter outside a decision is not deciding.
+  - file: app/projects/policies/project_policy.ts
+    code: |
+      export default class ProjectPolicy extends BasePolicy {
+        async archive(user: User): Promise<AuthorizerResponse> {
+          logger.info(user)
+          return true
         }
       }

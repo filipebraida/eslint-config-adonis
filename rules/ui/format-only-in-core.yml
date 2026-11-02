@@ -1,10 +1,10 @@
 id: format-only-in-core
 language: tsx
-files: ['app/**/*.{ts,tsx}', 'inertia/**/*.{ts,tsx}']
-ignores: ['app/core/ui/format*/**', 'inertia/lib/format*/**', 'inertia/lib/format*.ts', 'app/*/tests/**']
+files: ['app/*/ui/**/*.{ts,tsx}', 'inertia/**/*.{ts,tsx}']
+ignores: ['app/core/ui/format*/**', 'inertia/lib/format*/**', 'inertia/lib/format*.ts']
 severity: error
 metadata:
-  description: "`Intl.*` and `toLocaleString/DateString/TimeString()` only in the shared formatters (`app/core/ui/format/`, `inertia/lib/format/`)"
+  description: "Screens format dates and numbers only through the shared formatters (`app/core/ui/format/`, `inertia/lib/format/`): no `Intl.*`, `toLocaleString/DateString/TimeString()` or Luxon `toFormat/toRelative()` elsewhere"
 message: '`$CALL` formats outside the shared formatters.'
 note: 'Dates, numbers and relative times go through one formatter in `app/core/ui/format/` (`inertia/lib/format/` in the flat layout), which takes the locale of the user: `formatDate(value, locale)`, `formatRelativeTime(value, locale)`. Formatting scattered across screens drifts (one screen shows `02/11`, another `Nov 2`) and ignores the user locale.'
 rule:
@@ -13,10 +13,11 @@ rule:
     - kind: member_expression
       pattern: $CALL
       has: { field: object, kind: identifier, regex: '^Intl$' }
-    # date.toLocaleDateString(), value.toLocaleString('pt-BR')
+    # date.toLocaleDateString(), value.toLocaleString('pt-BR'), Luxon
+    # dt.toLocaleString(DateTime.DATE_MED), dt.toFormat('dd/LL'), dt.toRelative()
     - kind: call_expression
       pattern: $CALL
       has:
         field: function
         kind: member_expression
-        has: { field: property, regex: '^toLocale(String|DateString|TimeString)$' }
+        has: { field: property, regex: '^(toLocale(String|DateString|TimeString)|toLocaleParts|toFormat|toRelative|toRelativeCalendar)$' }

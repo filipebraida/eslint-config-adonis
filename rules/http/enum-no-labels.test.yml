@@ -13,7 +13,15 @@ valid:
   # Outside enums/ the rule does not apply.
   - file: app/deliveries/ui/components/stage_badge.tsx
     code: "const LABELS: Record<Stage, string> = { inbox: 'Inbox' }"
+  - file: app/inpi/enums/despacho.ts
+    code: 'const DESPACHO_STATUS: Record<string, StatusProtecao> = { [CODIGOS.CONCESSAO]: STATUS.CONCEDIDO }'
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const STAGE_SLUGS = { [STAGES.READY]: 'ready-for-dev' } as const"
 invalid:
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const STAGE_TITLES = { [STAGES.INBOX]: 'Inbox', [STAGES.READY]: 'ready' } as const"
+  - file: app/deliveries/enums/delivery.ts
+    code: "export const STAGE_TITLES = { [STAGES.INBOX]: 'In progress' } satisfies Record<Stage, string>"
   - file: app/deliveries/enums/delivery.ts
     code: "export const DELIVERY_TYPE_LABELS: Record<DeliveryType, string> = { [DELIVERY_TYPES.FEATURE]: 'Feature', [DELIVERY_TYPES.BUG]: 'Bug' }"
     errors: 1

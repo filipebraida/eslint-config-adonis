@@ -8,8 +8,13 @@ valid:
     code: "export const formatDate = (d: Date, locale: string) => d.toLocaleDateString(locale)"
   - file: app/deliveries/ui/components/deliveries/delivery_timeline.tsx
     code: "const label = formatDate(event.createdAt, locale)"
-  - file: app/orders/actions/x.ts
+  - file: app/orders/ui/components/x.tsx
     code: "const code = name.toLocaleUpperCase('tr')"
+  # agencia: server code formats for a machine (an API parameter), not for the screen.
+  - file: app/inpi/services/fonte_rpi.ts
+    code: "const params = { 'revista.dataInicial': ini.toFormat('dd/MM/yyyy') }"
+  - file: app/orders/actions/x.ts
+    code: "const at = new Intl.DateTimeFormat('en').format(d)"
 invalid:
   - file: app/runs/ui/hooks/use_run_format.ts
     code: "const f = new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' })"
@@ -19,3 +24,13 @@ invalid:
     code: "const d = post.createdAt.toLocaleDateString('pt-BR')"
   - file: app/contato/ui/components/mensagens/mensagem_cartao.tsx
     code: "const rtf = new Intl.RelativeTimeFormat('pt-BR')"
+  # Hub: Luxon relative dates.
+  - file: app/common/ui/components/navigation/notification_bell.tsx
+    code: "export const ago = (iso: string, locale: string) => DateTime.fromISO(iso).setLocale(locale).toRelative() ?? ''"
+  - file: app/users/ui/components/tokens/tokens_section.tsx
+    code: |
+      const lastUsed = DateTime.fromISO(token.lastUsedAt).toRelative() ?? ''
+      const created = DateTime.fromISO(token.createdAt).toLocaleString(DateTime.DATE_MED)
+    errors: 2
+  - file: inertia/pages/posts/show.tsx
+    code: "const d = DateTime.fromISO(post.createdAt).toFormat('dd/LL/yyyy')"

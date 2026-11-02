@@ -229,7 +229,7 @@ invert the condition and return early.
 | actions | `action-no-http-context` | Actions do not import `HttpContext` as a value (`import type` is fine) |
 | actions | `action-no-injection` | No constructor and no `@inject()` in an action; a provider to swap is injected into a service |
 | actions | `action-no-side-effect-imports` | Actions do not import `@adonisjs/mail` or `@adonisjs/transmit`; side effects go through events |
-| actions | `action-no-status-result` | An action returns the model (or nothing), never a `{ status: '...' }` result; an expected refusal throws a domain exception |
+| actions | `action-no-status-result` | An action returns the model (or nothing), never a `{ status: '...' }` result, declared or returned; an expected refusal throws a domain exception |
 | actions | `action-requires-handle` | The exported action class has a public `handle()` |
 | actions | `action-throws-documented` | A `throw` in an action is documented with `@throws` in the docblock of the action (or of the method or function that throws) |
 | queries | `no-hand-written-foreign-key` | No foreign key written by hand from an instance at hand: `.where('postId', post.id)` and `create({ postId: post.id })` go through `post.related('<relation>')` |
@@ -243,7 +243,7 @@ invert the condition and return early.
 | controllers | `controller-no-authenticate` | No `auth.authenticate()`/`authenticateUsing()` in a controller; the `auth` middleware authenticates, the controller calls `auth.getUserOrFail()` |
 | controllers | `controller-no-inline-validator` | No `vine.create/compile/object` in a controller; validators live in `validators/` |
 | controllers | `controller-no-serialize` | No `.serialize()`/`.toJSON()` in a controller; data leaves through a transformer |
-| controllers | `policy-decides` | A policy method that receives the user or the record decides on them: no bare `return true`, unless a comment above it says why the action is open |
+| controllers | `policy-decides` | A policy method decides: it calls the authorizer (`this.authz.can`) or reads a parameter in a condition; a method open to every signed-in user takes no parameters and has a `/** */` above it saying who |
 | controllers | `redirect-by-route` | No `redirect('/x')` nor `.toPath()`; redirect by route name |
 | http | `enum-no-labels` | No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>` |
 | http | `no-ts-enum` | No TypeScript `enum`; a constant list in `enums/` |
@@ -293,11 +293,11 @@ invert the condition and return early.
 | tests | `spec-no-substring-id` | No `assert.include/notInclude(JSON.stringify(...), String(id))` |
 | tests | `spec-upload-needs-drive-fake` | A spec that uploads (`.file()`, `setInputFiles`, or `createFromBuffer/File` plus `.save()`) calls `drive.fake()` |
 | tests | `test-entity-from-factory` | Entities are born from factories: no `Model.create/createMany/firstOrCreate`, `db.table().insert()` or `db.insertQuery()` in tests or helpers |
-| tests | `test-no-table-totals` | No total of a whole table in a test: no unscoped `.count()` (`db.from(t)`, `Model.query()`), no `.length` of a whole-table read; a delta helper says so in a comment |
+| tests | `test-no-table-totals` | A test asserts only on what it created: no unscoped `.count()`/`.first()` or length of a whole-table read (direct or through a variable), no seeder, no fixed natural key (`email`, `name`, `slug`, `repoUrl`) in a factory, lookup or `assertMissing`; a delta helper says so in a comment |
 | tests | `unit-test-no-http` | Unit tests do not use the HTTP `client` |
-| ui | `format-only-in-core` | `Intl.*` and `toLocaleString/DateString/TimeString()` only in the shared formatters (`app/core/ui/format/`, `inertia/lib/format/`) |
+| ui | `format-only-in-core` | Screens format dates and numbers only through the shared formatters (`app/core/ui/format/`, `inertia/lib/format/`): no `Intl.*`, `toLocaleString/DateString/TimeString()` or Luxon `toFormat/toRelative()` elsewhere |
 | ui | `page-props-from-generated` | Page props are `InertiaProps<{ ...Data.* }>`, never written by hand; a modal page (it imports the modal components) types its own props from `Data.*` |
-| ui | `page-renders-head` | A page renders `<Head>` (or a component named `*Head` that wraps it, never `PageHead` alone); a modal page is exempt |
+| ui | `page-renders-head` | A page renders `<Head>` from `@inertiajs/react`; `PageHead`, `TableHead` or a wrapper do not count; a modal page (`form.tsx`, `*_form.tsx`) is exempt |
 | ui | `page-single-default-export` | A page exports only its default component |
 | ui | `ui-copy-no-em-dash` | No em dash in interface text |
 | ui | `ui-no-internal-anchor` | No `<a href="/...">`; `<Link route>` for Inertia pages, `href={urlFor(...)}` otherwise |

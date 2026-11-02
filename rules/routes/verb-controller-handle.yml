@@ -5,7 +5,7 @@ severity: error
 metadata:
   description: "A controller routed only to `store` or only to `update` by hand is a verb: a single-action controller with `handle()`; a real resource uses `router.resource()`"
 message: '`$CONTROLLER` answers this route only with `$METHOD`.'
-note: 'A verb outside CRUD is a single-action controller named verb_object with `handle()` as its only public method: `move_delivery_controller.ts`, routed as `router.post(''/deliveries/:id/move'', [controllers.deliveries.MoveDelivery]).as(''deliveries.move'')`. If it is a real resource with one CRUD method, declare it with `router.resource(''messages'', controllers.channels.Messages).only([''store''])`.'
+note: 'A verb outside CRUD is a single-action controller named verb_object with `handle()` as its only public method: `move_delivery_controller.ts`, routed as `router.post(''/deliveries/:id/move'', [controllers.deliveries.MoveDelivery]).as(''deliveries.move'')`. If it is a real resource with one CRUD method, declare it with `router.resource(''messages'', controllers.channels.Messages).only([''store''])`. A form and its submit (`create` + `store`) pass; a `create` or `show` route added only to silence this rule does not make the verb a resource.'
 utils:
   # [Controller, 'method'] with the controller of this match.
   same-controller:

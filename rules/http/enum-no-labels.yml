@@ -6,6 +6,12 @@ metadata:
   description: "No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>`"
 message: '`$NAME` holds display text in an enum file.'
 note: 'An enum holds the values, never the text the user reads: a label map is in one language, so a screen or a flash in another locale shows it untranslated. The label is the i18n key `<module>.<enum>.<value>` (`deliveries.stage.in_progress`) in every locale file, read with `t()` on the screen and `i18n.t()` on the server.'
+utils:
+  text-by-enum-value:
+    kind: pair
+    all:
+      - has: { field: key, kind: computed_property_name }
+      - has: { field: value, kind: string, regex: '[A-Z\s]' }
 rule:
   kind: variable_declarator
   has: { field: name, pattern: $NAME }
@@ -20,6 +26,13 @@ rule:
             field: value
             kind: object
             has: { kind: pair, has: { field: value, kind: string, regex: '[A-Z\s]' } }
+    # { [STAGES.INBOX]: 'Inbox' } as const, ... satisfies Record<Stage, string>: keyed by the
+    # enum values, with text for a person
+    - has:
+        field: value
+        any:
+          - { kind: object, has: { kind: pair, matches: text-by-enum-value } }
+          - has: { kind: object, has: { kind: pair, matches: text-by-enum-value } }
     # [{ value: 'draft', label: 'Draft' }]
     - has:
         field: value
