@@ -3,12 +3,18 @@ valid:
   - { file: app/shop/services/review_counter.ts, code: 'export {}' }
   - { file: inertia/lib/utils.ts, code: 'export {}' }
   - { file: app/services/review_counter.ts, code: 'export {}' }
+  # The one utils of the app, by layout.
+  - { file: app/utils/slug.ts, code: 'export {}' }
+  - { file: app/core/utils/slug.ts, code: 'export {}' }
   - { file: inertia/pages/home.tsx, code: 'export {}' }
 invalid:
   - { file: app/shop/utils/format.ts, code: 'export {}' }
   - { file: app/shop/ui/components/shared/button.tsx, code: 'export {}' }
   - { file: app/shop/services/helpers.ts, code: 'export {}' }
   - { file: app/actions/utils/format.ts, code: 'export {}' }
+  # A utils of a module other than core is a second utils.
+  - { file: app/pedidos/utils/slug.ts, code: 'export {}' }
+  - { file: app/core/helpers/slug.ts, code: 'export {}' }
   - { file: app/services/helpers.ts, code: 'export {}' }
   - { file: inertia/pages/home/helpers.ts, code: 'export {}' }
   - { file: inertia/components/shared/button.tsx, code: 'export {}' }

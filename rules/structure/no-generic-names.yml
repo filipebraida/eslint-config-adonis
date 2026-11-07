@@ -8,10 +8,13 @@ ignores:
   - inertia/lib/utils.ts
   # Test helpers of a module (modules layout), the same convention as tests/helpers/.
   - 'app/*/tests/helpers/**'
+  # The one utils of the app: `app/utils/` (flat) or `app/core/utils/` (modules).
+  - 'app/utils/**'
+  - 'app/core/utils/**'
 severity: error
 metadata:
-  description: "No folder or file named utils, helpers, common, shared or misc at any depth in `app/` or `inertia/` (except shadcn's `inertia/lib/utils.ts` and the test helpers in `app/<module>/tests/helpers/`)"
+  description: "No folder or file named utils, helpers, common, shared or misc at any depth in `app/` or `inertia/` (except the one `utils` of the app, `app/utils/` or `app/core/utils/`, shadcn's `inertia/lib/utils.ts` and the test helpers in `app/<module>/tests/helpers/`)"
 message: 'utils, helpers, common, shared and misc do not say what they hold.'
-note: 'Name the file after its concept and put it next to its users: a date formatter goes in `format_date.ts`.'
+note: 'Name the file after its concept and put it next to its users: a date formatter goes in `format_date.ts`. A function with no domain that several layers share goes to the one utils of the app, `app/utils/` (`app/core/utils/` in the modules layout), never to a utils of its own.'
 rule:
   kind: program

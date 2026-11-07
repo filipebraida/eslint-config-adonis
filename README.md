@@ -90,10 +90,11 @@ lets an unused variable start with an underscore (`using _disk = drive.fake()`),
 which TypeScript's `noUnusedLocals` requires and the AdonisJS preset otherwise
 rejects.
 
-| Option      | Default    |                                                   |
-| ----------- | ---------- | ------------------------------------------------- |
-| `layout`    | `'flat'`   | `'flat'` or `'modules'`; an unknown layout throws |
-| `namespace` | `'adonis'` | prefix of the rule ids                            |
+| Option      | Default                                      |                                                                                        |
+| ----------- | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `layout`    | `'flat'`                                     | `'flat'` or `'modules'`; an unknown layout throws                                      |
+| `namespace` | `'adonis'`                                   | prefix of the rule ids                                                                 |
+| `i18n`      | `@adonisjs/i18n` in the app's `package.json` | turns on the rules that need translations (`enum-no-labels`); read from the ESLint cwd |
 
 ### Layouts
 
@@ -219,7 +220,7 @@ invert the condition and return early.
 | structure | `controller-file-suffix` | Files in `controllers/` end in `_controller.ts` |
 | structure | `job-file-suffix` | Files in `jobs/` end in `_job.ts`, as `make:job` writes them |
 | structure | `middleware-file-suffix` | Files in `middleware/` end in `_middleware.ts`, as `make:middleware` writes them |
-| structure | `no-generic-names` | No folder or file named utils, helpers, common, shared or misc at any depth in `app/` or `inertia/` (except shadcn's `inertia/lib/utils.ts` and the test helpers in `app/<module>/tests/helpers/`) |
+| structure | `no-generic-names` | No folder or file named utils, helpers, common, shared or misc at any depth in `app/` or `inertia/` (except the one `utils` of the app, `app/utils/` or `app/core/utils/`, shadcn's `inertia/lib/utils.ts` and the test helpers in `app/<module>/tests/helpers/`) |
 | structure | `policy-file-suffix` | Files in `policies/` end in `_policy.ts`, except `main.ts` and files declaring an abstract class |
 | structure | `services-export-provider` | `services/` holds swappable providers: it exports classes, interfaces, types and constants, never a loose function |
 | structure | `transformer-file-suffix` | Files in `transformers/` end in `_transformer.ts` |
@@ -245,7 +246,7 @@ invert the condition and return early.
 | controllers | `controller-no-serialize` | No `.serialize()`/`.toJSON()` in a controller; data leaves through a transformer |
 | controllers | `policy-decides` | A policy method decides: it calls the authorizer (`this.authz.can`) or reads a parameter in a condition; a method open to every signed-in user takes no parameters and has a `/** */` above it saying who |
 | controllers | `redirect-by-route` | No `redirect('/x')` nor `.toPath()`; redirect by route name |
-| http | `enum-no-labels` | No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>` |
+| http | `enum-no-labels` | No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>`; only in an app with `@adonisjs/i18n` (`adonis({ i18n })`) |
 | http | `no-ts-enum` | No TypeScript `enum`; a constant list in `enums/` |
 | http | `request-validated` | Controllers read input only through `request.validateUsing()`, never `request.all/input/only/except/body` |
 | http | `share-no-actions` | Middleware and the Inertia shared props never import an action; they only read |
@@ -297,7 +298,7 @@ invert the condition and return early.
 | tests | `unit-test-no-http` | Unit tests do not use the HTTP `client` |
 | ui | `format-only-in-core` | Screens format dates and numbers only through the shared formatters (`app/core/ui/format/`, `inertia/lib/format/`): no `Intl.*`, `toLocaleString/DateString/TimeString()` or Luxon `toFormat/toRelative()` elsewhere |
 | ui | `page-props-from-generated` | Page props are `InertiaProps<{ ...Data.* }>`, never written by hand; a modal page (it imports the modal components) types its own props from `Data.*` |
-| ui | `page-renders-head` | A page renders `<Head>` from `@inertiajs/react`; `PageHead`, `TableHead` or a wrapper do not count; a modal page (`form.tsx`, `*_form.tsx`) is exempt |
+| ui | `page-renders-head` | A page renders `<Head>` from `@inertiajs/react`; `PageHead`, `TableHead` or a wrapper do not count; a modal page (`form.tsx`, `*_form.tsx`, or a default export that returns a `*Modal*` element as its root) is exempt |
 | ui | `page-single-default-export` | A page exports only its default component |
 | ui | `ui-copy-no-em-dash` | No em dash in interface text |
 | ui | `ui-no-internal-anchor` | No `<a href="/...">`; `<Link route>` for Inertia pages, `href={urlFor(...)}` otherwise |
@@ -310,7 +311,7 @@ invert the condition and return early.
 
 | Area | Rule | What it enforces |
 |---|---|---|
-| structure | `app-allowed-layers` | Only the allowed layers under `app/` (actions, queries, controllers, models, policies, validators, transformers, middleware, events, listeners, jobs, mails, notifications, services, exceptions, enums, types, abilities, audit_resolvers) |
+| structure | `app-allowed-layers` | Only the allowed layers under `app/` (actions, queries, controllers, models, policies, validators, transformers, middleware, events, listeners, jobs, mails, notifications, services, exceptions, enums, types, abilities, audit_resolvers, and the one utils) |
 | structure | `exception-file-suffix` | Files in `exceptions/` end in `_exception.ts`, except the global `handler.ts` |
 | structure | `factory-file-suffix` | Files in `database/factories/` end in `_factory.ts` |
 | structure | `inertia-allowed-folders` | Only components, css, hooks, layouts, lib and pages under `inertia/` |
@@ -326,7 +327,7 @@ invert the condition and return early.
 | Area | Rule | What it enforces |
 |---|---|---|
 | structure | `exception-file-suffix` | Files in `<module>/exceptions/` end in `_exception.ts`, except the global `core/exceptions/handler.ts` |
-| structure | `module-allowed-dirs` | Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers) |
+| structure | `module-allowed-dirs` | Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers, and `utils` in the core module only) |
 | structure | `module-no-loose-files` | Only `routes.ts` at the root of `app/<module>/` |
 | structure | `notification-file-suffix` | Files in `<module>/notifications/` end in `_notification.ts` |
 | structure | `ui-allowed-folders` | Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` |

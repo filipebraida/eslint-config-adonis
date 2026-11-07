@@ -1,11 +1,12 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { basename, join, resolve } from 'node:path'
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
 import { ESLint } from 'eslint'
 import tseslint from 'typescript-eslint'
 import { parse, parseAllDocuments } from 'yaml'
-import { adonis, LAYOUTS, layoutOf, RULES_DIR } from '../presets/adonis.js'
+import { adonis, I18N_RULES, LAYOUTS, layoutOf, RULES_DIR, usesI18n } from '../presets/adonis.js'
 
 const NAMESPACE = 'adonis'
 // A fake app root; `resolve` makes it absolute on Windows too (`D:\project`).
@@ -34,7 +35,8 @@ const linters = Object.fromEntries(
             parserOptions: { ecmaFeatures: { jsx: true } },
           },
         },
-        ...adonis({ layout, namespace: NAMESPACE }),
+        // Every rule runs its cases, the ones that need translations included.
+        ...adonis({ layout, namespace: NAMESPACE, i18n: true }),
       ],
     }),
   ]),
@@ -73,6 +75,34 @@ test('adonis() loads each layout rule only in its layout', () => {
   assert.ok(configured('modules').includes(`${NAMESPACE}/module-allowed-dirs`))
   assert.ok(!configured('modules').includes(`${NAMESPACE}/app-allowed-layers`))
   assert.ok(!configured('modules').includes(`${NAMESPACE}/inertia-allowed-folders`))
+})
+
+// A label lives in a locale file only when the app has one.
+describe('rules that need translations', () => {
+  const configured = (options) =>
+    adonis({ namespace: NAMESPACE, ...options })
+      .filter((block) => block.files)
+      .map((block) => block.name)
+
+  test('i18n: false leaves them out', () => {
+    for (const id of I18N_RULES) assert.ok(!configured({ i18n: false }).includes(`${NAMESPACE}/${id}`))
+  })
+
+  test('i18n: true turns them on', () => {
+    for (const id of I18N_RULES) assert.ok(configured({ i18n: true }).includes(`${NAMESPACE}/${id}`))
+  })
+
+  test('usesI18n() reads @adonisjs/i18n from the package.json of the app', () => {
+    const app = (pkg) => {
+      const root = mkdtempSync(join(tmpdir(), 'app-'))
+      if (pkg) writeFileSync(join(root, 'package.json'), JSON.stringify(pkg))
+      return root
+    }
+    assert.equal(usesI18n(app({ dependencies: { '@adonisjs/i18n': '^3.0.0' } })), true)
+    assert.equal(usesI18n(app({ devDependencies: { '@adonisjs/i18n': '^3.0.0' } })), true)
+    assert.equal(usesI18n(app({ dependencies: { '@adonisjs/core': '^7.0.0' } })), false)
+    assert.equal(usesI18n(app()), false)
+  })
 })
 
 test('adonis() rejects an unknown layout', () => {

@@ -1,5 +1,5 @@
-import { readdirSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { basename, join } from 'node:path'
 import { astGrep } from '@adonisjs/eslint-ast-grep'
 import routeParamMatcher from '../rules/routes/route-param-matcher.js'
 import functionSize from '../rules/size/function-size.js'
@@ -20,11 +20,29 @@ export const LAYOUTS = ['flat', 'modules']
 /** The layout a rule file belongs to, or `undefined` when it applies to all. */
 export const layoutOf = (file) => file.split(/[\\/]/).find((segment) => LAYOUTS.includes(segment))
 
+/**
+ * Rules that only make sense in an app with translations: without them there
+ * is no locale file for the label to live in.
+ */
+export const I18N_RULES = ['enum-no-labels']
+
+/**
+ * Whether the app at `root` translates its text: `@adonisjs/i18n` among the
+ * dependencies of its `package.json`. No `package.json` means no.
+ */
+export function usesI18n(root = process.cwd()) {
+  const file = join(root, 'package.json')
+  if (!existsSync(file)) return false
+  const { dependencies = {}, devDependencies = {} } = JSON.parse(readFileSync(file, 'utf8'))
+  return '@adonisjs/i18n' in dependencies || '@adonisjs/i18n' in devDependencies
+}
+
 /** Rule files only: the `*.test.yml` cases live next to them. */
-const ruleFiles = (layout) =>
+const ruleFiles = (layout, i18n) =>
   readdirSync(RULES_DIR, { recursive: true, encoding: 'utf8' })
     .filter((file) => file.endsWith('.yml') && !file.endsWith('.test.yml'))
     .filter((file) => [undefined, layout].includes(layoutOf(file)))
+    .filter((file) => i18n || !I18N_RULES.includes(basename(file, '.yml')))
     .sort()
     .map((file) => join(RULES_DIR, file))
 
@@ -166,12 +184,15 @@ const JS_RULES = [
  * @param {object} [options]
  * @param {'flat' | 'modules'} [options.layout] how `app/` is organized
  * @param {string} [options.namespace] prefix of the rule ids
+ * @param {boolean} [options.i18n] whether the app translates its text; by
+ *   default, whether `@adonisjs/i18n` is in the `package.json` of the ESLint
+ *   working directory. Turns on the rules in `I18N_RULES`.
  */
-export function adonis({ layout = 'flat', namespace = 'adonis' } = {}) {
+export function adonis({ layout = 'flat', namespace = 'adonis', i18n = usesI18n() } = {}) {
   if (!LAYOUTS.includes(layout)) {
     throw new Error(`Unknown layout "${layout}". Use one of: ${LAYOUTS.join(', ')}.`)
   }
-  const [pluginBlock, ...ruleBlocks] = astGrep(ruleFiles(layout), { namespace })
+  const [pluginBlock, ...ruleBlocks] = astGrep(ruleFiles(layout, i18n), { namespace })
   const plugin = pluginBlock.plugins[namespace]
   for (const { id, rule } of JS_RULES) plugin.rules[id] = rule
   return [

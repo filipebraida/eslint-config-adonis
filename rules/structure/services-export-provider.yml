@@ -6,7 +6,7 @@ severity: error
 metadata:
   description: "`services/` holds swappable providers: it exports classes, interfaces, types and constants, never a loose function"
 message: '`$NAME` is a loose function in `services/`.'
-note: 'A service is a provider another implementation can replace (an external client, a port another module implements): a class, injected where it is used, or the interface it implements. A pure function without domain goes to `core/utils/` (or `app/utils/`); a function about the domain goes to the model or next to its enum.'
+note: 'A service is a provider another implementation can replace (an external client, a port another module implements): a class, injected where it is used, or the interface it implements. A function about the domain goes to the model (a method, a getter, a static helper) or next to its enum, and a read that decides goes to a query. Only a function with no domain that several layers share (a slug, a CSV line) goes to the one utils of the app, `app/utils/` (`app/core/utils/` in the modules layout).'
 rule:
   kind: export_statement
   any:

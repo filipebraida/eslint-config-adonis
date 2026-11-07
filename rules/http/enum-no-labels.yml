@@ -3,7 +3,7 @@ language: typescript
 files: ['app/enums/**/*.ts', 'app/*/enums/**/*.ts']
 severity: error
 metadata:
-  description: "No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>`"
+  description: "No `*_LABELS` map, `Record<…, string>` of display text or `label:` in `enums/`; labels are i18n keys `<module>.<enum>.<value>`; only in an app with `@adonisjs/i18n` (`adonis({ i18n })`)"
 message: '`$NAME` holds display text in an enum file.'
 note: 'An enum holds the values, never the text the user reads: a label map is in one language, so a screen or a flash in another locale shows it untranslated. The label is the i18n key `<module>.<enum>.<value>` (`deliveries.stage.in_progress`) in every locale file, read with `t()` on the screen and `i18n.t()` on the server.'
 utils:

@@ -8,8 +8,9 @@ valid:
   - { file: app/actions/app/x.ts, code: 'export {}' }
   - { file: start/routes.ts, code: 'export {}' }
   - { file: tests/functional/api/x.spec.ts, code: 'export {}' }
+  # The one utils of the app.
+  - { file: app/utils/slug.ts, code: 'export {}' }
 invalid:
-  - { file: app/utils/x.ts, code: 'export {}' }
   - { file: app/support/x.ts, code: 'export {}' }
   - { file: app/lib/x.ts, code: 'export {}' }
   - { file: app/billing/x.ts, code: 'export {}' }

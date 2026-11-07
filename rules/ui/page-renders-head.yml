@@ -1,26 +1,47 @@
 id: page-renders-head
 language: tsx
 files: ['inertia/pages/**/*.tsx', 'app/*/ui/pages/**/*.tsx']
-# A modal page (`form.tsx`, `<entity>_form.tsx`) renders over the page that opened it and keeps its title.
+# A modal page renders over the page that opened it and keeps its title: one
+# named as a modal (`form.tsx`, `<entity>_form.tsx`), or one whose component
+# returns a modal as its root (`<Modal>`, `<ModalDeFormulario>`).
 ignores: ['inertia/pages/**/form.tsx', 'inertia/pages/**/*_form.tsx', 'app/*/ui/pages/**/form.tsx', 'app/*/ui/pages/**/*_form.tsx']
 severity: error
 metadata:
-  description: "A page renders `<Head>` from `@inertiajs/react`; `PageHead`, `TableHead` or a wrapper do not count; a modal page (`form.tsx`, `*_form.tsx`) is exempt"
+  description: "A page renders `<Head>` from `@inertiajs/react`; `PageHead`, `TableHead` or a wrapper do not count; a modal page (`form.tsx`, `*_form.tsx`, or a default export that returns a `*Modal*` element as its root) is exempt"
 message: 'Page without `<Head>` from `@inertiajs/react`.'
-note: 'Every page sets its own title: `import { Head } from ''@inertiajs/react''` and `<Head title={t(''deliveries.show.title'')} />`, next to the shared `PageHead` that draws the heading on the screen. `PageHead` does not set the title, and a layout that sets a default one does not name this page. A modal page is named `form.tsx` (or `<entity>_form.tsx`) and keeps the title of the page under it.'
+note: 'Every page sets its own title: `import { Head } from ''@inertiajs/react''` and `<Head title={t(''deliveries.show.title'')} />`, next to the shared `PageHead` that draws the heading on the screen. `PageHead` does not set the title, and a layout that sets a default one does not name this page. A modal page keeps the title of the page under it: it is named `form.tsx` (or `<entity>_form.tsx`), or its component returns the modal as its root (`return <Modal>...</Modal>`). A page that only renders a modal inside its layout is still a page.'
+utils:
+  modal-element:
+    any:
+      - { kind: jsx_element, has: { kind: jsx_opening_element, has: { field: name, regex: 'Modal' } } }
+      - { kind: jsx_self_closing_element, has: { field: name, regex: 'Modal' } }
+  # The root returned by the default export itself, not by a callback or an
+  # inner function: `export default function X() { return (<Modal>...) }`.
+  returns-modal:
+    kind: return_statement
+    inside:
+      kind: statement_block
+      inside:
+        kind: function_declaration
+        inside: { kind: export_statement }
+    any:
+      - has: { matches: modal-element }
+      - has: { kind: parenthesized_expression, has: { matches: modal-element } }
 rule:
   kind: export_statement
   regex: '^export\s+default\b'
   not:
     inside:
       kind: program
-      all:
-        - has:
-            kind: import_statement
-            all:
-              - has: { field: source, regex: '^[''"]@inertiajs/react[''"]$' }
-              - has: { stopBy: end, kind: import_specifier, has: { field: name, regex: '^Head$' } }
-        - has:
-            stopBy: end
-            any: [{ kind: jsx_opening_element }, { kind: jsx_self_closing_element }]
-            has: { field: name, regex: '^Head$' }
+      any:
+        - has: { stopBy: end, matches: returns-modal }
+        - all:
+            - has:
+                kind: import_statement
+                all:
+                  - has: { field: source, regex: '^[''"]@inertiajs/react[''"]$' }
+                  - has: { stopBy: end, kind: import_specifier, has: { field: name, regex: '^Head$' } }
+            - has:
+                stopBy: end
+                any: [{ kind: jsx_opening_element }, { kind: jsx_self_closing_element }]
+                has: { field: name, regex: '^Head$' }

@@ -8,6 +8,8 @@ valid:
   - { file: app/shop/ui/pages/orders/index.tsx, code: 'export {}' }
   - { file: app/core/abilities/x.ts, code: 'export {}' }
   - { file: app/shop/routes.ts, code: 'export {}' }
+  # The one utils of the app, in the core module.
+  - { file: app/core/utils/slug.ts, code: 'export {}' }
   - { file: start/routes.ts, code: 'export {}' }
 invalid:
   - { file: app/shop/utils/format.ts, code: 'export {}' }
