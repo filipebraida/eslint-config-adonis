@@ -1,11 +1,11 @@
 id: unit-test-mirrors-layer
 language: tsx
 files: ['app/*/tests/unit/**/*.spec.{ts,tsx}']
-ignores: ['app/*/tests/unit/{actions,controllers,database,enums,exceptions,jobs,middleware,models,notifications,policies,queries,services,transformers,types,validators,events,listeners,mails,abilities}/**']
+ignores: ['app/*/tests/unit/{actions,controllers,database,enums,exceptions,jobs,middleware,models,notifications,policies,queries,services,transformers,types,validators,events,listeners,mails,abilities}/**', 'app/core/tests/unit/utils/**']
 severity: error
 metadata:
   description: "Unit tests live in `app/<module>/tests/unit/<folder>/`, mirroring a module folder"
 message: 'Unit test outside a module folder.'
-note: 'A unit test mirrors the folder of its source in app/<module>/tests/unit/<folder>/, e.g. app/shop/actions/archive_order.ts → app/shop/tests/unit/actions/archive_order.spec.ts.'
+note: 'A unit test mirrors the folder of its source in app/<module>/tests/unit/<folder>/, e.g. app/shop/actions/archive_order.ts → app/shop/tests/unit/actions/archive_order.spec.ts; app/core/utils/ → app/core/tests/unit/utils/.'
 rule:
   kind: program
