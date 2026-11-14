@@ -6,7 +6,9 @@ valid:
   - { file: app/shop/controllers/ui/x_controller.ts, code: 'export {}' }
   # The entrypoints, in the core module.
   - { file: app/core/ui/app/app.tsx, code: 'export {}' }
+  - { file: app/core/ui/format/date.ts, code: 'export {}' }
 invalid:
   - { file: app/shop/ui/utils/format.ts, code: 'export {}' }
   - { file: app/shop/ui/app/app.tsx, code: 'export {}' }
+  - { file: app/shop/ui/format/date.ts, code: 'export {}' }
   - { file: app/shop/ui/navigation/items.ts, code: 'export {}' }
