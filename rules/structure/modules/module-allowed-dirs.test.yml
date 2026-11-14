@@ -11,6 +11,7 @@ valid:
   # The one utils of the app, in the core module.
   - { file: app/core/utils/slug.ts, code: 'export {}' }
   - { file: app/shop/mixins/with_cart.ts, code: 'export {}' }
+  - { file: app/shop/workflows/send_receipt_workflow.ts, code: 'export {}' }
   # The kernel's authorization glue and assembler hooks.
   - { file: app/core/authz/authorizer.ts, code: 'export {}' }
   - { file: app/core/hooks/index_pages_hook.ts, code: 'export {}' }

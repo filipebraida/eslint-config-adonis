@@ -1,5 +1,6 @@
 valid:
   - { file: app/shop/tests/unit/actions/archive_cart.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/unit/workflows/send_receipt_workflow.spec.ts, code: "test('x', () => {})" }
   - { file: app/shop/tests/unit/services/order_service/workflow.spec.ts, code: "test('x', () => {})" }
   - { file: app/core/tests/unit/abilities/authorizer.spec.ts, code: "test('x', () => {})" }
   - { file: app/core/tests/unit/utils/slug.spec.ts, code: "test('x', () => {})" }
