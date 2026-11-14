@@ -10,9 +10,15 @@ valid:
   - { file: app/shop/routes.ts, code: 'export {}' }
   # The one utils of the app, in the core module.
   - { file: app/core/utils/slug.ts, code: 'export {}' }
+  - { file: app/shop/mixins/with_cart.ts, code: 'export {}' }
+  # The kernel's authorization glue and assembler hooks.
+  - { file: app/core/authz/authorizer.ts, code: 'export {}' }
+  - { file: app/core/hooks/index_pages_hook.ts, code: 'export {}' }
   - { file: start/routes.ts, code: 'export {}' }
 invalid:
   - { file: app/shop/utils/format.ts, code: 'export {}' }
   - { file: app/core/providers/x.ts, code: 'export {}' }
   - { file: app/vendor/dtos/x.ts, code: 'export {}' }
   - { file: app/shop/lib/x.tsx, code: 'export {}' }
+  - { file: app/shop/authz/x.ts, code: 'export {}' }
+  - { file: app/shop/hooks/x.ts, code: 'export {}' }

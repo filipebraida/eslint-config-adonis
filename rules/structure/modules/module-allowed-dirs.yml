@@ -2,13 +2,16 @@ id: module-allowed-dirs
 language: tsx
 files: ['app/*/*/**/*.{ts,tsx}']
 ignores:
-  - 'app/*/{actions,controllers,database,enums,exceptions,jobs,middleware,models,notifications,policies,queries,services,start,tests,transformers,types,ui,validators,events,listeners,mails,abilities,audit_resolvers}/**'
+  - 'app/*/{actions,controllers,database,enums,exceptions,jobs,middleware,models,notifications,policies,queries,services,start,tests,transformers,types,ui,validators,events,listeners,mails,abilities,audit_resolvers,mixins}/**'
   # The one utils of the app lives in the core module.
   - 'app/core/utils/**'
+  # The kernel's own folders: the authorization glue (`Authorizer`, `Capability`)
+  # and the assembler hooks adonisrc points at.
+  - 'app/core/{authz,hooks}/**'
 severity: error
 metadata:
-  description: "Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers, and `utils` in the core module only)"
+  description: "Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers, mixins, and `utils`, `authz` and `hooks` in the core module only)"
 message: 'This folder under app/<module>/ is not an allowed module folder.'
-note: 'Module folders: actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers, and `utils` in the core module only, for the functions with no domain that several modules share. A new folder is an architecture decision: record it in docs/adr/ and add it to this rule.'
+note: 'Module folders: actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers, mixins, and in the core module only `utils` (the functions with no domain that several modules share), `authz` (the authorization glue) and `hooks` (the assembler hooks). A new folder is an architecture decision: record it in docs/adr/ and add it to this rule.'
 rule:
   kind: program

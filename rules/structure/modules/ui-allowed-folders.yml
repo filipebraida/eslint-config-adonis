@@ -1,11 +1,14 @@
 id: ui-allowed-folders
 language: tsx
 files: ['app/*/ui/*/**/*.{ts,tsx}']
-ignores: ['app/*/ui/{components,context,css,hooks,images,layouts,pages}/**']
+ignores:
+  - 'app/*/ui/{components,context,css,hooks,images,layouts,pages}/**'
+  # The frontend entrypoints Vite and Inertia point at (app, client, ssr) live in the core module.
+  - 'app/core/ui/app/**'
 severity: error
 metadata:
-  description: "Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/`"
+  description: "Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` (and the entrypoints in `app/core/ui/app/`)"
 message: 'This folder under app/<module>/ui/ is not allowed.'
-note: 'Folders: components, context, css, hooks, images, layouts, pages. A new folder is an architecture decision: add it to this rule.'
+note: 'Folders: components, context, css, hooks, images, layouts, pages, and `app/` in the core module for the entrypoints. A new folder is an architecture decision: add it to this rule.'
 rule:
   kind: program
