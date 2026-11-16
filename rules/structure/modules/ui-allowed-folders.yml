@@ -3,14 +3,15 @@ language: tsx
 files: ['app/*/ui/*/**/*.{ts,tsx}']
 ignores:
   - 'app/*/ui/{components,context,css,hooks,images,layouts,pages}/**'
-  # The core module's own: the frontend entrypoints Vite and Inertia point at
-  # (app, client, ssr), and the shared formatters format-only-in-core sends dates
-  # and numbers to.
+  # The core module's own: `app/` is the composition root of the frontend, the
+  # one place that knows every module (the entrypoints Vite and Inertia point
+  # at, i18n, the navigation), and `format/` holds the shared formatters
+  # format-only-in-core sends dates and numbers to.
   - 'app/core/ui/{app,format}/**'
 severity: error
 metadata:
-  description: "Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` (and the entrypoints in `app/core/ui/app/` and the formatters in `app/core/ui/format/`)"
+  description: "Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` (and, in the core module, `app/` for the composition root of the frontend and `format/` for the formatters)"
 message: 'This folder under app/<module>/ui/ is not allowed.'
-note: 'Folders: components, context, css, hooks, images, layouts, pages, and in the core module `app/` for the entrypoints and `format/` for the formatters. A new folder is an architecture decision: add it to this rule.'
+note: 'Folders: components, context, css, hooks, images, layouts, pages, and in the core module `app/` for the composition root of the frontend (the entrypoints, i18n, the navigation) and `format/` for the formatters. A new folder is an architecture decision: add it to this rule.'
 rule:
   kind: program

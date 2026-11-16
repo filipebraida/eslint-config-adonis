@@ -2,12 +2,22 @@ valid:
   - { file: app/shop/tests/unit/actions/archive_cart.spec.ts, code: "test('x', () => {})" }
   - { file: app/shop/tests/unit/workflows/send_receipt_workflow.spec.ts, code: "test('x', () => {})" }
   - { file: app/shop/tests/unit/services/order_service/workflow.spec.ts, code: "test('x', () => {})" }
-  - { file: app/core/tests/unit/abilities/authorizer.spec.ts, code: "test('x', () => {})" }
+  - { file: app/auth/tests/unit/mixins/with_social_identity.spec.ts, code: "test('x', () => {})" }
+  - { file: app/core/tests/unit/abilities/main.spec.ts, code: "test('x', () => {})" }
+  - { file: app/core/tests/unit/audit_resolvers/user_resolver.spec.ts, code: "test('x', () => {})" }
+  # The kernel's own folders, as app/core/utils/.
+  - { file: app/core/tests/unit/authz/authorizer.spec.ts, code: "test('x', () => {})" }
+  - { file: app/core/tests/unit/hooks/index_pages_hook.spec.ts, code: "test('x', () => {})" }
+  # A component rendered statically, a pure function of the screen.
+  - { file: app/shop/tests/unit/ui/order_total.spec.tsx, code: "test('x', () => {})" }
+  - { file: app/core/tests/unit/ui/components/markdown.spec.ts, code: "test('x', () => {})" }
   - { file: app/core/tests/unit/utils/slug.spec.ts, code: "test('x', () => {})" }
   - { file: app/shop/tests/functional/invite/store.spec.ts, code: "test('x', () => {})" }
   - { file: tests/unit/misc/x.spec.ts, code: "test('x', () => {})" }
 invalid:
   - { file: app/shop/tests/unit/archive_cart.spec.ts, code: "test('x', () => {})" }
   - { file: app/shop/tests/unit/utils/x.spec.ts, code: "test('x', () => {})" }
-  - { file: app/shop/tests/unit/ui/x.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/unit/authz/x.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/unit/hooks/x.spec.ts, code: "test('x', () => {})" }
+  - { file: app/shop/tests/unit/start/x.spec.ts, code: "test('x', () => {})" }
   - { file: app/shop/tests/unit/tests/x.spec.ts, code: "test('x', () => {})" }

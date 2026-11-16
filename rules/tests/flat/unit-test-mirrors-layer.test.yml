@@ -3,6 +3,7 @@ valid:
   - { file: tests/unit/services/order_service/workflow.spec.ts, code: "test('x', () => {})" }
   - { file: tests/unit/abilities/authorizer.spec.ts, code: "test('x', () => {})" }
   - { file: tests/unit/utils/slug.spec.ts, code: "test('x', () => {})" }
+  - { file: tests/unit/audit_resolvers/user_resolver.spec.ts, code: "test('x', () => {})" }
   - { file: tests/functional/reviews/store.spec.ts, code: "test('x', () => {})" }
 invalid:
   - { file: tests/unit/register_review.spec.ts, code: "test('x', () => {})" }

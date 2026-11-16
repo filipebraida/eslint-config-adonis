@@ -1,10 +1,12 @@
 id: ui-no-loose-files
 language: tsx
 files: ['app/*/ui/*.{ts,tsx}']
+# The props contract every page imports, as `inertia/types.ts` in the flat layout.
+ignores: ['app/core/ui/types.ts']
 severity: error
 metadata:
-  description: "No loose file at the root of `app/<module>/ui/`"
+  description: "No loose file at the root of `app/<module>/ui/` (except `app/core/ui/types.ts`, the props contract of the pages)"
 message: 'Loose file at the root of app/<module>/ui/.'
-note: 'A page goes in pages/, a component in components/, a hook in hooks/, a context in context/.'
+note: 'A page goes in pages/, a component in components/, a hook in hooks/, a context in context/. Only `app/core/ui/types.ts`, the props contract every page imports, lives at the root.'
 rule:
   kind: program

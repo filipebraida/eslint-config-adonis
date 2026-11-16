@@ -330,8 +330,8 @@ invert the condition and return early.
 | structure | `module-allowed-dirs` | Only the allowed folders in `app/<module>/` (actions, controllers, database, enums, exceptions, jobs, middleware, models, notifications, policies, queries, services, start, tests, transformers, types, ui, validators, events, listeners, mails, abilities, audit_resolvers, mixins, workflows, and `utils`, `authz` and `hooks` in the core module only) |
 | structure | `module-no-loose-files` | Only `routes.ts` at the root of `app/<module>/` |
 | structure | `notification-file-suffix` | Files in `<module>/notifications/` end in `_notification.ts` |
-| structure | `ui-allowed-folders` | Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` (and the entrypoints in `app/core/ui/app/` and the formatters in `app/core/ui/format/`) |
-| structure | `ui-no-loose-files` | No loose file at the root of `app/<module>/ui/` |
+| structure | `ui-allowed-folders` | Only components, context, css, hooks, images, layouts and pages under `app/<module>/ui/` (and, in the core module, `app/` for the composition root of the frontend and `format/` for the formatters) |
+| structure | `ui-no-loose-files` | No loose file at the root of `app/<module>/ui/` (except `app/core/ui/types.ts`, the props contract of the pages) |
 | tests | `functional-test-in-resource-folder` | Functional tests live in `app/<module>/tests/functional/<area>/` |
 | tests | `test-suite` | Specs live in `app/<module>/tests/unit/`, `functional/` or `browser/` |
 | tests | `unit-test-mirrors-layer` | Unit tests live in `app/<module>/tests/unit/<folder>/`, mirroring a module folder |

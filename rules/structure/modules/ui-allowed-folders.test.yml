@@ -4,8 +4,9 @@ valid:
   - { file: app/shop/ui/context/order_context.tsx, code: 'export {}' }
   - { file: app/shop/ui/hooks/use_order.ts, code: 'export {}' }
   - { file: app/shop/controllers/ui/x_controller.ts, code: 'export {}' }
-  # The entrypoints, in the core module.
+  # The composition root of the frontend and the formatters, in the core module.
   - { file: app/core/ui/app/app.tsx, code: 'export {}' }
+  - { file: app/core/ui/app/navigation.ts, code: 'export {}' }
   - { file: app/core/ui/format/date.ts, code: 'export {}' }
 invalid:
   - { file: app/shop/ui/utils/format.ts, code: 'export {}' }

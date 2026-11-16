@@ -1,6 +1,8 @@
 valid:
   - { file: app/shop/ui/pages/home.tsx, code: 'export {}' }
   - { file: app/shop/routes.ts, code: 'export {}' }
-invalid:
   - { file: app/core/ui/types.ts, code: 'export {}' }
+invalid:
+  - { file: app/shop/ui/types.ts, code: 'export {}' }
+  - { file: app/core/ui/index.tsx, code: 'export {}' }
   - { file: app/shop/ui/index.tsx, code: 'export {}' }

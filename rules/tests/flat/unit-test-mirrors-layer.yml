@@ -1,7 +1,7 @@
 id: unit-test-mirrors-layer
 language: tsx
 files: ['tests/unit/**/*.spec.{ts,tsx}']
-ignores: ['tests/unit/{actions,queries,controllers,models,policies,validators,transformers,middleware,events,listeners,jobs,mails,notifications,services,exceptions,enums,types,abilities,utils}/**']
+ignores: ['tests/unit/{actions,queries,controllers,models,policies,validators,transformers,middleware,events,listeners,jobs,mails,notifications,services,exceptions,enums,types,abilities,audit_resolvers,utils}/**']
 severity: error
 metadata:
   description: "Unit tests live in `tests/unit/<layer>/`"
